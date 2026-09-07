@@ -1,3 +1,5 @@
+"use client";
+
 /** Same markup + IDs as the delivered static contact drawer —
  *  /js/site.js continues to drive open/close and the mailto fallback. */
 export default function ContactDrawer() {
