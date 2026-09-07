@@ -9,10 +9,12 @@ const navItems = [
   { href: "/admin/news", label: "News" },
   { href: "/admin/pages", label: "Pages" },
   { href: "/admin/faqs", label: "FAQ" },
+  { href: "/admin/media", label: "Media" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/jobs", label: "Careers" },
   { href: "/admin/submissions", label: "Submissions" },
   { href: "/admin/rss", label: "RSS Pipeline" },
+  { href: "/admin/account", label: "Account" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
