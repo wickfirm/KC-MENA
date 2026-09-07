@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasumigaseki MENA | Development, Investment &amp; Operations Across the GCC</title>
+<meta name="description" content="Kasumigaseki MENA is the regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across Development, Investment &amp; Asset Management, and Food &amp; Beverage.">
+<link rel="canonical" href="https://kasumigaseki.ae/">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="images/icon logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kasumigaseki MENA">
+<meta property="og:title" content="Kasumigaseki MENA | Turning Challenge into Value">
+<meta property="og:description" content="The regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across the GCC and beyond.">
+<meta property="og:url" content="https://kasumigaseki.ae/">
+<meta property="og:image" content="images/quality2.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kasumigaseki MENA | Turning Challenge into Value">
+<meta name="twitter:description" content="The regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across the GCC and beyond.">
+<meta name="twitter:image" content="images/quality2.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  "name": "Kasumigaseki MENA",
+  "url": "https://kasumigaseki.ae/",
+  "logo": "https://kasumigaseki.ae/images/logo kme red.png",
+  "image": "images/quality2.webp",
+  "description": "The regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across the GCC and beyond.",
+  "parentOrganization": {
+    "@type": "Corporation",
+    "name": "Kasumigaseki Capital Co., Ltd.",
+    "url": "https://kasumigaseki.co.jp/en/"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Dubai Hills Estate, Business Park 4, Office 304-305",
+    "addressLocality": "Dubai",
+    "addressCountry": "AE"
+  },
+  "email": "info.dubai@kasumigaseki.co.jp",
+  "sameAs": ["https://kasumigaseki.co.jp/en/"]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0A0A0A;
+    --ink:#2A2A2A;
+    --white:#FFFFFF;
+    --grey-1:#F5F5F5;
+    --grey-2:#E5E5E5;
+    --grey-3:#C7C7C7;
+    --grey-4:#9A9A9A;
+    --grey-5:#6B6B6B;
+    --grey-6:#3D3D3D;
+    --line:#808081;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--grey-3);
+    font-family:'Figtree', sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Noto Serif', serif; font-weight:600; letter-spacing:-0.01em; color:var(--white); }
+  a{ color:inherit; text-decoration:none; }
+  img,.ph{ display:block; }
+  .wrap{ max-width:1280px; margin:0 auto; padding:0 5vw; }
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:0.18em; font-size:0.72rem; font-weight:600;
+    color:var(--grey-4);
+  }
+  .rule{ height:1px; background:rgba(255,255,255,0.14); border:none; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 28px; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase;
+    border-radius:1px; font-weight:600; transition:all .3s ease; cursor:pointer; border:none;
+  }
+  .btn-solid{ background:var(--white); color:var(--black); }
+  .btn-solid:hover{ background:var(--grey-3); }
+  .btn-outline{ background:transparent; border:1px solid rgba(255,255,255,0.6); color:var(--white); }
+  .btn-outline:hover{ background:var(--white); color:var(--black); }
+  .btn-outline-white{ background:transparent; border:1px solid rgba(255,255,255,0.7); color:var(--white); }
+  .btn-outline-white:hover{ background:var(--white); color:var(--black); }
+
+  /* logo mark: faceted vertical-stripe diamond, approximating the KPD brandmark */
+  .mark{ display:inline-flex; align-items:center; }
+  .mark svg{ display:block; }
+  .logo-lockup{ display:flex; align-items:center; gap:12px; }
+  .logo-word{ font-family:'Noto Serif', serif; font-size:1.05rem; letter-spacing:0.14em; color:var(--black); }
+  .logo-sub{ font-size:0.6rem; letter-spacing:0.22em; color:var(--grey-5); margin-top:2px; }
+
+  /* ---------- header (kept white/light) ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(255,255,255,0.94);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--grey-2);
+  }
+  .header-in{ display:flex; align-items:center; justify-content:space-between; padding:20px 5vw; }
+  nav ul{ list-style:none; display:flex; gap:24px; flex-wrap:wrap; }
+  nav a{ font-size:0.76rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; position:relative; padding-bottom:3px; color:var(--black); }
+  nav a.active{ color:var(--black); }
+  nav a::after{ content:""; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--black); transition:width .3s ease; }
+  nav a:hover::after, nav a.active::after{ width:100%; }
+    .contact-link{ display:inline-flex; align-items:center; gap:6px; font-size:0.76rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--black); }
+  .contact-link svg{ transition:transform .2s ease; }
+  .contact-link:hover svg{ transform:translate(2px,-2px); }
+  .header-cta{ display:flex; align-items:center; gap:22px; }
+  .header-cta .btn{ padding:11px 20px; font-size:0.72rem; }
+  .header-cta .btn-outline{ border-color:var(--black); color:var(--black); }
+  .header-cta .btn-outline:hover{ background:var(--black); color:var(--white); }
+  .header-cta .btn-solid{ background:var(--black); color:var(--white); }
+  .header-cta .btn-solid:hover{ background:var(--grey-6); }
+  .tse-tag{ color:var(--grey-5) !important; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:100vh;
+    display:flex; align-items:flex-end;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.5) 100%),
+      url('images/quality2.webp');
+    background-size:cover; background-position:center;
+    
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:linear-gradient(180deg, rgba(10,10,10,0.08) 0%, rgba(10,10,10,0.52) 100%);
+    pointer-events:none;
+  }
+  .hero-video{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
+  .hero-content{ position:relative; z-index:2; padding:0 5vw 7vw; max-width:900px; filter:none; }
+  .hero .eyebrow{ color:var(--grey-3); margin-bottom:20px; display:block; }
+  .hero h1{ font-size:clamp(2.4rem, 5.2vw, 4.6rem); color:var(--white); line-height:1.1; }
+  .hero-actions{ margin-top:40px; display:flex; gap:18px; flex-wrap:wrap; }
+  .scroll-hint{
+    position:absolute; right:5vw; bottom:36px; z-index:2;
+    color:var(--grey-3); font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase;
+    writing-mode:vertical-rl; display:flex; align-items:center; gap:12px;
+  }
+  .scroll-hint::after{ content:""; width:1px; height:46px; background:rgba(255,255,255,0.4); }
+  @media (prefers-reduced-motion: reduce){
+    .hero-video{ display:none; }
+  }
+
+  /* ---------- about platform ---------- */
+  .about{ padding:4.5vw 0; background:var(--white); color:var(--ink); }
+  .about h1, .about h2, .about h3{ color:var(--ink); }
+  .about-platform{ display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start; }
+  .about-left{ padding-top:6px; }
+  .eyebrow-rule{ width:42px; height:1px; background:var(--grey-4); margin:16px 0 28px; }
+  .about-left h2{ font-size:clamp(1.7rem,2.6vw,2.35rem); line-height:1.38; max-width:22ch; }
+  .btn-video-inline{
+    margin-top:34px; display:inline-flex; align-items:center; gap:12px;
+    background:var(--black); color:var(--white); border:none; padding:15px 26px;
+    font-family:'Figtree', sans-serif; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600;
+    cursor:pointer; transition:background .3s ease;
+  }
+  .btn-video-inline:hover{ background:var(--grey-6); }
+  .vi-play{ width:26px; height:26px; border-radius:50%; border:1px solid rgba(255,255,255,0.6); display:flex; align-items:center; justify-content:center; }
+
+  .about-right{ cursor:pointer; }
+  .stat-row{ border-top:1px solid var(--grey-2); padding:26px 0; }
+  .stat-row:last-of-type{ }
+  .stat-big{ font-family:'Noto Serif', serif; font-size:clamp(2.1rem,3.2vw,3rem); color:var(--ink); font-weight:600; }
+  .stat-big-sm{ font-family:'Noto Serif', serif; font-size:clamp(1.7rem,2.4vw,2.2rem); color:var(--ink); font-weight:600; }
+  .stat-label{ margin-top:8px; font-size:0.82rem; color:var(--grey-6); }
+  .stat-row.split{ display:flex; }
+  .stat-half{ flex:1; padding-right:24px; }
+  .stat-half + .stat-half{ border-left:1px solid var(--grey-2); padding-left:24px; }
+  .stat-footnote{ margin-top:22px; padding-top:18px; border-top:1px solid var(--grey-2); font-size:0.72rem; color:var(--grey-5);  text-align:right;}
+  .stat-footnote a{ color:var(--grey-5); border-bottom:1px solid var(--grey-3); }
+
+  /* ---------- what we do ---------- */
+  .section{ padding:4vw 0; }
+  .section-head{ max-width:680px; margin-bottom:32px; }
+  .section-head h2{ font-size:clamp(1.8rem,3vw,2.4rem); margin-top:16px; }
+  .section-head p{ margin-top:18px; color:var(--grey-3); max-width:58ch; }
+
+  .biz-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.15); }
+  .biz-card{ background:var(--black); padding:0 0 34px; }
+  .biz-photo{ aspect-ratio:4/3; background-size:cover; background-position:center; background-repeat:no-repeat; }
+  .biz-photo.d1{ background-color:#2c2c2c; }
+  .biz-photo.d2{ background-image:url('images/stower-furnished.webp'); }
+  .biz-photo.d3{ background-image:url('images/f&b.webp'); }
+  .biz-body{ padding:26px 30px 0; }
+  .biz-body .num{ font-family:'Noto Serif', serif; font-size:0.8rem; color:var(--grey-4); }
+  .biz-body h3{ font-size:1.3rem; margin-top:12px; }
+  .biz-body p{ margin-top:12px; color:var(--grey-3); font-size:0.9rem; max-width:34ch; }
+  .biz-body .go{ margin-top:18px; display:inline-flex; align-items:center; gap:8px; font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--white); }
+  .biz-body .go svg{ transition:transform .3s ease; }
+  .biz-card:hover .go svg{ transform:translateX(5px); }
+
+  .principles{ margin-top:36px; padding-top:30px; border-top:1px solid var(--grey-2); }
+  .principles-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:44px; margin-top:30px; }
+  .global-band{ background:var(--black); color:var(--grey-2); padding:4vw 0; }
+  .eyebrow-on-black{ color:var(--grey-4); }
+  .global-band .principle h4{ color:var(--white); }
+  .global-band .principle p{ color:var(--grey-3); }
+  .global-band .chip{ border-color:var(--grey-6); color:var(--grey-3); }
+  .principle .jp{ font-size:0.85rem; color:var(--grey-4); letter-spacing:0.05em; }
+  .global-photo-sm{ aspect-ratio:16/10; background-size:cover; background-position:center; margin-bottom:16px; overflow:hidden; background-color:var(--black); }
+  .global-photo-sm video{ width:100%; height:100%; object-fit:cover; display:block; }
+  body.video-expanded{ overflow:hidden; }
+  .video-card{ position:relative; cursor:pointer; }
+  .video-card:fullscreen, .video-card:-webkit-full-screen, .video-card.is-expanded{
+    aspect-ratio:auto; position:fixed; inset:0; z-index:10000; width:100vw; height:100vh; background:var(--black); margin:0; cursor:default;
+  }
+  .video-card:fullscreen video, .video-card:-webkit-full-screen video, .video-card.is-expanded video{ object-fit:contain; }
+  .video-controls-overlay{ position:absolute; right:12px; bottom:12px; z-index:4; display:flex; gap:8px; }
+  .video-action{
+    min-width:42px; height:42px; padding:0 12px; border:1px solid rgba(255,255,255,0.5); background:rgba(0,0,0,0.62);
+    color:var(--white); display:flex; align-items:center; justify-content:center; cursor:pointer;
+    font-size:0.66rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:700;
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .video-sound-toggle, .video-fullscreen-toggle{ width:42px; padding:0; }
+  .video-action:hover, .video-action:focus-visible{ background:rgba(0,0,0,0.86); border-color:var(--white); outline:none; }
+  .video-card.is-expanded .video-controls-overlay, .video-card:fullscreen .video-controls-overlay, .video-card:-webkit-full-screen .video-controls-overlay{ top:20px; right:20px; bottom:auto; }
+  .sound-icon{ position:relative; width:20px; height:18px; display:block; }
+  .sound-icon::before{
+    content:""; position:absolute; left:1px; top:5px; width:11px; height:8px; background:currentColor;
+    clip-path:polygon(0 25%, 42% 25%, 100% 0, 100% 100%, 42% 75%, 0 75%);
+  }
+  .sound-icon::after{
+    content:""; position:absolute; left:12px; top:3px; width:7px; height:12px; border:2px solid currentColor;
+    border-left:0; border-radius:0 14px 14px 0;
+  }
+  .video-sound-toggle.is-muted .sound-icon::after{
+    left:13px; top:-1px; width:2px; height:20px; border:0; border-radius:0; background:currentColor; transform:rotate(45deg);
+  }
+  .fullscreen-icon{ position:relative; width:18px; height:18px; display:block; }
+  .fullscreen-icon::before, .fullscreen-icon::after{ content:""; position:absolute; inset:0; border-color:currentColor; border-style:solid; }
+  .fullscreen-icon::before{ border-width:2px 0 0 2px; }
+  .fullscreen-icon::after{ border-width:0 2px 2px 0; }
+  .video-fullscreen-toggle.is-exit .fullscreen-icon::before, .video-fullscreen-toggle.is-exit .fullscreen-icon::after{
+    top:8px; left:0; right:0; bottom:auto; height:2px; border:0; background:currentColor;
+  }
+  .video-fullscreen-toggle.is-exit .fullscreen-icon::before{ transform:rotate(45deg); }
+  .video-fullscreen-toggle.is-exit .fullscreen-icon::after{ transform:rotate(-45deg); }
+  .principle h4 a{ color:inherit; }
+  .principle h4 a:hover{ color:var(--grey-3); }
+  .principle h4{ font-family:'Noto Serif', serif; font-size:1.15rem; margin-top:8px; }
+  .principle p{ margin-top:10px; color:var(--grey-6); font-size:0.88rem; }
+  .chips{ margin-top:14px; display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ font-size:0.7rem; letter-spacing:0.04em; border:1px solid var(--grey-3); padding:5px 12px; border-radius:20px; color:var(--grey-6); }
+
+  /* ---------- locations ---------- */
+  .locations{ background:var(--white); }
+  .locations h2{ color:var(--ink); }
+  .locations .section-head p{ color:var(--grey-6); }
+  .loc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:36px; }
+  .loc-card{ background:var(--white); border:1px solid var(--grey-2); border-radius:2px; overflow:hidden; display:flex; flex-direction:column; }
+  .loc-photo{ position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--grey-1); border-bottom:1px solid var(--grey-2); }
+  .loc-photo img{ width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:2; }
+  .loc-photo .ph{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--grey-4); background:var(--grey-1); }
+  .loc-photo .ph span{ font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; }
+  .loc-body{ padding:20px 22px 22px; display:flex; flex-direction:column; flex:1; }
+  .loc-card .tag{ font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--grey-4); }
+  .loc-card .city{ font-family:'Noto Serif', serif; font-size:1.3rem; margin-top:8px; color:var(--ink); }
+  .loc-card .addr{ margin-top:12px; color:var(--grey-6); font-size:0.82rem; line-height:1.55; flex:1; }
+  .loc-maplink{ display:inline-flex; align-items:center; gap:6px; margin-top:18px; font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:600; color:var(--black); text-decoration:none; border-bottom:1px solid var(--black); padding-bottom:3px; align-self:flex-start; transition:opacity .2s; }
+  .loc-maplink:hover{ opacity:0.6; }
+  .route-line{ margin-top:50px; }
+  .route-line svg{ width:100%; height:auto; display:block; }
+
+  /* ---------- news ---------- */
+  .news-featured{ display:grid; grid-template-columns:1fr 1.1fr; gap:50px; align-items:center; margin-top:36px; }
+  .nf-text h2{ font-size:clamp(1.6rem,2.6vw,2.1rem); line-height:1.35; }
+  .nf-photo{
+    aspect-ratio:16/10; background-size:cover; background-position:center; 
+    position:relative; border-radius:1px;
+  }
+  .news-arrow{
+    position:absolute; right:16px; bottom:16px; width:44px; height:44px; background:var(--white);
+    display:flex; align-items:center; justify-content:center; filter:none;
+  }
+  .news-arrow-sm{ width:36px; height:36px; right:12px; bottom:12px; }
+  .news-date{ margin-top:16px; font-size:0.76rem; letter-spacing:0.06em; color:var(--grey-5); }
+  .news-sub-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:36px; margin-top:32px; padding-top:28px; border-top:1px solid var(--grey-2); }
+  #news{ background:var(--white); }
+  #news h2, #news h3{ color:var(--ink); }
+  #news .news-more .btn-solid{ background:var(--black); color:var(--white); }
+  #news .news-more .btn-solid:hover{ background:var(--grey-6); }
+  .ns-photo{ aspect-ratio:16/10; background-size:cover; background-position:center;  position:relative; border-radius:1px; }
+  .news-sub h3{ font-size:1.05rem; margin-top:16px; line-height:1.4; }
+  .news-more{ margin-top:32px; text-align:right; }
+
+  /* ---------- sales centre ---------- */
+  .sales{ background:var(--black); color:var(--white); }
+  .sales-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:center; }
+  .sales .eyebrow{ color:var(--grey-4); }
+  .sales h2{ font-size:clamp(1.9rem,3.2vw,2.6rem); color:var(--white); margin-top:16px; max-width:16ch; }
+  .sales p{ margin-top:20px; color:var(--grey-3); max-width:48ch; }
+  .sales-actions{ margin-top:34px; display:flex; gap:16px; flex-wrap:wrap; }
+  .sales-photo{ aspect-ratio:5/4; background:linear-gradient(150deg,#2b2b2b,#8a8a8a);  position:relative; }
+  .sales-photo .badge{
+    position:absolute; left:24px; bottom:24px; background:var(--white); color:var(--black);
+    padding:14px 20px; font-size:0.76rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:600;
+  }
+
+  /* ---------- footer ---------- */
+  footer{ padding:64px 0 34px; background:var(--black); color:var(--white); }
+  .foot-grid{ display:grid; grid-template-columns:2fr 1fr 1fr 1fr 1fr; gap:34px; padding-bottom:44px; border-bottom:1px solid rgba(255,255,255,0.15); }
+  .foot-grid h4{ font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:16px; color:rgba(255,255,255,0.5); font-weight:600; }
+  .foot-grid li{ list-style:none; margin-bottom:10px; font-size:0.86rem; color:rgba(255,255,255,0.75); }
+  .foot-grid a{ color:rgba(255,255,255,0.9); text-decoration:none; }
+  .foot-grid a:hover{ color:rgba(255,255,255,0.55); }
+  .foot-bottom{ padding-top:26px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.78rem; color:rgba(255,255,255,0.45); }
+
+  .media-section{ background:var(--black); }
+  .media-single{ margin:40px 0 0; max-width:840px; }
+  .media-card{ display:block; width:100%; scroll-snap-align:start; background:none; border:none; padding:0; margin:0; text-align:left; cursor:pointer; font-family:inherit; }
+  .media-thumb{ position:relative; aspect-ratio:16/9; border-radius:2px; overflow:hidden; background:var(--black); border:1px solid rgba(255,255,255,0.25); }
+  .media-thumb img{ width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:2; }
+  .media-thumb .ph{ position:absolute; inset:0; z-index:1; display:flex; align-items:center; justify-content:center; background:var(--black); }
+  .media-thumb .ph svg{ width:24px; height:24px; color:var(--grey-4); }
+  .media-thumb .m-play{ position:absolute; z-index:3; inset:0; display:flex; align-items:center; justify-content:center; opacity:1; transition:opacity .25s; background:rgba(10,10,10,0.28); }
+  .media-card:hover .m-play, .media-card:focus-visible .m-play{ opacity:1; }
+  .media-thumb .m-play span{ width:64px; height:64px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.9); display:flex; align-items:center; justify-content:center; }
+  .media-thumb .m-play span svg{ width:20px; height:22px; }
+  .media-meta{ margin-top:16px; }
+  .media-meta .outlet{ font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--grey-4); font-weight:600; }
+  .media-meta .m-title{ font-family:'Noto Serif',serif; font-size:1.2rem; color:var(--white); margin-top:7px; line-height:1.3; }
+
+  /* ---------- media lightbox ---------- */
+  .media-lb{ position:fixed; inset:0; background:rgba(10,10,10,0.94); z-index:300; display:none; align-items:center; justify-content:center; padding:5vw; }
+  .media-lb.open{ display:flex; }
+  .media-lb-box{ width:100%; max-width:1000px; }
+  .media-lb-frame{ position:relative; aspect-ratio:16/9; background:#000; border-radius:2px; overflow:hidden; }
+  .media-lb-frame iframe, .media-lb-frame video{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .media-lb-empty{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:rgba(255,255,255,0.55); }
+  .media-lb-empty span{ font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; }
+  .media-lb-close{ margin-top:18px; background:none; border:none; color:var(--white); font-size:0.76rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; display:inline-flex; align-items:center; gap:10px; }
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,10,10,0.92); z-index:200;
+    display:none; align-items:center; justify-content:center; padding:5vw;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{ width:100%; max-width:920px; }
+  .modal-video{
+    aspect-ratio:16/9; background:linear-gradient(135deg,#1a1a1a,#5a5a5a); 
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .play-btn{
+    width:64px; height:64px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.8);
+    display:flex; align-items:center; justify-content:center; transition:all .3s ease;
+  }
+  .modal-video .play-btn{ width:80px; height:80px; }
+  .modal-close{
+    margin-top:20px; color:var(--white); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+    cursor:pointer; display:inline-flex; align-items:center; gap:10px; filter:none;
+  }
+  .modal-title{ color:var(--white); margin-top:22px; font-size:1.2rem; filter:none; }
+
+  /* ---------- additions (v3): subhead, ticker, mobile nav, lead form ---------- */
+  .hero-sub{ margin-top:22px; color:var(--grey-2); font-size:clamp(1rem,1.4vw,1.2rem); max-width:46ch; line-height:1.55; }
+  .tse-tag{ font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; font-weight:600; color:var(--grey-5); white-space:nowrap; }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:8px; margin-left:4px; }
+  .nav-toggle span{ display:block; width:22px; height:2px; background:var(--black); margin:4px 0; transition:.3s; }
+  body.nav-open .nav-toggle span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
+  body.nav-open .nav-toggle span:nth-child(2){ opacity:0; }
+  body.nav-open .nav-toggle span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
+
+  .lead{ background:var(--white); }
+  .lead-grid{ display:grid; grid-template-columns:1fr 1.1fr; gap:60px; align-items:start; }
+  .lead-grid h2{ font-size:clamp(1.7rem,2.8vw,2.3rem); color:var(--ink); margin-top:16px; max-width:16ch; }
+  .lead-grid p{ margin-top:18px; color:var(--grey-6); max-width:42ch; }
+  .lead-form{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .lead-form .full{ grid-column:1 / -1; }
+  .lead-field label{ display:block; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:600; color:var(--grey-5); margin-bottom:8px; }
+  .lead-field input, .lead-field select, .lead-field textarea{
+    width:100%; padding:14px 14px; border:1px solid var(--grey-3); border-radius:1px; background:var(--white);
+    font-family:'Figtree',sans-serif; font-size:0.9rem; color:var(--ink); transition:border-color .2s;
+  }
+  .lead-field input::placeholder, .lead-field textarea::placeholder{ color:var(--grey-4); }
+  .lead-field select option{ background:var(--white); color:var(--ink); }
+  .lead-field input:focus, .lead-field select:focus, .lead-field textarea:focus{ outline:none; border-color:var(--black); }
+  .lead-field textarea{ resize:vertical; min-height:96px; }
+  .lead-note{ margin-top:16px; font-size:0.74rem; color:var(--grey-5); }
+  .lead-ok{ display:none; margin-top:16px; padding:16px 18px; border:1px solid var(--black); font-size:0.86rem; color:var(--ink); }
+  .lead-ok.show{ display:block; }
+  .lead .btn-solid{ background:var(--black); color:var(--white); }
+  .lead .btn-solid:hover{ background:var(--grey-6); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{ outline:2px solid var(--black); outline-offset:3px; }
+
+  @media (max-width:960px){
+    .nav-toggle{ display:inline-flex; flex-direction:column; }
+    nav{ position:absolute; top:100%; left:0; right:0; background:var(--white); border-bottom:1px solid var(--grey-2); display:none; }
+    body.nav-open nav{ display:block; }
+    nav ul{ flex-direction:column; gap:0; padding:8px 5vw 16px; }
+    nav li{ border-top:1px solid var(--grey-2); }
+    nav a{ display:block; padding:15px 0; font-size:0.82rem; }
+    .header-cta .tse-tag{ display:none; }
+    .lead-grid{ grid-template-columns:1fr; gap:32px; }
+    .about-grid{ grid-template-columns:1fr; }
+    .stats-grid{ grid-template-columns:repeat(2,1fr); gap:24px 0; }
+    .stat{ border-left:none; padding-left:0; }
+    .biz-grid{ grid-template-columns:1fr; }
+    .principles-grid{ grid-template-columns:1fr; gap:28px; }
+    .loc-grid{ grid-template-columns:1fr 1fr; gap:18px; }
+    .news-featured{ grid-template-columns:1fr; }
+    .news-sub-grid{ grid-template-columns:1fr; }
+    .sales-grid{ grid-template-columns:1fr; }
+    .foot-grid{ grid-template-columns:1fr 1fr; }
+
+  }
+
+  /* ---------- contact drawer (slides in from right) ---------- */
+  .contact-backdrop{ position:fixed; inset:0; background:rgba(10,10,10,0.45); z-index:199; opacity:0; pointer-events:none; transition:opacity .3s ease; }
+  .contact-backdrop.open{ opacity:1; pointer-events:auto; }
+  .contact-drawer{ position:fixed; top:0; right:0; height:100%; width:440px; max-width:90vw; background:var(--white); z-index:200; transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); box-shadow:-16px 0 40px rgba(0,0,0,0.18); overflow-y:auto; }
+  .contact-drawer.open{ transform:translateX(0); }
+  .drawer-inner{ padding:100px 40px 40px; }
+  .drawer-close{ position:absolute; top:24px; right:28px; background:none; border:none; font-size:1.8rem; line-height:1; color:var(--grey-5); cursor:pointer; }
+  .drawer-close:hover{ color:var(--black); }
+  .drawer-locs{ display:flex; flex-direction:column; gap:20px; margin-top:28px; padding-top:24px; border-top:1px solid var(--grey-2); }
+  .drawer-loc h4{ font-family:'Noto Serif', serif; font-size:1.02rem; color:var(--ink); }
+  .drawer-loc p{ margin-top:8px; font-size:0.86rem; color:var(--grey-6); line-height:1.55; }
+  .drawer-loc .maplink{ display:inline-block; margin-top:10px; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; color:var(--black); border-bottom:1px solid var(--black); padding-bottom:2px; }
+  .drawer-form{ margin-top:28px; padding-top:24px; border-top:1px solid var(--grey-2); display:flex; flex-direction:column; gap:14px; }
+  .drawer-form .form-field{ display:flex; flex-direction:column; gap:6px; }
+  .drawer-form label{ font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--grey-5); font-weight:600; }
+  .drawer-form input, .drawer-form textarea{ font-family:'Figtree', sans-serif; font-size:0.9rem; padding:11px 12px; border:1px solid var(--grey-3); background:var(--white); color:var(--ink); }
+  .drawer-form input:focus, .drawer-form textarea:focus{ outline:none; border-color:var(--black); }
+  .drawer-form textarea{ resize:vertical; min-height:80px; }
+  .drawer-form .form-note{ font-size:0.8rem; color:var(--grey-6); display:none; }
+  .drawer-form .form-note.show{ display:block; }
+  .drawer-direct{ margin-top:24px; padding-top:20px; border-top:1px solid var(--grey-2); font-size:0.84rem; color:var(--grey-6); }
+  .drawer-direct a{ display:block; margin-top:6px; color:var(--ink); font-weight:600; }
+
+</style>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body class="page page-home page-home">
+
+<header>
+  <div class="header-in">
+    <a href="/" class="logo-lockup" aria-label="Kasumigaseki Capital home">
+      <img class="site-logo" src="images/logo kme dark.png" alt="Kasumigaseki Capital">
+    </a>
+    <nav id="mainnav" aria-label="Primary">
+      <ul>
+        <li><a href="/about-us/">About Us</a></li>
+        <li><a href="/local-business/">Local Business</a></li>
+        <li><a href="/global-businesses/">Global Business</a></li>
+        <li><a href="/news/">News</a></li>
+        <li><a href="/careers/">Careers</a></li>
+      </ul>
+    </nav>
+    <div class="header-cta">
+      <a href="/contact-us/" id="contactTrigger" class="contact-link">Contact Us <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 10L10 2M10 2H3M10 2V9" stroke="currentColor" stroke-width="1.5"/></svg></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="mainnav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="images/quality2.webp" aria-hidden="true">
+    <source src="media/Website-Video-Hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-content">
+    <h1>Turning Challenge into Value.</h1>
+    <p class="hero-sub">A regional development, investment, and operating platform across the GCC and beyond.</p>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ABOUT + VIDEO + NUMBERS -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-platform">
+      <div class="about-left">
+        <span class="eyebrow">About Kasumigaseki</span>
+        <div class="eyebrow-rule"></div>
+        <h2>Kasumigaseki MENA is the regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, established to extend the group's development, investment, and operating capabilities across the GCC.</h2>
+      </div>
+      <div class="about-right" style="cursor:default;">
+        <div class="stat-row">
+          <div class="stat-big">$5.17B</div>
+          <div class="stat-label">Global AUM <sup>1</sup></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-big">$2.33B</div>
+          <div class="stat-label">Logistics Assets Under Management</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-big">$190M</div>
+          <div class="stat-label">Overseas / Other</div>
+        </div>
+        <div class="stat-row split">
+          <div class="stat-half">
+            <div class="stat-big-sm">$2.30B</div>
+            <div class="stat-label">Hotels</div>
+          </div>
+          <div class="stat-half">
+            <div class="stat-big-sm">$280M</div>
+            <div class="stat-label">Healthcare</div>
+          </div>
+        </div>
+        <div class="stat-actions">
+          <div class="stat-footnote"><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">"As of February 28, 2026"</a></div>
+          <a class="stat-know-more" href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener">Know More</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section class="section" id="local">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>Local businesses, built for the GCC.</h2>
+      <p>A focused platform across Development, Investment &amp; Asset Management, and Food &amp; Beverage â€” each guided by the same standard of precision and long-term thinking.</p>
+    </div>
+    <div class="biz-grid">
+      <div class="biz-card">
+        <div class="biz-photo d1" style="background-image:url('images/11.jpg');"></div>
+        <div class="biz-body">
+          <span class="num">01</span>
+          <h3>Development</h3>
+          <p>Connecting land strategy, product creation, capital structuring, and sales execution across regional development opportunities.</p>
+          <a href="/real-estate-development/" class="go">Learn more <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.2"/></svg></a>
+        </div>
+      </div>
+      <div class="biz-card">
+        <div class="biz-photo d2"></div>
+        <div class="biz-body">
+          <span class="num">02</span>
+          <h3>Investment &amp; Asset Management</h3>
+          <p>Disciplined capital deployment and long-term stewardship, guided by the governance standards of a listed platform.</p>
+          <a href="/real-estate/" class="go">Learn more <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.2"/></svg></a>
+        </div>
+      </div>
+      <div class="biz-card">
+        <div class="biz-photo d3"></div>
+        <div class="biz-body">
+          <span class="num">03</span>
+          <h3>Food &amp; Beverage</h3>
+          <p>Operating businesses built for daily relevance â€” where hospitality discipline meets regional taste and community life.</p>
+          <a href="/f-and-b/" class="go">Learn more <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.2"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section class="section locations" id="locations">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Where we operate</span>
+      <h2>A growing global platform.</h2>
+      <p>Regional capability in Dubai, backed by the global scale and governance of our Tokyo headquarters â€” with an expanding presence across new markets.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="loc-card">
+        <div class="loc-photo">
+          <div class="ph"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg><span>Dubai</span></div>
+          <img src="images/location-dubai.webp" alt="Dubai skyline and Burj Khalifa" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="loc-body">
+          <span class="tag">Regional HQ</span>
+          <div class="city">Dubai, UAE</div>
+          <p class="addr">Dubai Hills Estate, Business Park 4, Office 304-305</p>
+          <a class="loc-maplink" href="https://www.google.com/maps/search/?api=1&query=Dubai+Hills+Estate+Business+Park+4" target="_blank" rel="noopener">View on map <span aria-hidden="true">â†—</span></a>
+        </div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-photo">
+          <div class="ph"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg><span>Tokyo</span></div>
+          <img src="images/location-tokyo.webp" alt="Mount Fuji and Chureito Pagoda in Japan" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="loc-body">
+          <span class="tag">Global HQ</span>
+          <div class="city">Tokyo, Japan</div>
+          <p class="addr">3-2-1 Kasumigaseki, Chiyoda City, Tokyo 100-0013</p>
+          <a class="loc-maplink" href="https://www.google.com/maps/search/?api=1&query=3-2-1+Kasumigaseki+Chiyoda+Tokyo" target="_blank" rel="noopener">View on map <span aria-hidden="true">â†—</span></a>
+        </div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-photo">
+          <div class="ph"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg><span>Kuala Lumpur</span></div>
+          <img src="images/location-kuala-lumpur.webp" alt="Kuala Lumpur skyline with the Petronas Twin Towers" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="loc-body">
+          <span class="tag">Regional Office</span>
+          <div class="city">Kuala Lumpur, Malaysia</div>
+          <p class="addr">Unit 60.03, Level 60, Exchange 106, TRX</p>
+          <a class="loc-maplink" href="https://www.google.com/maps/search/?api=1&query=Exchange+106+TRX+Kuala+Lumpur" target="_blank" rel="noopener">View on map <span aria-hidden="true">â†—</span></a>
+        </div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-photo">
+          <div class="ph"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg><span>Miami</span></div>
+          <img src="images/location-miami.webp" alt="Miami waterfront skyline" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="loc-body">
+          <span class="tag">Americas</span>
+          <div class="city">Miami, USA</div>
+          <p class="addr">Our gateway to opportunities across the Americas.</p>
+          <a class="loc-maplink" href="https://www.google.com/maps/search/?api=1&query=Miami+Florida" target="_blank" rel="noopener">View on map <span aria-hidden="true">â†—</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL BUSINESSES (black band) -->
+<section class="section global-band" id="global">
+  <div class="wrap">
+    <span class="eyebrow eyebrow-on-black">Global businesses</span>
+    <h2 style="color:var(--white); font-size:1.6rem; margin-top:16px; max-width:32ch;">Beyond the region, Kasumigaseki Capital operates established platforms worldwide.</h2>
+    <div class="principles-grid">
+      <div class="principle">
+        <div class="global-photo-sm" style="background-image:url('images/logistics_home.webp');"></div>
+        <h4>Logistics</h4>
+        <p>Cold-chain facilities, flexible storage, and build-to-suit development across the network.</p>
+        <div class="chips"><span class="chip">LOGI FLAG</span><span class="chip">COLD X NETWORK</span></div>
+      </div>
+      <div class="principle">
+        <div class="global-photo-sm" style="background-image:url('images/hotel business.webp');"></div>
+        <h4>Hospitality</h4>
+        <p>Trend, technology, finance, and design connected across group-stay, luxury, and culture-led brands.</p>
+        <div class="chips"><span class="chip">seven x seven</span><span class="chip">FAV / FAV LUX</span></div>
+      </div>
+      <div class="principle">
+          <div class="global-photo-sm" style="background-image:url('images/healthcare-stack-1.webp');"></div>
+          <h4>Healthcare</h4>
+          <p>Open-hospice and welfare facilities pairing 24/365 medical readiness with daily-life dignity.</p>
+          <div class="chips"><span class="chip">CLASWELL</span><span class="chip">24/365 Care</span></div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS & UPDATES (mirrors global businesses band) -->
+<section class="section global-band" id="news-updates">
+  <div class="wrap">
+    <span class="eyebrow eyebrow-on-black">News &amp; Updates</span>
+    <div class="principles-grid">
+      <div class="principle">
+        <div class="global-photo-sm video-card">
+          <video autoplay muted loop playsinline preload="metadata" poster="images/quality2.webp" aria-label="Kasumigaseki MENA featured media">
+            <source src="media/kme-feature.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls-overlay" aria-label="Video controls">
+            <button class="video-action video-sound-toggle is-muted" type="button" aria-label="Turn sound on" title="Turn sound on">
+              <span class="sound-icon" aria-hidden="true"></span>
+            </button>
+            <button class="video-action video-fullscreen-toggle" type="button" aria-label="Expand video to fullscreen" title="Expand video to fullscreen">
+              <span class="fullscreen-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <h4><a href="/news/">UAE Media Office</a></h4>
+        <p>Kasumigaseki Capital Chairman, Hiroaki Ogawa meets His Highness Maktoum bin Mohammed.</p>
+        <div class="chips"><span class="chip">Media</span><span class="chip">Kasumigaseki MENA</span></div>
+      </div>
+      <div class="principle">
+        <div class="global-photo-sm" style="background-image:url('images/city_tokyo.webp');"></div>
+        <h4><a href="https://kasumigaseki.co.jp/en/news/" target="_blank" rel="noopener">Kasumigaseki Capital News</a></h4>
+        <p>Official news and announcements from Kasumigaseki Capital's corporate platform.</p>
+        <div class="chips"><span class="chip">Official News</span><span class="chip">Corporate</span></div>
+      </div>
+      <div class="principle">
+        <div class="global-photo-sm" style="background-image:url('images/Reception kpd.webp');"></div>
+        <h4><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">Investor Relations Updates</a></h4>
+        <p>Financial disclosures, presentations, and investor information from the parent company's IR page.</p>
+        <div class="chips"><span class="chip">IR</span><span class="chip">Updates</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTER INTEREST / LEAD CAPTURE -->
+<section class="section lead" id="lead">
+  <div class="wrap">
+    <div class="lead-grid">
+      <div>
+        <span class="eyebrow">Register your interest</span>
+        <h2>Tell us what you're looking for.</h2>
+        <p>Share a few details and the right person from our team will be in touch â€” typically within one business day.</p>
+      </div>
+      <form class="lead-form" id="leadForm" novalidate onsubmit="openEnquiryMail(this,event)">
+        <div class="lead-field">
+          <label for="lf-name">Full name</label>
+          <input id="lf-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="lead-field">
+          <label for="lf-email">Email</label>
+          <input id="lf-email" name="email" type="email" autocomplete="email" placeholder="name@company.com" required>
+        </div>
+        <div class="lead-field">
+          <label for="lf-phone">Phone</label>
+          <input id="lf-phone" name="phone" type="tel" autocomplete="tel">
+        </div>
+        <div class="lead-field">
+          <label for="lf-interest">I'm interested in</label>
+          <select id="lf-interest" name="interest">
+            <option>Development</option>
+            <option>Investment &amp; Asset Management</option>
+            <option>Food &amp; Beverage</option>
+            <option>Careers</option>
+            <option>General enquiry</option>
+          </select>
+        </div>
+        <div class="lead-field full">
+          <label for="lf-msg">Message</label>
+          <textarea id="lf-msg" name="message"></textarea>
+        </div>
+        <div class="full">
+          <button type="submit" class="btn btn-solid">Send enquiry</button>
+          <p class="lead-note">By submitting, you agree to be contacted about your enquiry. We never share your details.</p>
+          <div class="lead-ok" id="leadOk" role="status">Thank you â€” your enquiry has been received. Our team will be in touch shortly.</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- MEDIA LIGHTBOX -->
+<div class="media-lb" id="mediaLb" role="dialog" aria-modal="true" aria-label="Video player">
+  <div class="media-lb-box">
+    <div class="media-lb-frame" id="mediaLbFrame">
+      <div class="media-lb-empty" id="mediaLbEmpty">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.3"><polygon points="10 8 16 12 10 16 10 8"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+        <span>Add this clip's embed URL to play it here</span>
+      </div>
+    </div>
+    <button class="media-lb-close" id="mediaLbClose" type="button">âœ• &nbsp; Close</button>
+  </div>
+</div>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid foot-grid-enhanced">
+      <div class="foot-brand">
+        <img class="footer-logo" src="images/logo kme red.png" alt="Kasumigaseki Capital">
+        <p class="foot-brand-copy">Kasumigaseki MENA connects regional opportunity with the discipline, capital strength, and operating expertise of Kasumigaseki Capital.</p>
+        <div class="foot-address">
+          Dubai Hills Estate, Business Park 4, Office 304-305<br>
+          Dubai, United Arab Emirates
+        </div>
+        <div class="foot-social" aria-label="External links">
+          <a class="foot-social-link" href="https://ae.linkedin.com/company/kasumigasekimiddleeast" target="_blank" rel="noopener" aria-label="Kasumigaseki MENA on LinkedIn" title="LinkedIn">
+            <span class="social-icon social-icon-linkedin" aria-hidden="true">in</span>
+          </a>
+          <a class="foot-social-link" href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener" aria-label="Kasumigaseki Capital corporate website" title="Corporate Website">
+            <span class="social-icon social-icon-globe" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about-us/">About Us</a></li>
+          <li><a href="/careers/">Careers</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/contact-us/">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Local Business</h4>
+        <ul>
+          <li><a href="/local-business/">Overview</a></li>
+          <li><a href="/real-estate-development/">Development</a></li>
+          <li><a href="/real-estate/">Investment &amp; Asset Management</a></li>
+          <li><a href="/f-and-b/">Food &amp; Beverage</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Global Business</h4>
+        <ul>
+          <li><a href="/global-businesses/">Overview</a></li>
+          <li><a href="https://map.kasumigaseki.ae/" target="_blank" rel="noopener">Global Map</a></li>
+          <li><a href="https://logiflag.com/" target="_blank" rel="noopener">Logistics</a></li>
+          <li><a href="https://favhospitalitygroup.com/" target="_blank" rel="noopener">Hotel Business</a></li>
+          <li><a href="https://kc-welfare.co.jp/" target="_blank" rel="noopener">Healthcare</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Media &amp; Resources</h4>
+        <ul>
+          <li><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">Parent IR</a></li>
+          <li><a href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener">Kasumigaseki Capital</a></li>
+          <li><a href="/news/">News</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal &amp; Contact</h4>
+        <ul>
+          <li><a href="/terms-and-conditions/">Terms &amp; Conditions</a></li>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+          <li><a href="/cookie-policy/">Cookie Policy</a></li>
+          <li><a href="/legal-notice/">Legal Notice</a></li>
+          <li><a href="tel:+97143883099">+971 43 88 3099</a></li>
+          <li><a href="mailto:info.dubai@kasumigaseki.co.jp">info.dubai@kasumigaseki.co.jp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Kasumigaseki Capital MENA. All rights reserved.</span>
+      <div class="foot-bottom-links">
+        <a href="/terms-and-conditions/">Terms</a>
+        <a href="/privacy-policy/">Privacy</a>
+        <a href="/cookie-policy/">Cookies</a>
+        <a href="/legal-notice/">Legal Notice</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="contact-backdrop" id="contactBackdrop"></div>
+<aside class="contact-drawer" id="contactDrawer" aria-label="Contact Kasumigaseki Capital">
+  <button class="drawer-close" id="drawerClose" aria-label="Close">&times;</button>
+  <div class="drawer-inner">
+    <span class="eyebrow">Get in Touch</span>
+    <h2 style="margin-top:12px; font-size:clamp(1.3rem,2vw,1.6rem);">Contact Us</h2>
+    <p style="margin-top:12px; color:var(--grey-6); font-size:0.92rem;">Reach the Kasumigaseki MENA team, or visit one of our company locations.</p>
+
+    <div class="drawer-locs">
+      <div class="drawer-loc">
+        <h4>Dubai Office</h4>
+        <p>Dubai Hills Estate<br>Business Park 4, Office 304-305<br>Dubai, UAE</p>
+        <a href="https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" class="maplink">Get Directions &#8599;</a>
+      </div>
+      <div class="drawer-loc">
+        <h4>Sales Centre</h4>
+        <p>Business Bay<br>Dubai, UAE</p>
+        <a href="https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" class="maplink">Get Directions &#8599;</a>
+      </div>
+      <div class="drawer-loc">
+        <h4>Miami Location</h4>
+        <p>Miami, Florida<br>United States</p>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=Miami+Florida" class="maplink">Get Directions &#8599;</a>
+      </div>
+      <div class="drawer-loc">
+        <h4>Kasumigaseki Restaurant</h4>
+        <p>Vida Emirates Hills<br>Dubai, UAE</p>
+        <a href="https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac" class="maplink">Get Directions &#8599;</a>
+      </div>
+    </div>
+
+    <form class="drawer-form" onsubmit="openEnquiryMail(this,event)">
+      <div class="form-field">
+        <label for="dname">Full Name</label>
+        <input type="text" id="dname" name="name" required>
+      </div>
+      <div class="form-field">
+        <label for="demail">Email</label>
+        <input type="email" id="demail" name="email" required>
+      </div>
+      <div class="form-field">
+        <label for="dmessage">Message</label>
+        <textarea id="dmessage" name="message" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-solid" style="width:100%; justify-content:center;">Send Enquiry</button>
+      <div class="form-note" id="drawerNote">Opening your email app to send this inquiry.</div>
+    </form>
+
+    <div class="drawer-direct">
+      Prefer to reach us directly?
+      <a href="tel:+97143883099">+971 43 88 3099</a>
+      <a href="mailto:info.dubai@kasumigaseki.co.jp">info.dubai@kasumigaseki.co.jp</a>
+    </div>
+  </div>
+</aside>
+<script src="js/site.js" defer></script>
+</body>
+</html>
+
+

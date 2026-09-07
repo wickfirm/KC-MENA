@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /.chrome-profile/
+Disallow: /.edge-profile/
+
+Sitemap: https://kasumigaseki.ae/sitemap.xml

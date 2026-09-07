@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 420" role="img" aria-labelledby="title desc">
+  <title id="title">Kasumigaseki logo</title>
+  <desc id="desc">Kasumigaseki wordmark in English and Arabic.</desc>
+  <rect width="1600" height="420" fill="none"/>
+  <g fill="#f5f2ed">
+    <text
+      x="800"
+      y="120"
+      text-anchor="middle"
+      font-family="Barlow Condensed, Arial, sans-serif"
+      font-size="132"
+      font-weight="600"
+      letter-spacing="10"
+    >KASUMIGASEKI</text>
+    <text
+      x="800"
+      y="290"
+      text-anchor="middle"
+      direction="rtl"
+      unicode-bidi="plaintext"
+      font-family="Noto Sans Arabic, Arial, sans-serif"
+      font-size="138"
+      font-weight="600"
+    >كاسوميغاسيكي</text>
+  </g>
+</svg>

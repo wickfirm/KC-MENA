@@ -1,0 +1,54 @@
+:root {
+  --black: #0a0a0a;
+  --ink: #2a2a2a;
+  --white: #ffffff;
+  --grey-1: #f5f5f5;
+  --grey-2: #e5e5e5;
+  --grey-3: #c7c7c7;
+  --grey-4: #9a9a9a;
+  --grey-5: #6b6b6b;
+  --line: #e5e5e5;
+  --accent: #b5342c; /* KME red */
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Figtree", "Segoe UI", system-ui, sans-serif;
+  background: var(--grey-1);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.55;
+}
+a { color: inherit; text-decoration: none; }
+input, textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--grey-3);
+  border-radius: 2px;
+  font: inherit;
+  background: var(--white);
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--black); outline-offset: -1px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border: none; border-radius: 2px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+}
+.btn-dark { background: var(--black); color: var(--white); }
+.btn-dark:hover { background: var(--grey-5); }
+.btn-danger { background: transparent; color: #b5342c; border: 1px solid #b5342c; }
+.btn-danger:hover { background: #b5342c; color: var(--white); }
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 24px;
+}
+.error-msg { color: #b5342c; margin-top: 10px; font-size: 0.85rem; }
+.status-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.status-published { background: #e2f0e4; color: #1e6b2f; }
+.status-draft { background: var(--grey-2); color: var(--grey-5); }
+.status-in_review { background: #fdf0d4; color: #9a6b00; }
