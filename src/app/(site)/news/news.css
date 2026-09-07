@@ -1,0 +1,31 @@
+/* News grid — design-consistent with the delivered insight cards */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 36px 0 8px;
+}
+.news-card {
+  background: var(--white);
+  border: 1px solid var(--grey-2);
+  transition: box-shadow .3s ease, transform .3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.news-card:hover { box-shadow: 0 18px 40px rgba(10,10,10,0.08); transform: translateY(-3px); }
+.news-photo {
+  height: 190px;
+  background: var(--grey-1) center/cover no-repeat;
+}
+.news-body { padding: 20px 22px 24px; }
+.news-body .tag {
+  display: inline-block;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--grey-5);
+  border: 1px solid var(--grey-3);
+  padding: 4px 10px;
+}
+.news-body h3 { color: var(--ink); }

@@ -1,0 +1,28 @@
+/* FAQ page — accordion consistent with the delivered design */
+.faq-list { margin-top: 18px; border-top: 1px solid var(--grey-2); }
+.faq-item { border-bottom: 1px solid var(--grey-2); }
+.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 20px 44px 20px 0;
+  position: relative;
+  font-family: "Noto Serif", serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Figtree", sans-serif;
+  font-size: 1.3rem;
+  color: var(--grey-5);
+  transition: transform .25s ease;
+}
+.faq-item[open] summary::after { content: "\2212"; }
+.faq-item[open] summary { color: var(--black); }
+.faq-answer { padding: 0 40px 22px 0; color: var(--grey-6); font-size: 0.94rem; line-height: 1.7; }
