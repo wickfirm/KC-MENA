@@ -7,6 +7,17 @@
  */
 import postgres from "postgres";
 import bcrypt from "bcryptjs";
+import fs from "node:fs";
+
+// Load .env.local with OVERRIDE priority — this machine has a system-wide
+// DATABASE_URL env var pointing at an unrelated Supabase project, which
+// must not shadow the project-local configuration.
+if (fs.existsSync(".env.local")) {
+  for (const line of fs.readFileSync(".env.local", "utf8").split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Z_][A-Z0-9_]*)\s*=\s*"?([^"]*)"?/);
+    if (m && m[2] !== "") process.env[m[1]] = m[2];
+  }
+}
 
 const [email, password, name] = process.argv.slice(2);
 
