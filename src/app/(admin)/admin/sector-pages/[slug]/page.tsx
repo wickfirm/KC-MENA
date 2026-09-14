@@ -1,0 +1,3 @@
+import { queryOne } from "@/lib/db"; import SectorEditor from "./SectorEditor"; export const dynamic="force-dynamic";
+const names:Record<string,string>={"real-estate":"Real Estate","real-estate-development":"Real Estate Development","f-and-b":"Food & Beverage","local-business":"Local Business","global-businesses":"Global Businesses"};
+export default async function SectorPage({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const page=names[slug]?await queryOne("SELECT title,status,content,seo FROM pages WHERE slug=$1",[slug]):null;return names[slug]?<><h1 style={{fontSize:"1.6rem",marginBottom:22}}>Edit {names[slug]}</h1><SectorEditor slug={slug} name={names[slug]} page={page as never}/></>:<div className="card">Page not found.</div>}

@@ -11,6 +11,7 @@ const navItems = [
   { href: "/admin/faqs", label: "FAQ" },
   { href: "/admin/media", label: "Media" },
   { href: "/admin/projects", label: "Projects" },
+  { href: "/admin/sector-pages", label: "Business Pages" },
   { href: "/admin/jobs", label: "Careers" },
   { href: "/admin/submissions", label: "Submissions" },
   { href: "/admin/rss", label: "RSS Pipeline" },
