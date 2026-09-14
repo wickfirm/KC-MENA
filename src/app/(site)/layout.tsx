@@ -13,24 +13,12 @@ export const metadata: Metadata = {
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&family=Figtree:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        {/* Shared styles from the delivered site (footer, cards, sections) */}
-        <link rel="stylesheet" href="/css/site.css" />
-      </head>
-      <body>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
-        <ContactDrawer />
-        <Script src="/js/site.js" strategy="afterInteractive" />
-      </body>
-    </html>
+    <>
+      <SiteHeader />
+      {children}
+      <SiteFooter />
+      <ContactDrawer />
+      <Script src="/js/site.js" strategy="afterInteractive" />
+    </>
   );
 }
