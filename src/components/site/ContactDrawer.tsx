@@ -1,8 +1,27 @@
 "use client";
 
+import { FormEvent, useState } from "react";
+
 /** Same markup + IDs as the delivered static contact drawer —
  *  /js/site.js continues to drive open/close and the mailto fallback. */
 export default function ContactDrawer() {
+  const [mailClientOpening, setMailClientOpening] = useState(false);
+
+  function submitEnquiry(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const values = new FormData(event.currentTarget);
+    const lines: string[] = [];
+    values.forEach((value, key) => {
+      const text = String(value).trim();
+      if (text) lines.push(`${key}: ${text}`);
+    });
+
+    const subject = encodeURIComponent("Kasumigaseki MENA inquiry");
+    const body = encodeURIComponent(lines.join("\n"));
+    window.location.href = `mailto:info.dubai@kasumigaseki.co.jp?subject=${subject}&body=${body}`;
+    setMailClientOpening(true);
+  }
+
   return (
     <>
       <div className="contact-backdrop" id="contactBackdrop"></div>
@@ -38,7 +57,7 @@ export default function ContactDrawer() {
             </div>
           </div>
 
-          <form className="drawer-form" onSubmit={(e) => e.preventDefault()}>
+          <form className="drawer-form" onSubmit={submitEnquiry}>
             {/* NOTE: real submission handler lands in Phase 3 (Salesforce dual-write). */}
             <div className="form-field">
               <label htmlFor="dname">Full Name</label>
@@ -55,7 +74,9 @@ export default function ContactDrawer() {
             <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }}>
               Send Enquiry
             </button>
-            <div className="form-note" id="drawerNote">Opening your email app to send this inquiry.</div>
+            <div className={`form-note${mailClientOpening ? " show" : ""}`} id="drawerNote">
+              Opening your email app to send this inquiry.
+            </div>
           </form>
 
           <div className="drawer-direct">
