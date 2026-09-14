@@ -13,6 +13,7 @@ const navItems = [
   { href: "/admin/site/business/real-estate", label: "Investment & Asset Mgmt" },
   { href: "/admin/site/business/f-and-b", label: "Food & Beverage" },
   { href: "/admin/site/business/global-businesses", label: "Global Business" },
+  { href: "/admin/site/contact", label: "Contact Us" },
   { href: "/admin/news", label: "News" },
   { href: "/admin/pages", label: "Pages" },
   { href: "/admin/faqs", label: "FAQ" },
