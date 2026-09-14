@@ -1,5 +1,13 @@
+import { fileURLToPath } from "node:url";
+
+const projectRoot = fileURLToPath(new URL(".", import.meta.url));
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Keep build tracing inside this project. Without this explicit root, Next
+  // discovers an unrelated parent package-lock.json and scans C:\\Users\\mbonm.
+  outputFileTracingRoot: projectRoot,
+
   // Migration strategy: the delivered static site lives in /public.
   // Rewrites (which run AFTER filesystem routes) map clean URLs to the
   // static HTML files. As each page is rebuilt as a Next.js route in
