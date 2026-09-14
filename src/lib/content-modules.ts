@@ -167,6 +167,21 @@ export function validateModuleDocument(value: unknown): ModuleDocumentIssue[] {
     if (["hero", "feature-grid", "location-grid", "call-to-action"].includes(module.type) && typeof module.heading !== "string") {
       issues.push({ path: `${path}.heading`, message: "A heading is required." });
     }
+    if (module.type === "rich-text" && typeof module.body !== "string") {
+      issues.push({ path: `${path}.body`, message: "Text content is required." });
+    }
+    if (module.type === "metrics" && (!Array.isArray(module.items) || module.items.length === 0)) {
+      issues.push({ path: `${path}.items`, message: "At least one metric is required." });
+    }
+    if (module.type === "feature-grid" && (!Array.isArray(module.items) || module.items.length === 0)) {
+      issues.push({ path: `${path}.items`, message: "At least one feature card is required." });
+    }
+    if (module.type === "location-grid" && (!Array.isArray(module.locations) || module.locations.length === 0)) {
+      issues.push({ path: `${path}.locations`, message: "At least one location is required." });
+    }
+    if (module.type === "call-to-action" && (!isRecord(module.action) || typeof module.action.label !== "string" || typeof module.action.href !== "string")) {
+      issues.push({ path: `${path}.action`, message: "A call-to-action label and URL are required." });
+    }
   });
 
   definition.required.forEach((type) => {
