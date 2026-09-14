@@ -1,0 +1,1 @@
+import{redirect}from"next/navigation";import{getPageBySlug}from"@/lib/pages";import BusinessPageView from"@/components/site/BusinessPageView";export const dynamic="force-dynamic";export default async function Page(){const p=await getPageBySlug("f-and-b");if(!p)redirect("/f-and-b/index.html");return <BusinessPageView title={p.title} slug="f-and-b" content={p.content as never}/>}
