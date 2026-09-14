@@ -1,0 +1,8 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/auth";
+import { query } from "@/lib/db";
+import { slugify } from "@/lib/slug";
+export const dynamic="force-dynamic";
+export type JobPayload={title?:string;slug?:string;department?:string;location?:string;employment?:string;description?:string;status?:string;closing_date?:string|null};
+export async function GET(){const s=await getSession();if(!s)return NextResponse.json({error:"Unauthorized"},{status:401});try{return NextResponse.json({jobs:await query("SELECT * FROM job_openings ORDER BY created_at DESC LIMIT 200")});}catch(err){console.error(err);return NextResponse.json({error:"Could not load jobs"},{status:500});}}
+export async function POST(req:NextRequest){const s=await getSession();if(!s)return NextResponse.json({error:"Unauthorized"},{status:401});let p:JobPayload;try{p=await req.json()}catch{return NextResponse.json({error:"Invalid request body"},{status:400})}if(!p.title?.trim())return NextResponse.json({error:"Job title is required"},{status:400});const status=["open","closed","draft"].includes(p.status??"")?p.status!:"draft";try{const rows=await query(`INSERT INTO job_openings(slug,title,department,location,employment,description,status,closing_date) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,[slugify(p.slug?.trim()||p.title),p.title.trim(),p.department?.trim()||null,p.location?.trim()||null,p.employment?.trim()||null,p.description?.trim()||null,status,p.closing_date||null]);return NextResponse.json({job:rows[0]},{status:201})}catch(err){console.error(err);return NextResponse.json({error:"Could not save job. The slug may already be in use."},{status:500})}}

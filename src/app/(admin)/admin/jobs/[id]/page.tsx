@@ -1,0 +1,2 @@
+import { queryOne } from "@/lib/db"; import JobEditor from "./JobEditor"; export const dynamic="force-dynamic";
+export default async function JobPage({params}:{params:Promise<{id:string}>}){const {id}=await params;const job=id==="new"?null:await queryOne("SELECT * FROM job_openings WHERE id=$1",[Number(id)]);return <><h1 style={{fontSize:"1.6rem",marginBottom:22}}>{id==="new"?"New Job Opening":"Edit Job Opening"}</h1>{id==="new"||job?<JobEditor job={job as never}/>:<div className="card">Job not found.</div>}</>}
