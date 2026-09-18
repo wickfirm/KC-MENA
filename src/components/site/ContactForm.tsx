@@ -1,0 +1,7 @@
+"use client";
+import { FormEvent, useState } from "react";
+export default function ContactForm({ type = "contact", source = "contact-us", subject = "" }: { type?: "contact" | "career" | "enquiry"; source?: string; subject?: string }) {
+  const [status, setStatus] = useState(""); const [busy, setBusy] = useState(false);
+  async function submit(e: FormEvent<HTMLFormElement>) { e.preventDefault(); setBusy(true); setStatus(""); const form = new FormData(e.currentTarget); const res = await fetch("/api/submissions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, source, subject, name: form.get("name"), email: form.get("email"), phone: form.get("phone"), message: form.get("message") }) }); const data = await res.json(); setBusy(false); if (!res.ok) { setStatus(data.error ?? "Could not submit your enquiry."); return; } e.currentTarget.reset(); setStatus("Thank you — your enquiry has been received."); }
+  return <form onSubmit={submit} className="card" style={{ marginTop: 24, display: "grid", gap: 12 }}><input name="name" required placeholder="Full name"/><input name="email" required type="email" placeholder="Email address"/><input name="phone" placeholder="Phone number (optional)"/><textarea name="message" required rows={5} placeholder="How can we help?"/><button className="btn btn-dark" disabled={busy}>{busy ? "Sending…" : "Send enquiry"}</button>{status && <p aria-live="polite" className={status.startsWith("Thank") ? "" : "error-msg"}>{status}</p>}</form>;
+}
