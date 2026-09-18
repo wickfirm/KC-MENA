@@ -97,6 +97,7 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
       typeof content.overview?.eyebrow === "string" &&
       typeof content.overview?.heading === "string" &&
       (content.metrics === undefined || (Array.isArray(content.metrics) && content.metrics.every((metric) => typeof metric?.value === "string" && typeof metric?.label === "string"))) &&
+      (content.metricsSource === undefined || (typeof content.metricsSource.label === "string" && typeof content.metricsSource.href === "string")) &&
       (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string"))) &&
       Array.isArray(content.sections) &&
       content.sections.length > 0 &&
@@ -104,7 +105,8 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
         typeof section?.eyebrow === "string" &&
         typeof section?.heading === "string" &&
         typeof section?.body === "string" &&
-        typeof section?.image === "string"
+        typeof section?.image === "string" &&
+        (section.action === undefined || (typeof section.action.label === "string" && typeof section.action.href === "string" && (section.action.external === undefined || typeof section.action.external === "boolean")))
       )
   );
 }
