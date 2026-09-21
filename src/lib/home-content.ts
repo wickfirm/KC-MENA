@@ -1,4 +1,4 @@
-import type { ModuleDocument } from "@/lib/content-modules";
+import { validateModuleDocument, type ContentModule, type ModuleDocument } from "@/lib/content-modules";
 
 /** Default content mirrors the supplied Home HTML until the client publishes CMS content. */
 export const DEFAULT_HOME_CONTENT: ModuleDocument = {
@@ -38,7 +38,7 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
       body: "A focused platform across Development, Investment & Asset Management, and Food & Beverage — each guided by the same standard of precision and long-term thinking.",
       items: [
         { title: "Development", body: "Connecting land strategy, product creation, capital structuring, and sales execution across regional development opportunities.", image: { src: "/images/11.jpg", alt: "Development" }, link: { label: "Learn more", href: "/real-estate-development/" } },
-        { title: "Investment & Asset Management", body: "Disciplined capital deployment and long-term stewardship, guided by the governance standards of a listed platform.", image: { src: "/images/real estate assets.webp", alt: "Investment and asset management" }, link: { label: "Learn more", href: "/real-estate/" } },
+        { title: "Investment & Asset Management", body: "Disciplined capital deployment and long-term stewardship, guided by the governance standards of a listed platform.", image: { src: "/images/stower-furnished.webp", alt: "Investment and asset management" }, link: { label: "Learn more", href: "/real-estate/" } },
         { title: "Food & Beverage", body: "Operating businesses built for daily relevance — where hospitality discipline meets regional taste and community life.", image: { src: "/images/f&b.webp", alt: "Food and beverage" }, link: { label: "Learn more", href: "/f-and-b/" } },
       ],
     },
@@ -67,6 +67,16 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
       ],
     },
     {
+      id: "news-updates",
+      type: "media-grid",
+      eyebrow: "News & Updates",
+      items: [
+        { title: "UAE Media Office", body: "Kasumigaseki Capital Chairman, Hiroaki Ogawa meets His Highness Maktoum bin Mohammed.", image: { src: "/images/quality2.webp", alt: "Kasumigaseki MENA featured media" }, videoSrc: "/media/kme-feature.mp4", link: { label: "UAE Media Office", href: "/news/" }, tags: ["Media", "Kasumigaseki MENA"] },
+        { title: "Kasumigaseki Capital News", body: "Official news and announcements from Kasumigaseki Capital's corporate platform.", image: { src: "/images/city_tokyo.webp", alt: "Tokyo cityscape" }, link: { label: "Kasumigaseki Capital News", href: "https://kasumigaseki.co.jp/en/news/", external: true }, tags: ["Official News", "Corporate"] },
+        { title: "Investor Relations Updates", body: "Financial disclosures, presentations, and investor information from the parent company's IR page.", image: { src: "/images/Reception kpd.webp", alt: "Kasumigaseki Capital reception" }, link: { label: "Investor Relations Updates", href: "https://kasumigaseki.co.jp/en/ir/", external: true }, tags: ["IR", "Updates"] },
+      ],
+    },
+    {
       id: "contact",
       type: "call-to-action",
       eyebrow: "Register your interest",
@@ -76,3 +86,37 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
     },
   ],
 };
+
+/**
+ * Older saved Home documents predate the News & Updates module. Merge that
+ * original client-supplied section in at read time without discarding any CMS
+ * edits. The retired second-card asset is similarly upgraded only when it is
+ * still the old default value.
+ */
+export function normalizeHomeContent(value: unknown): ModuleDocument {
+  if (validateModuleDocument(value).length > 0 || (value as ModuleDocument).template !== "home") return DEFAULT_HOME_CONTENT;
+
+  const saved = value as ModuleDocument;
+  const savedById = new Map(saved.modules.map((module) => [module.id, module]));
+  const modules = DEFAULT_HOME_CONTENT.modules.map((defaultModule) => {
+    const savedModule = savedById.get(defaultModule.id);
+    if (!savedModule || savedModule.type !== defaultModule.type) return defaultModule;
+
+    if (defaultModule.id === "local-businesses" && defaultModule.type === "feature-grid" && savedModule.type === "feature-grid") {
+      return {
+        ...defaultModule,
+        ...savedModule,
+        items: defaultModule.items.map((defaultItem, index) => {
+          const savedItem = savedModule.items[index];
+          if (!savedItem) return defaultItem;
+          const image = savedItem.image?.src === "/images/real estate assets.webp" ? defaultItem.image : savedItem.image;
+          return { ...defaultItem, ...savedItem, image };
+        }),
+      } as ContentModule;
+    }
+
+    return { ...defaultModule, ...savedModule } as ContentModule;
+  });
+
+  return { ...saved, modules };
+}

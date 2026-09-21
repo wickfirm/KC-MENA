@@ -71,6 +71,20 @@ export type ContentModule =
       }>;
     }
   | {
+      /** A media-led card band, used by the Home page's News & Updates section. */
+      id: string;
+      type: "media-grid";
+      eyebrow?: string;
+      items: Array<{
+        title: string;
+        body?: string;
+        image?: ImageField;
+        videoSrc?: string;
+        link?: LinkField;
+        tags?: string[];
+      }>;
+    }
+  | {
       id: string;
       type: "call-to-action";
       eyebrow?: string;
@@ -104,7 +118,7 @@ export type TemplateDefinition = {
 export const PAGE_TEMPLATES: Record<TemplateKey, TemplateDefinition> = {
   home: {
     label: "Home",
-    allowed: ["hero", "rich-text", "metrics", "feature-grid", "location-grid", "call-to-action"],
+    allowed: ["hero", "rich-text", "metrics", "feature-grid", "location-grid", "media-grid", "call-to-action"],
     required: ["hero", "feature-grid", "call-to-action"],
   },
   about: {
@@ -173,7 +187,7 @@ export function validateModuleDocument(value: unknown): ModuleDocumentIssue[] {
     if (module.type === "metrics" && (!Array.isArray(module.items) || module.items.length === 0)) {
       issues.push({ path: `${path}.items`, message: "At least one metric is required." });
     }
-    if (module.type === "feature-grid" && (!Array.isArray(module.items) || module.items.length === 0)) {
+    if (["feature-grid", "media-grid"].includes(module.type) && (!Array.isArray(module.items) || module.items.length === 0)) {
       issues.push({ path: `${path}.items`, message: "At least one feature card is required." });
     }
     if (module.type === "location-grid" && (!Array.isArray(module.locations) || module.locations.length === 0)) {
@@ -196,7 +210,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isModuleType(value: unknown): value is ModuleType {
-  return typeof value === "string" && ["hero", "rich-text", "metrics", "feature-grid", "location-grid", "call-to-action"].includes(value);
+  return typeof value === "string" && ["hero", "rich-text", "metrics", "feature-grid", "location-grid", "media-grid", "call-to-action"].includes(value);
 }
 
 function isTemplateKey(value: unknown): value is TemplateKey {
