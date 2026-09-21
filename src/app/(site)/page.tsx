@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./home.css";
 import HomePageView from "@/components/site/HomePageView";
 import { normalizeHomeContent } from "@/lib/home-content";
 import { getPageBySlug } from "@/lib/pages";
