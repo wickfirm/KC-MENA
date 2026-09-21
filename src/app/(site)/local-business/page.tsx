@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./local-business.css";
 import { getPageBySlug } from "@/lib/pages";
 import { DEFAULT_LOCAL_BUSINESS, isLocalBusinessContent } from "@/lib/local-business-content";
 import LocalBusinessPageView from "@/components/site/LocalBusinessPageView";

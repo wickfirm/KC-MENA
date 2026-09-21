@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { query } from "@/lib/db";
 import "./news.css";
+import "./news-source.css";
 
 export const metadata: Metadata = {
   title: "News",

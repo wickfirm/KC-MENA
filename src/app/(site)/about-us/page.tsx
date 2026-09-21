@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "./about.css";
 import AboutPageView from "@/components/site/AboutPageView";
 import { DEFAULT_ABOUT_CONTENT, isAboutContent } from "@/lib/about-content";
 import { getPageBySlug } from "@/lib/pages";
