@@ -6,7 +6,7 @@ import type { ListingContent } from "@/lib/listing-content";
  * heading + introduction, and (news index only) the featured-video band,
  * external insight cards, and disclaimer. The data-driven list (jobs, FAQs,
  * posts) is passed through as children between the intro and the news extras.
- * Class names mirror the delivered static markup so /css/site.css applies.
+ * Class names mirror the delivered static markup so the shared base styles apply.
  */
 export default function ListingPageShell({ content, children }: { content: ListingContent; children?: ReactNode }) {
   const isNews = Boolean(content.featuredVideo || content.insightCards?.length || content.disclaimer);

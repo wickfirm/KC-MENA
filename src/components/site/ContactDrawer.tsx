@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 import type { SiteSettings } from "@/lib/settings";
 
 /** Same markup + IDs as the delivered static contact drawer —
- *  /js/site.js continues to drive open/close. The enquiry form now persists
+ *  Open/close is controlled by SiteChrome; the enquiry form persists
  *  to the CMS (contact_submissions) instead of falling back to mailto:. */
-export default function ContactDrawer({ settings }: { settings: SiteSettings }) {
+export default function ContactDrawer({ settings, open, onClose, onHoverKeep, onHoverLeave }: { settings: SiteSettings; open: boolean; onClose: () => void; onHoverKeep: () => void; onHoverLeave: () => void }) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const { contact, drawer } = settings;
@@ -40,9 +40,9 @@ export default function ContactDrawer({ settings }: { settings: SiteSettings }) 
 
   return (
     <>
-      <div className="contact-backdrop" id="contactBackdrop"></div>
-      <aside className="contact-drawer" id="contactDrawer" aria-label="Contact Kasumigaseki Capital">
-        <button className="drawer-close" id="drawerClose" aria-label="Close">&times;</button>
+      <div className={"contact-backdrop" + (open ? " open" : "")} id="contactBackdrop" onClick={onClose}></div>
+      <aside className={"contact-drawer" + (open ? " open" : "")} id="contactDrawer" aria-label="Contact Kasumigaseki Capital" onMouseEnter={onHoverKeep} onMouseLeave={onHoverLeave}>
+        <button className="drawer-close" id="drawerClose" aria-label="Close" onClick={onClose}>&times;</button>
         <div className="drawer-inner">
           <span className="eyebrow">Get in Touch</span>
           <h2 style={{ marginTop: 12, fontSize: "clamp(1.3rem,2vw,1.6rem)" }}>Contact Us</h2>

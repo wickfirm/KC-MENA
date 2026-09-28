@@ -8,25 +8,10 @@ const nextConfig = {
   // discovers an unrelated parent package-lock.json and scans C:\\Users\\mbonm.
   outputFileTracingRoot: projectRoot,
 
-  // Migration strategy: the delivered static site lives in /public.
-  // The legacy URLs map clean URLs to the static HTML files via a FALLBACK
-  // rewrite — fallback rewrites run only after ALL app routes (including
-  // dynamic [slug]/[id] routes and API handlers) fail to match. A plain
-  // array here would be an "afterFiles" rewrite, which shadows every
-  // dynamic route (they are resolved after afterFiles) and 404s them in
-  // production — that bug shipped earlier and broke /admin/site/business/[slug],
-  // /news/[slug], etc. As pages are rebuilt as Next.js routes, the app route
-  // wins and the fallback never fires.
-  async rewrites() {
-    return {
-      beforeFiles: [],
-      afterFiles: [],
-      fallback: [
-        { source: '/', destination: '/index.html' },
-        { source: '/:path*', destination: '/:path*/index.html' },
-      ],
-    };
-  },
+  // The delivered static site has been fully retired: every public page is a
+  // Next.js route owned by this app, so no legacy rewrites are needed. The
+  // old fallback (`/:path*` -> `/:path*/index.html`) was removed — dynamic
+  // routes were being shadowed by it in production (see earlier fix).
 };
 
 export default nextConfig;

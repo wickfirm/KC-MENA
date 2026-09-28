@@ -1,7 +1,7 @@
 /**
  * Shared renderer for legal pages (Privacy Policy, Terms & Conditions,
  * Cookie Policy, Legal Notice). Mirrors the delivered static markup so the
- * existing styles in /css/site.css apply unchanged.
+ * shared design system in (site)/styles/base.css applies unchanged.
  */
 export default function LegalPageView({
   title,
