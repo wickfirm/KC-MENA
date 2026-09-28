@@ -55,14 +55,15 @@ public/            the delivered static site (legacy fallback only — every pag
 db/                schema.sql + seed files
 ```
 
-- **Zero-downtime migration via rewrites.** `next.config.mjs` rewrites `/:path*` →
-  `/:path*/index.html`, so unmatched routes serve the delivered static site in `public/`. A rebuilt
-  Next.js route takes precedence over the rewrite. When you build a new page, it simply overrides
-  the static one — the old HTML stays as fallback.
-- `(site)` and `(admin)` layouts each render their own `<html>`; the root `app/layout.tsx` is only
-  a pass-through (globals.css). The site layout links `/css/site.css` and `/js/site.js`
-  **from `public/`** — rebuilt pages must mirror the static markup's class names/IDs so that
-  shipped CSS and vanilla JS still work (see `ContactDrawer` and `LegalPageView` comments).
+- **The delivered static site is retired.** Every public page is an app-owned route; the legacy
+  HTML/CSS/JS in `public/` has been deleted (only our assets remain: `images/`, `media/`, favicon,
+  `robots.txt`, `sitemap.xml`) and the old rewrite was removed from `next.config.mjs`. Unknown
+  routes simply 404 through Next's own not-found page.
+- `(site)` and `(admin)` layouts each render their own `<html>`; the root `app/layout.tsx` hosts the
+  self-hosted `next/font` variables (Figtree + Noto Serif) and `globals.css` (admin styles). The
+  site layout renders `SiteChrome` (client) — it owns header nav state, the contact drawer, and the
+  cookie banner, replacing the delivered `site.js`. All site styles live in `src/`:
+  `(site)/styles/tokens.css` + `(site)/styles/base.css` + per-page files next to each route.
 - Every DB-driven public page exports `dynamic = "force-dynamic"` (no static generation).
 
 ## Data access & API conventions
@@ -99,8 +100,10 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
 - `"use client"` only where interactivity is required (`LogoutButton`, `FaqRowActions`,
   `ContactDrawer`). **Gotcha:** the site-wide `ContactDrawer` must stay a client component — an
   `onSubmit` handler in a server component previously 500'd every public page (commit 6d425a7).
-- Public page styles: shared layout comes from `/css/site.css` (public); per-page extras are
-  route-scoped CSS files imported in the page (`news/news.css`, `faq/faq.css`). Reused design
+- Public page styles: shared system lives in `(site)/styles/tokens.css` + `(site)/styles/base.css`;
+  per-page extras are route-scoped CSS files imported in the page (`styles/business*.css`,
+  `about-us/about.css`, `contact-us/contact.css`, `careers/careers.css`, `news/news.css`,
+  `faq/faq.css`, `home.css`). Reused design
   classes: `.wrap`, `.section`, `.hero-band`, `.eyebrow`, `.legal-hero`, `.legal-content`,
   `.news-grid`, `.news-card`, `.insight-grid`, `.disclaimer`, CSS vars `--ink`, `--grey-5/6`, `--line`.
 - Canonical domain is hardcoded as `https://kasumigaseki.ae/...` in metadata — keep it consistent.
