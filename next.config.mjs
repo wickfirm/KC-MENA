@@ -9,15 +9,23 @@ const nextConfig = {
   outputFileTracingRoot: projectRoot,
 
   // Migration strategy: the delivered static site lives in /public.
-  // Rewrites (which run AFTER filesystem routes) map clean URLs to the
-  // static HTML files. As each page is rebuilt as a Next.js route in
-  // Phase 2, the app route automatically takes precedence over the
-  // rewrite — enabling page-by-page migration with zero downtime.
+  // The legacy URLs map clean URLs to the static HTML files via a FALLBACK
+  // rewrite — fallback rewrites run only after ALL app routes (including
+  // dynamic [slug]/[id] routes and API handlers) fail to match. A plain
+  // array here would be an "afterFiles" rewrite, which shadows every
+  // dynamic route (they are resolved after afterFiles) and 404s them in
+  // production — that bug shipped earlier and broke /admin/site/business/[slug],
+  // /news/[slug], etc. As pages are rebuilt as Next.js routes, the app route
+  // wins and the fallback never fires.
   async rewrites() {
-    return [
-      { source: '/', destination: '/index.html' },
-      { source: '/:path*', destination: '/:path*/index.html' },
-    ];
+    return {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: [
+        { source: '/', destination: '/index.html' },
+        { source: '/:path*', destination: '/:path*/index.html' },
+      ],
+    };
   },
 };
 
