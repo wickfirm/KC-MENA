@@ -74,6 +74,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     hero: { title: "Food & Beverage", image: "/images/reference/fnb-hero.webp" },
     overview: { eyebrow: "Business Snapshot", heading: "A Tokyo-rooted dining concept in Dubai built around Neo-Japanese cuisine, charcoal fire, premium ingredients from Japan, and hospitality designed to leave a mark." },
     metrics: [{ value: "Vida", label: "Emirates Hills" }, { value: "Neo", label: "Japanese Cuisine" }, { value: "Charcoal", label: "Fire-Led Menu" }, { value: "Keigo Abe", label: "Chef-Led Concept" }],
+    contactSection: true,
     sections: [
       { eyebrow: "Food & Beverage", heading: "Authentic Japanese dining, translated for Dubai without diluting the craft.", body: "Kasumigaseki Restaurant is positioned as a Japanese dining experience brought from Tokyo to a global audience. The concept blends disciplined technique with a contemporary expression, giving Dubai a restaurant that feels both premium and current.", image: "/images/f&b.webp", action: { label: "Vida Emirates Hills", href: "https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac", external: true } },
       { eyebrow: "Chef & Menu", heading: "The kitchen is led by chef Keigo Abe.", body: "With Michelin-selected recognition in Tokyo, the menu moves across seasonal ingredients, charcoal-fired dishes, omakase-inspired moments, and plates designed for both discovery and repeat visits.", image: "/images/reference/fnb-highlight.webp", action: { label: "F&B enquiries", href: "/contact-us/" } },
