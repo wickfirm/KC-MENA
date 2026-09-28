@@ -7,13 +7,29 @@ export const BUSINESS_DETAIL_SLUGS = [
 
 export type BusinessDetailSlug = (typeof BUSINESS_DETAIL_SLUGS)[number];
 
+export type BusinessCallout = {
+  eyebrow: string;
+  heading: string;
+  body: string;
+  href: string;
+  label: string;
+  /** "map" renders the global-location strip, "ir" the two-column IR band. */
+  variant?: "generic" | "map" | "ir";
+};
+
 export type BusinessDetailContent = {
   version: 1;
   hero: { title: string; image: string };
   overview: { eyebrow: string; heading: string };
   metrics?: Array<{ value: string; label: string }>;
   metricsSource?: { label: string; href: string };
-  callouts?: Array<{ eyebrow: string; heading: string; body: string; href: string; label: string }>;
+  /** "Three businesses, one platform." band (global-businesses only). */
+  bizBand?: { eyebrow: string; heading: string; body: string };
+  /** Location cards inside the "map" callout (global-businesses only). */
+  locations?: Array<{ country: string; city: string; line: string; image: string; mapUrl: string }>;
+  callouts?: BusinessCallout[];
+  /** Trailing "Let our team get back to you." contact band. */
+  contactSection?: boolean;
   projectsHeading?: string;
   sections: Array<{
     eyebrow: string;
@@ -34,6 +50,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     },
     metrics: [{ value: "14,000", label: "Sales Experience Center (sq ft)" }, { value: "20–30", label: "Staff Capacity" }, { value: "452,389", label: "Built-Up Area (sq ft)" }, { value: "203,575", label: "Gross Sellable Area (GSA, sq ft)" }],
     metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
+    contactSection: true,
     sections: [
       { eyebrow: "Development Strategy", heading: "Development starts with strategy, but commercialization has to be built in from day one.", body: "Kasumigaseki's model starts by creating value before vertical construction begins: sourcing land, refining the product, shaping the planning strategy, and setting the capital roadmap early. That is how margins are protected before the market starts pricing the project.", image: "/images/Reception kpd.webp", action: { label: "Discuss development", href: "/contact-us/" } },
       { eyebrow: "Development Process", heading: "The model moves from land value to development, launch, and stabilized exit with a clear capital roadmap.", body: "The GCC model expands into project-specific SPEs and JVs, including cooperation with Daito Trust Construction, so Kasumigaseki can control product quality, sales, and execution deeper into the cycle.", image: "/images/sales center b2.webp" },
@@ -45,6 +62,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     hero: { title: "Investment & Asset Management", image: "/images/reference/real-estate-hero.webp" },
     overview: { eyebrow: "By The Numbers", heading: "A regional investment and asset management business built around disciplined underwriting, selective market access, and long-term value creation." },
     metrics: [{ value: "4", label: "Key Dubai Districts" }, { value: "$156.5M", label: "Active Assets" }, { value: "60", label: "Investment Exposure" }, { value: "26 + 3", label: "Units + Plots" }],
+    contactSection: true,
     sections: [
       { eyebrow: "Investment & Asset Management", heading: "This is not a listings business. It is an investment business.", body: "Kasumigaseki MENA identifies inefficiencies in product, location, pricing, and timing. The current Dubai portfolio spans high-performing districts including Downtown, Dubai Hills, Hartland, and Palm Jumeirah.", image: "/images/stower-furnished.webp", action: { label: "Investment enquiries", href: "/contact-us/" } },
       { eyebrow: "Why Dubai, Why Now", heading: "The thesis is built on growth, liquidity, and international relevance.", body: "The long-term market case is supported by continued population growth, infrastructure expansion, Dubai's 2040 urban master plan, and globally mobile investors seeking security, connectivity, and a tax-efficient base.", image: "/images/imperial avenue view.webp" },
@@ -70,9 +88,20 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
       { value: "$5.17B", label: "Total Project Value & AUM" },
       { value: "129", label: "Projects in Pipeline & Under Management" },
     ],
+    bizBand: {
+      eyebrow: "Our global businesses",
+      heading: "Three businesses, one platform.",
+      body: "Beyond the region, Kasumigaseki Capital operates established, branded businesses across the following sectors.",
+    },
+    locations: [
+      { country: "Japan", city: "Tokyo", line: "Tokyo, Japan", image: "/images/location-tokyo.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Tokyo+Japan" },
+      { country: "United Arab Emirates", city: "Dubai", line: "Dubai, United Arab Emirates", image: "/images/location-dubai.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Dubai+United+Arab+Emirates" },
+      { country: "Malaysia", city: "Kuala Lumpur", line: "Kuala Lumpur, Malaysia", image: "/images/location-kuala-lumpur.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Kuala+Lumpur+Malaysia" },
+      { country: "United States", city: "Miami", line: "Miami, Florida, USA", image: "/images/location-miami.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Miami+Florida" },
+    ],
     callouts: [
-      { eyebrow: "Where We Operate", heading: "Explore our global business map.", body: "View Kasumigaseki Capital's business locations and project network through the interactive map.", href: "https://www.kasumigaseki.co.jp/en/", label: "Explore the global platform" },
-      { eyebrow: "Investors & Media", heading: "Investor Relations.", body: "For financial disclosures, IR presentations, and the latest news from Kasumigaseki Capital, visit our parent company's official Investor Relations page.", href: "https://www.kasumigaseki.co.jp/en/ir/", label: "Visit Investor Relations" },
+      { eyebrow: "Where We Operate", heading: "Explore our global business map.", body: "View Kasumigaseki Capital's business locations and project network through the interactive map.", href: "https://map.kasumigaseki.ae/", label: "Explore Our Global Businesses", variant: "map" },
+      { eyebrow: "Investors & Media", heading: "Investor Relations.", body: "For financial disclosures, IR presentations, and the latest news from Kasumigaseki Capital, visit our parent company's official Investor Relations page.", href: "https://kasumigaseki.co.jp/en/ir/", label: "View Investor Relations", variant: "ir" },
     ],
     sections: [
       { eyebrow: "Logistics", heading: "Cold, dry, and automated — built as one network.", body: "LOGI FLAG and COLD X NETWORK combine dry, chilled, frozen, and automated supply-chain infrastructure across Japan.", image: "/images/logistics.webp" },
@@ -99,7 +128,10 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
       typeof content.overview?.heading === "string" &&
       (content.metrics === undefined || (Array.isArray(content.metrics) && content.metrics.every((metric) => typeof metric?.value === "string" && typeof metric?.label === "string"))) &&
       (content.metricsSource === undefined || (typeof content.metricsSource.label === "string" && typeof content.metricsSource.href === "string")) &&
-      (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string"))) &&
+      (content.bizBand === undefined || (typeof content.bizBand?.eyebrow === "string" && typeof content.bizBand?.heading === "string" && typeof content.bizBand?.body === "string")) &&
+      (content.locations === undefined || (Array.isArray(content.locations) && content.locations.every((location) => typeof location?.country === "string" && typeof location?.city === "string" && typeof location?.line === "string" && typeof location?.image === "string" && typeof location?.mapUrl === "string"))) &&
+      (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string" && (callout?.variant === undefined || callout.variant === "generic" || callout.variant === "map" || callout.variant === "ir")))) &&
+      (content.contactSection === undefined || typeof content.contactSection === "boolean") &&
       (content.projectsHeading === undefined || typeof content.projectsHeading === "string") &&
       Array.isArray(content.sections) &&
       content.sections.length > 0 &&
@@ -111,4 +143,10 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
         (section.action === undefined || (typeof section.action.label === "string" && typeof section.action.href === "string" && (section.action.external === undefined || typeof section.action.external === "boolean")))
       )
   );
+}
+
+/** Fill DB-saved content with the delivered defaults for any field the CMS
+ *  entry does not provide yet (sections added after the initial save). */
+export function withBusinessDefaults(slug: BusinessDetailSlug, content: BusinessDetailContent): BusinessDetailContent {
+  return { ...DEFAULT_BUSINESS_DETAILS[slug], ...content };
 }

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { getPageBySlug } from "@/lib/pages";
-import { DEFAULT_BUSINESS_DETAILS, isBusinessDetailContent } from "@/lib/business-detail-content";
+import { DEFAULT_BUSINESS_DETAILS, isBusinessDetailContent, withBusinessDefaults } from "@/lib/business-detail-content";
 import { getPublishedProjectsBySector } from "@/lib/projects";
 import BusinessDetailPageView from "@/components/site/BusinessDetailPageView";
+import "../styles/business-global.css";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> { const page = await getPageBySlug("global-businesses"); return { title: page?.seo?.title || "Global Business", description: page?.seo?.description, alternates: { canonical: "https://kasumigaseki.ae/global-businesses/" } }; }
 
 export default async function Page() {
   const [page, projects] = await Promise.all([getPageBySlug("global-businesses"), getPublishedProjectsBySector("global-businesses")]);
-  return <BusinessDetailPageView content={isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS["global-businesses"]} projects={projects} />;
+  return <BusinessDetailPageView content={withBusinessDefaults("global-businesses", isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS["global-businesses"])} projects={projects} />;
 }

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
 import ListingPageShell from "@/components/site/ListingPageShell";
 import JobApplyForm from "@/components/site/JobApplyForm";
+import OpenApplicationForm from "@/components/site/OpenApplicationForm";
+import "./careers.css";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,6 @@ export default async function CareersPage() {
         <p style={{ maxWidth: 650, marginTop: 24, color: "var(--grey-5)" }}>{content.emptyMessage}</p>
       )}
     </ListingPageShell>
-    <section className="section" style={{ background: "var(--grey-1)" }}><div className="wrap"><span className="eyebrow">Application Form</span><h2 style={{ marginTop: 12 }}>Tell us where you&apos;d fit.</h2><p style={{ maxWidth: 620, marginTop: 12 }}>Use the Apply button on any open role above — your application goes straight to our team. You can also introduce yourself through the contact page.</p><Link href="/contact-us/" className="btn btn-solid" style={{ marginTop: 22 }}>Get in touch</Link></div></section>
+    <OpenApplicationForm />
   </main>;
 }

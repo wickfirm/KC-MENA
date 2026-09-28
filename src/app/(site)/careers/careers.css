@@ -1,0 +1,311 @@
+/* public/careers/index.html — ported page-specific design (reference: delivered static site).
+   Shared system rules live in styles/base.css; do not duplicate them here. */
+
+@media (max-width:960px) {
+  nav {
+    display:none;
+  }
+}
+
+@media (max-width:960px) {
+  .form-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:960px) {
+  .form-row {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:960px) {
+  .app-form {
+    padding:28px;
+  }
+}
+
+@media (max-width:960px) {
+  .foot-grid {
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+h1,h2,h3,.display {
+    font-family:'Noto Serif', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+.eyebrow-rule {
+    width:42px;
+    height:1px;
+    background:var(--grey-4);
+    margin:16px 0 28px;
+  }
+
+.btn-outline {
+    background:transparent;
+    border:1px solid var(--black);
+    color:var(--black);
+  }
+
+.btn-outline:hover {
+    background:var(--black);
+    color:var(--white);
+  }
+
+nav a.active {
+    color:var(--black);
+  }
+
+nav a:hover::after, nav a.active::after {
+    width:100%;
+  }
+
+.contact-link svg {
+    transition:transform .2s ease;
+  }
+
+.contact-link:hover svg {
+    transform:translate(2px,-2px);
+  }
+
+.header-cta .btn {
+    padding:11px 20px;
+    font-size:0.72rem;
+  }
+
+/* ---------- hero (image, left aligned text bottom-left) ---------- */
+  .hero-band {
+    position:relative;
+    height:56vh;
+    min-height:400px;
+    display:flex;
+    align-items:flex-end;
+    color:var(--white);
+    background:linear-gradient(180deg, rgba(10,10,10,0.05) 0%, rgba(10,10,10,0.2) 55%, rgba(10,10,10,0.65) 100%), url('/images/office.webp') center/cover no-repeat;
+  }
+
+.hero-band .wrap {
+    padding-bottom:48px;
+    margin:0;
+    max-width:none;
+    width:100%;
+  }
+
+.hero-band h1 {
+    font-size:clamp(2.2rem,4.6vw,3.2rem);
+  }
+
+.hero-band .eyebrow-rule {
+    background:var(--white);
+    margin-top:20px;
+    margin-bottom:0;
+  }
+
+/* ---------- shared rhythm ---------- */
+  .section {
+    padding:64px 0;
+  }
+
+.head {
+    max-width:840px;
+  }
+
+/* ---------- intro copy ---------- */
+  .careers-intro p {
+    font-family:'Noto Serif', serif;
+    font-size:clamp(1.15rem,2vw,1.5rem);
+    line-height:1.5;
+    color:var(--ink);
+    max-width:none;
+    text-align:justify;
+    text-justify:inter-word;
+  }
+
+/* ---------- form section (matches contact-us page theme) ---------- */
+  .form-band {
+    background:var(--black);
+  }
+
+.form-grid {
+    display:grid;
+    grid-template-columns:0.85fr 1.3fr;
+    gap:64px;
+    align-items:start;
+  }
+
+.form-info h3 {
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--grey-4);
+    margin-bottom:14px;
+  }
+
+.form-info h2 {
+    font-size:clamp(1.5rem,2.4vw,1.9rem);
+    max-width:16ch;
+    color:var(--white);
+  }
+
+.form-info p {
+    margin-top:16px;
+    color:var(--grey-3);
+    max-width:36ch;
+  }
+
+.form-info .office {
+    margin-top:36px;
+    padding-top:24px;
+    border-top:1px solid rgba(255,255,255,0.15);
+    font-size:0.88rem;
+    color:var(--grey-3);
+  }
+
+.form-info .office strong {
+    display:block;
+    color:var(--white);
+    margin-bottom:6px;
+    font-family:'Noto Serif', serif;
+    font-size:1rem;
+  }
+
+.app-form {
+    background:var(--white);
+    padding:28px;
+    border:1px solid var(--grey-2);
+  }
+
+.form-row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+.form-field {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+
+.form-field.full {
+    grid-column:1 / -1;
+  }
+
+.form-field label {
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--grey-5);
+    font-weight:600;
+  }
+
+.form-field input, .form-field select, .form-field textarea {
+    font-family:'Figtree', sans-serif;
+    font-size:0.9rem;
+    padding:10px 12px;
+    border:1px solid var(--grey-3);
+    background:var(--white);
+    color:var(--ink);
+  }
+
+.form-field input::placeholder, .form-field textarea::placeholder {
+    color:var(--grey-4);
+  }
+
+.form-field select option {
+    background:var(--white);
+    color:var(--ink);
+  }
+
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline:none;
+    border-color:var(--black);
+  }
+
+.form-field textarea {
+    resize:vertical;
+    min-height:90px;
+  }
+
+.form-field input[type="file"] {
+    padding:8px 12px;
+    color:var(--grey-6);
+  }
+
+.consent {
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin:10px 0 16px;
+  }
+
+.consent input {
+    margin-top:3px;
+  }
+
+.consent label {
+    font-size:0.8rem;
+    color:var(--grey-6);
+  }
+
+.form-note {
+    margin-top:12px;
+    font-size:0.85rem;
+    color:var(--grey-3);
+    display:none;
+  }
+
+.form-note.show {
+    display:block;
+  }
+
+/* ---------- footer ---------- */
+  footer {
+    padding:70px 0 30px;
+    background:var(--black);
+    color:var(--grey-3);
+  }
+
+.foot-grid p {
+    margin-top:18px;
+    font-size:0.86rem;
+    color:var(--grey-3);
+    max-width:32ch;
+  }
+
+/* ---------- contact drawer (slides in from right) ---------- */
+  .contact-backdrop {
+    position:fixed;
+    inset:0;
+    background:rgba(10,10,10,0.45);
+    z-index:199;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+
+.drawer-close:hover {
+    color:var(--black);
+  }
+
+.drawer-form input, .drawer-form textarea {
+    font-family:'Figtree', sans-serif;
+    font-size:0.9rem;
+    padding:11px 12px;
+    border:1px solid var(--grey-3);
+    background:var(--white);
+    color:var(--ink);
+  }
+
+.drawer-form input:focus, .drawer-form textarea:focus {
+    outline:none;
+    border-color:var(--black);
+  }
+
+.drawer-form .form-note.show {
+    display:block;
+  }

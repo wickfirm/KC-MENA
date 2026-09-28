@@ -1,0 +1,258 @@
+/* public/contact-us/index.html — ported page-specific design (reference: delivered static site).
+   Shared system rules live in styles/base.css; do not duplicate them here. */
+
+@media (max-width:960px) {
+  nav {
+    display:none;
+  }
+}
+
+@media (max-width:960px) {
+  .loc-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:960px) {
+  .form-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:960px) {
+  .form-row {
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:960px) {
+  .foot-grid {
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+h1,h2,h3,.display {
+    font-family:'Noto Serif', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+.eyebrow-rule {
+    width:42px;
+    height:1px;
+    background:var(--grey-4);
+    margin:16px 0 28px;
+  }
+
+.btn-outline {
+    background:transparent;
+    border:1px solid var(--black);
+    color:var(--black);
+  }
+
+.btn-outline:hover {
+    background:var(--black);
+    color:var(--white);
+  }
+
+.contact-link svg {
+    transition:transform .2s ease;
+  }
+
+.contact-link:hover svg {
+    transform:translate(2px,-2px);
+  }
+
+nav a.active {
+    color:var(--black);
+  }
+
+nav a:hover::after, nav a.active::after {
+    width:100%;
+  }
+
+.header-cta .btn {
+    padding:11px 20px;
+    font-size:0.72rem;
+  }
+
+/* ---------- shared rhythm ---------- */
+  .section {
+    padding:64px 0;
+  }
+
+.head {
+    max-width:760px;
+  }
+
+/* ---------- location cards ---------- */
+  .loc-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    margin-top:44px;
+  }
+
+.loc-card {
+    border:1px solid var(--grey-2);
+    padding:32px;
+  }
+
+.loc-card h3 {
+    font-size:1.2rem;
+  }
+
+.loc-card p {
+    margin-top:14px;
+    color:var(--grey-6);
+    font-size:0.94rem;
+    line-height:1.6;
+  }
+
+.loc-card .maplink {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:20px;
+    font-size:0.74rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--black);
+    border-bottom:1px solid var(--black);
+    padding-bottom:3px;
+  }
+
+/* ---------- general contact form ---------- */
+  .form-band {
+    background:var(--grey-1);
+  }
+
+.form-grid {
+    display:grid;
+    grid-template-columns:0.7fr 1.3fr;
+    gap:60px;
+    align-items:start;
+  }
+
+.form-info p {
+    margin-top:16px;
+    color:var(--grey-6);
+    max-width:36ch;
+  }
+
+.form-info .direct {
+    margin-top:32px;
+    padding-top:24px;
+    border-top:1px solid var(--grey-2);
+    font-size:0.9rem;
+    color:var(--grey-6);
+  }
+
+.form-info .direct a {
+    display:block;
+    margin-top:8px;
+    color:var(--ink);
+    font-weight:600;
+  }
+
+.gen-form {
+    background:var(--white);
+    padding:36px;
+    border:1px solid var(--grey-2);
+  }
+
+.form-row {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+
+.form-field {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+.form-field.full {
+    grid-column:1 / -1;
+  }
+
+.form-field label {
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--grey-5);
+    font-weight:600;
+  }
+
+.form-field input, .form-field textarea {
+    font-family:'Figtree', sans-serif;
+    font-size:0.92rem;
+    padding:12px 13px;
+    border:1px solid var(--grey-3);
+    background:var(--white);
+    color:var(--ink);
+  }
+
+.form-field input:focus, .form-field textarea:focus {
+    outline:none;
+    border-color:var(--black);
+  }
+
+.form-field textarea {
+    resize:vertical;
+    min-height:100px;
+  }
+
+.form-note {
+    margin-top:14px;
+    font-size:0.85rem;
+    color:var(--grey-6);
+    display:none;
+  }
+
+.form-note.show {
+    display:block;
+  }
+
+/* ---------- footer ---------- */
+  footer {
+    padding:70px 0 30px;
+    background:var(--black);
+    color:var(--grey-3);
+  }
+
+/* ---------- contact drawer (slides in from right) ---------- */
+  .contact-backdrop {
+    position:fixed;
+    inset:0;
+    background:rgba(10,10,10,0.45);
+    z-index:199;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+
+.drawer-close:hover {
+    color:var(--black);
+  }
+
+.drawer-form input, .drawer-form textarea {
+    font-family:'Figtree', sans-serif;
+    font-size:0.9rem;
+    padding:11px 12px;
+    border:1px solid var(--grey-3);
+    background:var(--white);
+    color:var(--ink);
+  }
+
+.drawer-form input:focus, .drawer-form textarea:focus {
+    outline:none;
+    border-color:var(--black);
+  }
+
+.drawer-form .form-note.show {
+    display:block;
+  }

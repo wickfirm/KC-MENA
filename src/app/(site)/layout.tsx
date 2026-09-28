@@ -4,7 +4,8 @@ import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import ContactDrawer from "@/components/site/ContactDrawer";
 import { getSiteSettings } from "@/lib/settings";
-import "./site-base.css";
+import "./styles/tokens.css";
+import "./styles/base.css";
 
 export const metadata: Metadata = {
   title: { default: "Kasumigaseki MENA", template: "%s — Kasumigaseki MENA" },

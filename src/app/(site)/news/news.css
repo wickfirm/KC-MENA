@@ -1,4 +1,7 @@
-/* News grid — design-consistent with the delivered insight cards */
+/* News index — page-specific design (reference: delivered /news page).
+   Shared system rules live in styles/base.css; do not duplicate them here. */
+
+/* ---------- news grid ---------- */
 .news-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -29,3 +32,35 @@
   padding: 4px 10px;
 }
 .news-body h3 { color: var(--ink); }
+
+/* ---------- hero + intro (news variants) ---------- */
+.hero-band .wrap { padding-bottom: 48px; margin: 0; max-width: none; width: 100%; }
+.hero-band h1 { font-size: clamp(2.2rem, 4.6vw, 3.2rem); }
+.head p { margin-top: 18px; font-size: 1.02rem; color: var(--grey-6); max-width: 70ch; }
+
+/* ---------- insight cards ---------- */
+.insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 44px; }
+.insight-card { display: block; }
+.insight-photo { aspect-ratio: 4/3; background-size: cover; background-position: center; }
+.insight-body { padding-top: 22px; }
+.insight-body .tag { font-family: var(--font-noto, "Noto Serif"), serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.insight-more { margin-top: 28px; }
+
+/* ---------- featured video band ---------- */
+.featured-video { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 32px; align-items: center; margin-top: 36px; padding: 28px; border: 1px solid var(--grey-2); background: var(--white); }
+.featured-video-frame { aspect-ratio: 16/9; background: linear-gradient(135deg, #151515, #2f2f2f); display: flex; align-items: center; justify-content: center; color: var(--white); position: relative; overflow: hidden; }
+.featured-video-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)); }
+.video-play { position: relative; z-index: 1; width: 64px; height: 64px; border: 1px solid rgba(255, 255, 255, 0.55); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.video-play::before { content: ""; margin-left: 4px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid currentColor; }
+.featured-video-copy h3 { font-size: clamp(1.25rem, 2vw, 1.6rem); color: var(--ink); }
+.featured-video-copy p { margin-top: 14px; font-size: 0.95rem; line-height: 1.65; color: var(--grey-6); }
+
+/* ---------- disclaimer ---------- */
+.disclaimer { background: var(--grey-1); padding: 18px 0; margin-top: 72px; }
+.disclaimer h3 { font-size: 0.95rem; }
+.disclaimer p { margin-top: 10px; font-size: 0.8rem; font-style: italic; color: var(--grey-6); max-width: 90ch; line-height: 1.6; }
+
+@media (max-width: 960px) {
+  .insight-grid { grid-template-columns: 1fr; }
+  .featured-video { grid-template-columns: 1fr; }
+}
