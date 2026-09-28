@@ -3,6 +3,7 @@ import Script from "next/script";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import ContactDrawer from "@/components/site/ContactDrawer";
+import { getSiteSettings } from "@/lib/settings";
 import "./site-base.css";
 
 export const metadata: Metadata = {
@@ -11,13 +12,14 @@ export const metadata: Metadata = {
     "Kasumigaseki MENA is the regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across Development, Investment & Asset Management, and Food & Beverage.",
 };
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings();
   return (
     <>
-      <SiteHeader />
+      <SiteHeader nav={settings.nav} />
       {children}
-      <SiteFooter />
-      <ContactDrawer />
+      <SiteFooter settings={settings} />
+      <ContactDrawer settings={settings} />
       <Script src="/js/site.js" strategy="afterInteractive" />
     </>
   );

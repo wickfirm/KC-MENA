@@ -29,7 +29,10 @@ export default async function NewsListPage() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <h1 style={{ fontSize: "1.6rem" }}>News</h1>
-        <Link href="/admin/news/new" className="btn btn-dark">+ New Post</Link>
+        <div style={{ display: "flex", gap: 10 }}>
+          <Link href="/admin/site/listing/news" className="btn">Edit page content</Link>
+          <Link href="/admin/news/new" className="btn btn-dark">+ New Post</Link>
+        </div>
       </div>
 
       {dbError && (

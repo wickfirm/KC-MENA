@@ -1,5 +1,8 @@
-/** Same markup as the delivered static footer. */
-export default function SiteFooter() {
+import type { SiteSettings } from "@/lib/settings";
+
+/** Same markup as the delivered static footer, with content from site settings. */
+export default function SiteFooter({ settings }: { settings: SiteSettings }) {
+  const { contact, address, brand, links } = settings;
   return (
     <footer id="contact">
       <div className="wrap">
@@ -7,21 +10,26 @@ export default function SiteFooter() {
           <div className="foot-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="footer-logo" src="/images/logo kme red.png" alt="Kasumigaseki Capital" />
-            <p className="foot-brand-copy">
-              Kasumigaseki MENA connects regional opportunity with the discipline, capital strength,
-              and operating expertise of Kasumigaseki Capital.
-            </p>
+            <p className="foot-brand-copy">{brand.footerCopy}</p>
             <div className="foot-address">
-              Dubai Hills Estate, Business Park 4, Office 304-305<br />
-              Dubai, United Arab Emirates
+              {address.lines.map((line, index) => (
+                <span key={index}>
+                  {line}
+                  {index < address.lines.length - 1 && <br />}
+                </span>
+              ))}
             </div>
             <div className="foot-social" aria-label="External links">
-              <a className="foot-social-link" href="https://ae.linkedin.com/company/kasumigasekimiddleeast" target="_blank" rel="noopener" aria-label="Kasumigaseki MENA on LinkedIn" title="LinkedIn">
-                <span className="social-icon social-icon-linkedin" aria-hidden="true">in</span>
-              </a>
-              <a className="foot-social-link" href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener" aria-label="Kasumigaseki Capital corporate website" title="Corporate Website">
-                <span className="social-icon social-icon-globe" aria-hidden="true"></span>
-              </a>
+              {links.linkedin && (
+                <a className="foot-social-link" href={links.linkedin} target="_blank" rel="noopener" aria-label="Kasumigaseki MENA on LinkedIn" title="LinkedIn">
+                  <span className="social-icon social-icon-linkedin" aria-hidden="true">in</span>
+                </a>
+              )}
+              {links.corporate && (
+                <a className="foot-social-link" href={links.corporate} target="_blank" rel="noopener" aria-label="Kasumigaseki Capital corporate website" title="Corporate Website">
+                  <span className="social-icon social-icon-globe" aria-hidden="true"></span>
+                </a>
+              )}
             </div>
           </div>
           <div>
@@ -68,8 +76,8 @@ export default function SiteFooter() {
               <li><a href="/cookie-policy/">Cookie Policy</a></li>
               <li><a href="/legal-notice/">Legal Notice</a></li>
               <li><a href="/faq/">FAQ</a></li>
-              <li><a href="tel:+97143883099">+971 43 88 3099</a></li>
-              <li><a href="mailto:info.dubai@kasumigaseki.co.jp">info.dubai@kasumigaseki.co.jp</a></li>
+              {contact.phone && <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a></li>}
+              {contact.email && <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
             </ul>
           </div>
         </div>

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { NavItem } from "@/lib/settings";
 
-const NAV = [
+const FALLBACK_NAV: NavItem[] = [
   { href: "/about-us", label: "About Us" },
   { href: "/local-business", label: "Local Business" },
   { href: "/global-businesses", label: "Global Business" },
@@ -13,8 +14,9 @@ const NAV = [
 
 /** Same markup/behaviour as the delivered static header (site.js drives the
  *  mobile nav toggle + contact drawer via the same element IDs). */
-export default function SiteHeader() {
+export default function SiteHeader({ nav = FALLBACK_NAV }: { nav?: NavItem[] }) {
   const pathname = usePathname();
+  const items = nav.length ? nav : FALLBACK_NAV;
 
   return (
     <header className="site-header">
@@ -25,7 +27,7 @@ export default function SiteHeader() {
         </Link>
         <nav id="mainnav" aria-label="Primary">
           <ul>
-            {NAV.map((item) => {
+            {items.map((item) => {
               const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <li key={item.href}>

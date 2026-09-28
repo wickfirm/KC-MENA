@@ -14,6 +14,7 @@ export type BusinessDetailContent = {
   metrics?: Array<{ value: string; label: string }>;
   metricsSource?: { label: string; href: string };
   callouts?: Array<{ eyebrow: string; heading: string; body: string; href: string; label: string }>;
+  projectsHeading?: string;
   sections: Array<{
     eyebrow: string;
     heading: string;
@@ -99,6 +100,7 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
       (content.metrics === undefined || (Array.isArray(content.metrics) && content.metrics.every((metric) => typeof metric?.value === "string" && typeof metric?.label === "string"))) &&
       (content.metricsSource === undefined || (typeof content.metricsSource.label === "string" && typeof content.metricsSource.href === "string")) &&
       (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string"))) &&
+      (content.projectsHeading === undefined || typeof content.projectsHeading === "string") &&
       Array.isArray(content.sections) &&
       content.sections.length > 0 &&
       content.sections.every((section) =>

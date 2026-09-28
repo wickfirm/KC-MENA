@@ -5,12 +5,13 @@ ground-up custom CMS console, PostgreSQL on Supabase, media on Cloudflare R2. No
 no UI library, no test/lint tooling.
 
 - Deeper docs: [`README.md`](README.md), [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`db/schema.sql`](db/schema.sql)
-- Phase state: Phase 1 ✅ (architecture, schema, auth, admin skeleton) · Phase 2 in progress
-  (site shell, `/news`, `/faq`, legal pages done — rest of the 14-page inventory still static)
-  · Phase 3 queued (Salesforce dual-write, RSS pipeline)
-- **Active workstream: SEO/AEO content audit.** Read
-  [`docs/HANDOFF-content-audit.md`](docs/HANDOFF-content-audit.md) first — deliverable lives in
-  `KC-Content-Review/`, generator is `scripts/build-content-audit.mjs` (needs `npm i --no-save docx`).
+- Phase state: Phase 1 ✅ (architecture, schema, auth, admin skeleton) · Phase 2 ✅ (all 14 public
+  pages are CMS-driven Next routes — no page relies on the static rewrite fallback) · Phase 3
+  partially done: RSS ingest → review → approve-to-News is live; Salesforce dual-write still queued.
+- **Handoff-completeness pass done:** projects render publicly, sector-pages admin removed
+  (structured business editors only), site settings drive header/footer/contact drawer, careers
+  Apply posts to `/api/submissions`, listing-page shells (careers/faq/news) are CMS-editable under
+  `/admin/site/listing/*`. See the map below for what is still in-code default vs DB-editable.
 
 ## Commands
 
@@ -39,7 +40,7 @@ All in `.env.local` (copy `.env.example`). `DATABASE_URL`, `AUTH_SECRET` (min 16
 - **Gotcha:** the dev machine has a system-wide `DATABASE_URL` pointing at an unrelated Supabase
   project. The `scripts/*.mjs` files manually parse `.env.local` with override priority so the
   project-local value wins. Never delete that loader; rely on it instead of `dotenv`/shell env.
-- R2 is only wired for uploads (presigned, browser → R2 direct). No media UI exists yet.
+- R2 is wired for uploads (presigned, browser → R2 direct) and `/admin/media` lists/deletes objects.
 
 ## Architecture
 
@@ -50,7 +51,7 @@ src/app/(auth)/    /admin/login
 src/app/api/       route handlers, one per resource (auth, pages, news, faqs)
 src/lib/           db.ts (query helpers), auth.ts (JWT), pages.ts, r2.ts, slug.ts
 src/components/    site/ + admin/ shared components
-public/            the delivered static site (still the live source of truth)
+public/            the delivered static site (legacy fallback only — every page is a Next route now)
 db/                schema.sql + seed files
 ```
 
@@ -106,13 +107,23 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
 
 ## Phase-aware map (what to touch vs. what's placeholder)
 
-- Built as Next routes: `/news` + `/news/[slug]`, `/faq`, `/privacy-policy`,
-  `/terms-and-conditions`, `/cookie-policy`, `/legal-notice`, plus the site shell
-  (header/footer/ContactDrawer).
-- Still served from `public/` (rewrite fallback): `/`, `/about-us`, `/global-businesses`,
-  `/local-business`, `/real-estate`, `/real-estate-development`, `/f-and-b`, `/careers`,
-  `/contact-us`.
-- Admin screens still `ComingSoon` placeholders: Projects, Careers (jobs), Submissions, RSS.
-  FAQ/Pages/News have full CRUD.
-- Don't wire Salesforce dual-write or the RSS ingest yet — that's Phase 3; `contact_submissions`
-  currently falls back to `mailto:` via `/js/site.js`.
+- All 14 public pages are Next routes: `/` (home), `/about-us`, `/global-businesses`,
+  `/local-business`, `/real-estate`, `/real-estate-development`, `/f-and-b`, `/careers`, `/contact-us`,
+  `/news` + `/news/[slug]`, `/faq`, plus the four legal pages. The `next.config.mjs` rewrite to
+  `public/` is still in place as a safety net, but nothing falls through to it.
+- Editable page content: home/about/local-business/contact + 4 business pages (structured editors
+  under `/admin/site/*`), listing-page shells `/admin/site/listing/{careers,faq,news}` (hero,
+  heading, intro, empty-state; news also featured-video band, insight cards, disclaimer), news /
+  FAQs / jobs / projects / media full CRUD, `/admin/settings` drives header nav, footer brand
+  block, contact details, and ContactDrawer locations (`settings` table, key `site`, via
+  `src/lib/settings.ts` — falls back to in-code defaults when the DB is down).
+- Projects render publicly in a band on the 5 business pages (`getPublishedProjectsBySector`,
+  `ProjectsSection`) — nothing shows when a sector has no published projects.
+- Careers "Apply" opens an inline form (`JobApplyForm`) posting to `/api/submissions` with
+  `type:'career'` + `jobId`; the ContactDrawer form also POSTs to `/api/submissions`.
+- RSS pipeline is live: `/admin/rss` → "Fetch feeds now" (`POST /api/rss/ingest`, dependency-free
+  RSS/Atom parser in `src/lib/rss.ts`) → review queue → Approve creates a **draft** news post
+  (source `rss`, `rss_item_id` set) that editors publish from `/admin/news`; Reject hides the item.
+- Still queued (Phase 3): Salesforce dual-write for `contact_submissions`. Also in-code only:
+  seed defaults for listing pages / settings (no seed rows), `page_revisions` has no view/restore UI,
+  submissions are read-only.

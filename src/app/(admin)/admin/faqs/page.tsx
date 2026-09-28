@@ -27,7 +27,10 @@ export default async function FaqsAdminPage() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22 }}>
         <h1 style={{ fontSize: "1.6rem" }}>FAQ</h1>
-        <Link href="/admin/faqs/new" className="btn btn-dark">+ New Question</Link>
+        <div style={{ display: "flex", gap: 10 }}>
+          <Link href="/admin/site/listing/faq" className="btn">Edit page content</Link>
+          <Link href="/admin/faqs/new" className="btn btn-dark">+ New Question</Link>
+        </div>
       </div>
       <p style={{ color: "var(--grey-5)", marginBottom: 18 }}>
         Published questions appear on the <a href="/faq/" target="_blank" style={{ textDecoration: "underline", fontWeight: 600 }}>/faq</a> page, grouped by category, in sort order.

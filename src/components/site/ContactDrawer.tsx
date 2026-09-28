@@ -1,25 +1,41 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import type { SiteSettings } from "@/lib/settings";
 
 /** Same markup + IDs as the delivered static contact drawer —
- *  /js/site.js continues to drive open/close and the mailto fallback. */
-export default function ContactDrawer() {
-  const [mailClientOpening, setMailClientOpening] = useState(false);
+ *  /js/site.js continues to drive open/close. The enquiry form now persists
+ *  to the CMS (contact_submissions) instead of falling back to mailto:. */
+export default function ContactDrawer({ settings }: { settings: SiteSettings }) {
+  const [status, setStatus] = useState("");
+  const [busy, setBusy] = useState(false);
+  const { contact, drawer } = settings;
 
-  function submitEnquiry(event: FormEvent<HTMLFormElement>) {
+  async function submitEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setBusy(true);
+    setStatus("");
     const values = new FormData(event.currentTarget);
-    const lines: string[] = [];
-    values.forEach((value, key) => {
-      const text = String(value).trim();
-      if (text) lines.push(`${key}: ${text}`);
+    const response = await fetch("/api/submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "contact",
+        source: "contact-drawer",
+        subject: "Kasumigaseki MENA inquiry",
+        name: values.get("name"),
+        email: values.get("email"),
+        message: values.get("message"),
+      }),
     });
-
-    const subject = encodeURIComponent("Kasumigaseki MENA inquiry");
-    const body = encodeURIComponent(lines.join("\n"));
-    window.location.href = `mailto:info.dubai@kasumigaseki.co.jp?subject=${subject}&body=${body}`;
-    setMailClientOpening(true);
+    setBusy(false);
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setStatus(data.error ?? "Could not send your enquiry. Please try again.");
+      return;
+    }
+    event.currentTarget.reset();
+    setStatus("Thank you — your enquiry has been received.");
   }
 
   return (
@@ -35,30 +51,23 @@ export default function ContactDrawer() {
           </p>
 
           <div className="drawer-locs">
-            <div className="drawer-loc">
-              <h4>Dubai Office</h4>
-              <p>Dubai Hills Estate<br />Business Park 4, Office 304-305<br />Dubai, UAE</p>
-              <a href="https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" className="maplink">Get Directions &#8599;</a>
-            </div>
-            <div className="drawer-loc">
-              <h4>Sales Centre</h4>
-              <p>Business Bay<br />Dubai, UAE</p>
-              <a href="https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" className="maplink">Get Directions &#8599;</a>
-            </div>
-            <div className="drawer-loc">
-              <h4>Miami Location</h4>
-              <p>Miami, Florida<br />United States</p>
-              <a href="https://www.google.com/maps/search/?api=1&amp;query=Miami+Florida" className="maplink">Get Directions &#8599;</a>
-            </div>
-            <div className="drawer-loc">
-              <h4>Kasumigaseki Restaurant</h4>
-              <p>Vida Emirates Hills<br />Dubai, UAE</p>
-              <a href="https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac" className="maplink">Get Directions &#8599;</a>
-            </div>
+            {drawer.locations.map((location) => (
+              <div className="drawer-loc" key={location.title}>
+                <h4>{location.title}</h4>
+                <p>
+                  {location.lines.map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      {index < location.lines.length - 1 && <br />}
+                    </span>
+                  ))}
+                </p>
+                <a href={location.mapUrl} className="maplink" target="_blank" rel="noreferrer">Get Directions &#8599;</a>
+              </div>
+            ))}
           </div>
 
           <form className="drawer-form" onSubmit={submitEnquiry}>
-            {/* NOTE: real submission handler lands in Phase 3 (Salesforce dual-write). */}
             <div className="form-field">
               <label htmlFor="dname">Full Name</label>
               <input type="text" id="dname" name="name" required />
@@ -71,18 +80,18 @@ export default function ContactDrawer() {
               <label htmlFor="dmessage">Message</label>
               <textarea id="dmessage" name="message" required></textarea>
             </div>
-            <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }}>
-              Send Enquiry
+            <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }} disabled={busy}>
+              {busy ? "Sending…" : "Send Enquiry"}
             </button>
-            <div className={`form-note${mailClientOpening ? " show" : ""}`} id="drawerNote">
-              Opening your email app to send this inquiry.
+            <div className={`form-note${status ? " show" : ""}`} id="drawerNote" aria-live="polite">
+              {status || "Opens a direct line to our team."}
             </div>
           </form>
 
           <div className="drawer-direct">
             Prefer to reach us directly?
-            <a href="tel:+97143883099">+971 43 88 3099</a>
-            <a href="mailto:info.dubai@kasumigaseki.co.jp">info.dubai@kasumigaseki.co.jp</a>
+            {contact.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>}
+            {contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}
           </div>
         </div>
       </aside>
