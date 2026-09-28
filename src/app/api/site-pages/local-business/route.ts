@@ -10,7 +10,11 @@ export async function PUT(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   let payload: Payload;
-  try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
+  try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }
+, { status: 400 }); }
+  if (typeof (payload.content as unknown) === "string") {
+    try { payload.content = JSON.parse(payload.content as unknown as string); } catch { /* validation will reject */ }
+  }
   if (!isLocalBusinessContent(payload.content)) return NextResponse.json({ error: "Local Business content is invalid" }, { status: 400 });
   try {
     const current = await queryOne<{ id: number; content: unknown; seo: unknown }>("SELECT id, content, seo FROM pages WHERE slug = 'local-business'");

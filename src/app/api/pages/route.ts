@@ -33,6 +33,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
+  const rawContent = p.content as unknown;
+  if (typeof rawContent === "string") {
+    try { p.content = JSON.parse(rawContent) as typeof p.content; } catch { /* stored as-is */ }
+  }
   const slug = (p.slug ?? "").trim();
   if (!slug || !SLUG_RE.test(slug)) {
     return NextResponse.json({ error: "Slug is required (lowercase letters, numbers, hyphens)" }, { status: 400 });

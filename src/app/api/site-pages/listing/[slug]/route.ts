@@ -23,6 +23,9 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ slug: s
     payload = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  if (typeof (payload.content as unknown) === "string") {
+    try { payload.content = JSON.parse(payload.content as unknown as string); } catch { /* validation will reject */ }
+  }
   }
   if (!isListingContent(payload.content)) {
     return NextResponse.json({ error: "Listing page content is invalid" }, { status: 400 });

@@ -94,6 +94,7 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
  * still the old default value.
  */
 export function normalizeHomeContent(value: unknown): ModuleDocument {
+  if (typeof value === "string") { try { value = JSON.parse(value); } catch { return DEFAULT_HOME_CONTENT; } }
   if (validateModuleDocument(value).length > 0 || (value as ModuleDocument).template !== "home") return DEFAULT_HOME_CONTENT;
 
   const saved = value as ModuleDocument;

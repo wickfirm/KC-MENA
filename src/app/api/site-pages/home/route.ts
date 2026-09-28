@@ -22,7 +22,11 @@ export async function PUT(req: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   let payload: Payload;
-  try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
+  try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }
+, { status: 400 }); }
+  if (typeof (payload.content as unknown) === "string") {
+    try { payload.content = JSON.parse(payload.content as unknown as string); } catch { /* validation will reject */ }
+  }
   const issues = validateModuleDocument(payload.content);
   if (payload.content?.template !== "home" || issues.length > 0) {
     return NextResponse.json({ error: "Home content is invalid", issues }, { status: 400 });

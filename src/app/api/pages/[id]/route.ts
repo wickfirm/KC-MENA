@@ -24,6 +24,12 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
+  // Some early rows stored content double-encoded; unwrap string payloads.
+  const rawContent = p.content as unknown;
+  if (typeof rawContent === "string") {
+    try { p.content = JSON.parse(rawContent) as typeof p.content; } catch { /* stored as-is */ }
+  }
+
   try {
     const current = await queryOne("SELECT id, slug, title, content, seo FROM pages WHERE id = $1", [pageId]);
     if (!current) return NextResponse.json({ error: "Page not found" }, { status: 404 });

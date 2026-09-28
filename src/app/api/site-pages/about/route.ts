@@ -9,6 +9,10 @@ export async function PUT(req: NextRequest) {
   const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   let body: { status?: string; seo?: Record<string, string>; content?: AboutContent };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
+  if (typeof (body.content as unknown) === "string") {
+    try { body.content = JSON.parse(body.content as unknown as string); } catch { /* validation will reject */ }
+  }
+  if (typeof body.content === "string") { try { body.content = JSON.parse(body.content); } catch { /* validation rejects */ } }
   if (!isAboutContent(body.content)) return NextResponse.json({ error: "About content is invalid" }, { status: 400 });
   try {
     const current = await queryOne<{ id: number; content: unknown; seo: unknown }>("SELECT id, content, seo FROM pages WHERE slug = 'about-us'");

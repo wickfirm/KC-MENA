@@ -19,7 +19,13 @@ export async function getPageBySlug(slug: string, publishedOnly = true): Promise
     const sql = publishedOnly
       ? "SELECT id, slug, title, status, content, seo FROM pages WHERE slug = $1 AND status = 'published'"
       : "SELECT id, slug, title, status, content, seo FROM pages WHERE slug = $1";
-    return await queryOne<PageRow>(sql, [slug]);
+    const parsed = await queryOne<PageRow>(sql, [slug]);
+    // Some early rows stored content double-encoded (a JSON string inside the
+    // jsonb column). Unwrap so renderers and editors always see an object.
+    if (parsed && typeof parsed.content === "string") {
+      try { parsed.content = JSON.parse(parsed.content); } catch { parsed.content = null; }
+    }
+    return parsed;
   } catch {
     return null;
   }
