@@ -54,7 +54,13 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
     });
     const data = await response.json().catch(() => ({}));
     setSaving(false);
-    setMessage(response.ok ? "Saved. Publish when the page is ready for the public site." : data.error || "Could not save changes.");
+    setMessage(
+      response.ok
+        ? String(form.get("status")) === "published"
+          ? "Saved and published — the change is live on the public site."
+          : "Saved as a DRAFT — the public page is unchanged. Set Status to Published and save again to go live."
+        : data.error || "Could not save changes."
+    );
   }
 
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>

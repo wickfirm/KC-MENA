@@ -25,6 +25,7 @@ export default function HomeEditor({ content, status, seo }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+    const [notice, setNotice] = useState("");
   const hero = getModule(content, "hero", "hero");
   const about = getModule(content, "about", "rich-text");
   const metrics = getModule(content, "group-metrics", "metrics");
@@ -60,6 +61,7 @@ export default function HomeEditor({ content, status, seo }: Props) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Save failed");
       router.refresh();
+      setNotice(String(form.get("status")) === "published" ? "Saved and published — the change is live on the public site." : "Saved as a DRAFT — the public page is unchanged. Set Status to Published and save again to go live.");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "Save failed"); }
     finally { setSaving(false); }
   }
@@ -75,6 +77,6 @@ export default function HomeEditor({ content, status, seo }: Props) {
     <section style={sectionStyle}><h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>Global businesses</h2><Field name="global-heading" label="Heading" value={global.heading} />{global.items.map((item, index) => <div key={index} style={sectionStyle}><h3 style={{ fontSize: "1rem", marginBottom: 14 }}>Card {index + 1}</h3><Field name={`global-title-${index}`} label="Title" value={item.title} /><Field name={`global-body-${index}`} label="Description" value={item.body} multiline /><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><MediaPicker name={`global-image-${index}`} label="Image" initialUrl={item.image?.src} /><Field name={`global-image-alt-${index}`} label="Image alt text" value={item.image?.alt} /></div><Field name={`global-tags-${index}`} label="Tags (comma-separated)" value={item.tags?.join(", ")} /></div>)}</section>
     <section style={sectionStyle}><h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>News &amp; updates</h2><Field name="news-updates-eyebrow" label="Section label" value={newsUpdates.eyebrow} />{newsUpdates.items.map((item, index) => <div key={index} style={sectionStyle}><h3 style={{ fontSize: "1rem", marginBottom: 14 }}>Card {index + 1}</h3><Field name={`news-title-${index}`} label="Title" value={item.title} /><Field name={`news-body-${index}`} label="Description" value={item.body} multiline /><Field name={`news-link-${index}`} label="Link URL" value={item.link?.href} /><Field name={`news-video-${index}`} label="Video URL (optional)" value={item.videoSrc} /><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><MediaPicker name={`news-image-${index}`} label={item.videoSrc ? "Video poster image" : "Image"} initialUrl={item.image?.src} /><Field name={`news-image-alt-${index}`} label="Image alt text" value={item.image?.alt} /></div><Field name={`news-tags-${index}`} label="Tags (comma-separated)" value={item.tags?.join(", ")} /></div>)}</section>
     <section style={sectionStyle}><h2 style={{ fontSize: "1.2rem", marginBottom: 16 }}>Contact call-to-action</h2><Field name="contact-heading" label="Heading" value={contact.heading} /><Field name="contact-body" label="Introduction" value={contact.body} multiline /></section>
-    <div style={{ display: "flex", gap: 10, marginTop: 26 }}><button className="btn btn-dark" type="submit" disabled={saving}>{saving ? "Saving…" : "Save Home page"}</button><a href="/preview/home" target="_blank" className="btn">Preview draft</a></div>{error && <p className="error-msg">{error}</p>}
+    <div style={{ display: "flex", gap: 10, marginTop: 26 }}><button className="btn btn-dark" type="submit" disabled={saving}>{saving ? "Saving…" : "Save Home page"}</button><a href="/preview/home" target="_blank" className="btn">Preview draft</a></div>{error && <p className="error-msg">{error}</p>}{notice && <p className="success-msg" aria-live="polite">{notice}</p>}
   </form>;
 }

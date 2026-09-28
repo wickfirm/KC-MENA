@@ -23,7 +23,13 @@ export default function LocalBusinessEditor({ content, status, seo }: Props) {
     const next: LocalBusinessContent = { version: 1, hero: { title: value("heroTitle"), image: value("heroImage") }, intro: { heading: value("introHeading"), metrics: content.intro.metrics.map((metric, index) => ({ value: value(`metric-${index}-value`), label: value(`metric-${index}-label`) })) }, panels: content.panels.map((panel, index) => ({ eyebrow: value(`panel-${index}-eyebrow`), heading: value(`panel-${index}-heading`), body: value(`panel-${index}-body`), href: panel.href, image: value(`panel-${index}-image`) || panel.image })), contact: content.contact };
     const response = await fetch("/api/site-pages/local-business", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: value("status"), seo: { title: value("seoTitle"), description: value("seoDescription") }, content: next }) });
     const result = await response.json().catch(() => ({}));
-    setSaving(false); setMessage(response.ok ? "Saved. Publish when the page is ready for the public site." : result.error || "Could not save changes.");
+    setSaving(false); setMessage(
+      response.ok
+        ? String(data.get("status")) === "published"
+          ? "Saved and published — the change is live on the public site."
+          : "Saved as a DRAFT — the public page is unchanged. Set Status to Published and save again to go live."
+        : result.error || "Could not save changes."
+    );
   }
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 20 }}><label style={{ fontWeight: 700 }}>Status <select name="status" defaultValue={status} style={{ marginLeft: 8, padding: 7 }}><option value="draft">Draft</option><option value="published">Published</option></select></label><a className="btn" href="/preview/local-business" target="_blank">Preview draft</a></div>
