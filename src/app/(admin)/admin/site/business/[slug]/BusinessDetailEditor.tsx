@@ -32,9 +32,16 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
     const next: BusinessDetailContent = {
       version: 1,
       hero: { title: value("heroTitle"), image: value("heroImage") },
-      overview: { eyebrow: value("overviewEyebrow"), heading: value("overviewHeading") },
+      overview: { eyebrow: value("overviewEyebrow"), heading: value("overviewHeading"), body: value("overviewBody") || undefined },
+      platformMetrics: content.platformMetrics ? {
+        primary: content.platformMetrics.primary.map((metric, index) => ({ value: value(`platform-primary-${index}-value`), label: value(`platform-primary-${index}-label`) })),
+        sectors: content.platformMetrics.sectors.map((metric, index) => ({ value: value(`platform-sector-${index}-value`), label: value(`platform-sector-${index}-label`), detail: value(`platform-sector-${index}-detail`) })),
+        source: { label: value("platform-source-label"), href: value("platform-source-href") },
+      } : undefined,
       metrics: content.metrics?.map((metric, index) => ({ value: value(`metric-${index}-value`), label: value(`metric-${index}-label`) })),
       metricsSource: content.metricsSource ? { label: value("metrics-source-label"), href: value("metrics-source-href") } : undefined,
+      bizBand: content.bizBand ? { eyebrow: value("biz-band-eyebrow"), heading: value("biz-band-heading"), body: value("biz-band-body") } : undefined,
+      locations: content.locations?.map((location, index) => ({ country: value(`location-${index}-country`), city: value(`location-${index}-city`), line: value(`location-${index}-line`), image: value(`location-${index}-image`) || location.image, mapUrl: value(`location-${index}-map-url`) })),
       callouts: content.callouts?.map((callout, index) => ({ eyebrow: value(`callout-${index}-eyebrow`), heading: value(`callout-${index}-heading`), body: value(`callout-${index}-body`), href: value(`callout-${index}-href`), label: value(`callout-${index}-label`) })),
       projectsHeading: value("projectsHeading") || undefined,
       sections: content.sections.map((section, index) => ({
@@ -70,9 +77,20 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
     <MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} />
     <Field label="Introduction label" name="overviewEyebrow" defaultValue={content.overview.eyebrow} />
     <Field label="Introduction heading" name="overviewHeading" defaultValue={content.overview.heading} multiline />
+    <Field label="Introduction body" name="overviewBody" defaultValue={content.overview.body ?? ""} multiline />
+    {content.platformMetrics && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
+      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Global platform metrics</h2>
+      <h3 style={{ fontSize: ".9rem", marginBottom: 10 }}>Headline metrics</h3>
+      {content.platformMetrics.primary.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`platform-primary-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`platform-primary-${index}-label`} defaultValue={metric.label} /></div>)}
+      <h3 style={{ fontSize: ".9rem", margin: "16px 0 10px" }}>Sector breakdown</h3>
+      {content.platformMetrics.sectors.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr 1fr", gap: 12 }}><Field label="Value" name={`platform-sector-${index}-value`} defaultValue={metric.value} /><Field label="Sector" name={`platform-sector-${index}-label`} defaultValue={metric.label} /><Field label="Detail" name={`platform-sector-${index}-detail`} defaultValue={metric.detail} /></div>)}
+      <Field label="Source label" name="platform-source-label" defaultValue={content.platformMetrics.source.label} /><Field label="Source URL" name="platform-source-href" defaultValue={content.platformMetrics.source.href} />
+    </section>}
     {content.metrics && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Key metrics</h2>{content.metrics.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`metric-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`metric-${index}-label`} defaultValue={metric.label} /></div>)}</section>}
     {content.metricsSource && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><Field label="Metrics source label" name="metrics-source-label" defaultValue={content.metricsSource.label} /><Field label="Metrics source URL" name="metrics-source-href" defaultValue={content.metricsSource.href} /></section>}
+    {content.bizBand && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Business platform band</h2><Field label="Label" name="biz-band-eyebrow" defaultValue={content.bizBand.eyebrow} /><Field label="Heading" name="biz-band-heading" defaultValue={content.bizBand.heading} /><Field label="Body" name="biz-band-body" defaultValue={content.bizBand.body} multiline /></section>}
     {content.callouts?.map((callout, index) => <section key={callout.heading} style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Callout {index + 1}</h2><Field label="Label" name={`callout-${index}-eyebrow`} defaultValue={callout.eyebrow} /><Field label="Heading" name={`callout-${index}-heading`} defaultValue={callout.heading} /><Field label="Body" name={`callout-${index}-body`} defaultValue={callout.body} multiline /><Field label="Link URL" name={`callout-${index}-href`} defaultValue={callout.href} /><Field label="Link label" name={`callout-${index}-label`} defaultValue={callout.label} /></section>)}
+    {content.locations && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Map locations</h2>{content.locations.map((location, index) => <div key={index} style={{ borderTop: index ? "1px solid var(--line)" : undefined, paddingTop: index ? 16 : 0, marginTop: index ? 16 : 0 }}><Field label="Country" name={`location-${index}-country`} defaultValue={location.country} /><Field label="City" name={`location-${index}-city`} defaultValue={location.city} /><Field label="Address line" name={`location-${index}-line`} defaultValue={location.line} /><MediaPicker name={`location-${index}-image`} label="Image" initialUrl={location.image} /><Field label="Map URL" name={`location-${index}-map-url`} defaultValue={location.mapUrl} /></div>)}</section>}
     <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
       <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Projects band</h2>
       <p style={{ color: "var(--grey-5)", fontSize: ".82rem", marginBottom: 14 }}>

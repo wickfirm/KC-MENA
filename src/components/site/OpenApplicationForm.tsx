@@ -1,12 +1,13 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import type { ListingContent } from "@/lib/listing-content";
 
 /** Open-application form on the Careers page — markup mirrors the delivered
  *  .app-form; submissions persist to /api/submissions (type 'career').
  *  CV files are not stored server-side; the filename is noted on the message
  *  so the team can request the document directly. */
-export default function OpenApplicationForm() {
+export default function OpenApplicationForm({ content }: { content?: ListingContent["careerForm"] }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
   const [done, setDone] = useState(false);
@@ -57,17 +58,12 @@ export default function OpenApplicationForm() {
       <div className="wrap">
         <div className="form-grid">
           <div className="form-info">
-            <h3>Application Form</h3>
-            <h2>Tell us where you&apos;d fit.</h2>
-            <p>Complete the form below and a member of our team will be in touch using the details you provide.</p>
-            <div className="office">
-              <strong>Dubai Office</strong>
-              Dubai Hills Estate<br />Business Park 4, Office 304-305<br />Dubai, UAE
-            </div>
-            <div className="office" style={{ borderTop: "none", paddingTop: 0, marginTop: 20 }}>
-              <strong>Sales Centre</strong>
-              Business Bay<br />Dubai, UAE
-            </div>
+            <h3>{content?.eyebrow ?? "Application Form"}</h3>
+            <h2>{content?.heading ?? "Tell us where you'd fit."}</h2>
+            <p>{content?.body ?? "Complete the form below and a member of our team will be in touch using the details you provide."}</p>
+            {(content?.offices ?? [{ title: "Dubai Office", address: "Dubai Hills Estate\nBusiness Park 4, Office 304-305\nDubai, UAE" }, { title: "Sales Centre", address: "Business Bay\nDubai, UAE" }]).map((office, index) => <div className="office" style={index ? { borderTop: "none", paddingTop: 0, marginTop: 20 } : undefined} key={office.title}>
+              <strong>{office.title}</strong>{office.address.split("\n").map((line, lineIndex) => <span key={line}>{line}{lineIndex < office.address.split("\n").length - 1 && <br />}</span>)}
+            </div>)}
           </div>
           <form className="app-form" onSubmit={submit}>
             <div className="form-row">
@@ -133,10 +129,10 @@ export default function OpenApplicationForm() {
             </div>
             <div className="consent">
               <input type="checkbox" id="fconsent" name="fconsent" required />
-              <label htmlFor="fconsent">I consent to being contacted by Kasumigaseki regarding this application.</label>
+              <label htmlFor="fconsent">{content?.consent ?? "I consent to being contacted by Kasumigaseki regarding this application."}</label>
             </div>
             <button type="submit" className="btn btn-solid" disabled={busy}>
-              {busy ? "Submitting…" : "Submit Application"}
+              {busy ? "Submitting…" : content?.submitLabel ?? "Submit Application"}
             </button>
             <div className={`form-note${done ? " show" : ""}`} id="appNote" aria-live="polite">
               {note}

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/lib/pages";
-import { DEFAULT_LISTING_CONTENT, isListingContent, isListingSlug, LISTING_SLUGS } from "@/lib/listing-content";
+import { DEFAULT_LISTING_CONTENT, isListingContent, isListingSlug, LISTING_SLUGS, withListingDefaults } from "@/lib/listing-content";
 import ListingEditor from "./ListingEditor";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +20,7 @@ export default async function ListingAdminPage({ params }: { params: Promise<{ s
   if (!isListingSlug(slug)) notFound();
 
   const page = await getPageBySlug(slug);
-  const content = isListingContent(page?.content) ? page.content : DEFAULT_LISTING_CONTENT[slug];
+  const content = withListingDefaults(slug, isListingContent(page?.content) ? page.content : DEFAULT_LISTING_CONTENT[slug]);
 
   return (
     <>

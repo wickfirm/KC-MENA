@@ -13,6 +13,8 @@ export type ListingContent = {
   heading: string;
   intro: string;
   emptyMessage?: string;
+  /** Careers only: copy rendered in the application form band. */
+  careerForm?: { eyebrow: string; heading: string; body: string; offices: Array<{ title: string; address: string }>; consent: string; submitLabel: string };
   /** News-index only: the featured-video band. */
   featuredVideo?: { heading: string; body: string };
   /** News-index only: the three external insight cards under the feed. */
@@ -29,6 +31,14 @@ const defaults: Record<ListingSlug, ListingContent> = {
     heading: "Build the next chapter with us.",
     intro: "We welcome thoughtful introductions from people interested in building across our regional platform.",
     emptyMessage: "There are no open roles listed today. We welcome thoughtful introductions from people interested in building across our regional platform.",
+    careerForm: {
+      eyebrow: "Application Form",
+      heading: "Tell us where you'd fit.",
+      body: "Complete the form below and a member of our team will be in touch using the details you provide.",
+      offices: [{ title: "Dubai Office", address: "Dubai Hills Estate\nBusiness Park 4, Office 304-305\nDubai, UAE" }, { title: "Sales Centre", address: "Business Bay\nDubai, UAE" }],
+      consent: "I consent to being contacted by Kasumigaseki regarding this application.",
+      submitLabel: "Submit Application",
+    },
   },
   faq: {
     version: 1,
@@ -58,6 +68,10 @@ const defaults: Record<ListingSlug, ListingContent> = {
 
 export const DEFAULT_LISTING_CONTENT = defaults;
 
+export function withListingDefaults(slug: ListingSlug, content: ListingContent): ListingContent {
+  return { ...defaults[slug], ...content, hero: { ...defaults[slug].hero, ...content.hero }, careerForm: content.careerForm ?? defaults[slug].careerForm };
+}
+
 export function isListingSlug(value: string): value is ListingSlug {
   return LISTING_SLUGS.includes(value as ListingSlug);
 }
@@ -77,6 +91,7 @@ export function isListingContent(value: unknown): value is ListingContent {
       typeof content.heading === "string" &&
       typeof content.intro === "string" &&
       (content.emptyMessage === undefined || typeof content.emptyMessage === "string") &&
+      (content.careerForm === undefined || (typeof content.careerForm?.eyebrow === "string" && typeof content.careerForm?.heading === "string" && typeof content.careerForm?.body === "string" && typeof content.careerForm?.consent === "string" && typeof content.careerForm?.submitLabel === "string" && Array.isArray(content.careerForm.offices) && content.careerForm.offices.every((office) => typeof office?.title === "string" && typeof office?.address === "string"))) &&
       (content.featuredVideo === undefined || (typeof content.featuredVideo?.heading === "string" && typeof content.featuredVideo?.body === "string")) &&
       (content.insightCards === undefined || (Array.isArray(content.insightCards) && content.insightCards.every(cardOk))) &&
       (content.disclaimer === undefined || typeof content.disclaimer === "string")
@@ -90,7 +105,8 @@ export function isListingContent(value: unknown): value is ListingContent {
 export async function getListingContent(slug: ListingSlug): Promise<ListingContent> {
   try {
     const page = await getPageBySlug(slug);
-    return isListingContent(page?.content) ? page.content : defaults[slug];
+    if (!isListingContent(page?.content)) return defaults[slug];
+    return withListingDefaults(slug, page.content);
   } catch {
     return defaults[slug];
   }

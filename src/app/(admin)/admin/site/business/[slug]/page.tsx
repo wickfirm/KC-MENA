@@ -4,6 +4,7 @@ import {
   DEFAULT_BUSINESS_DETAILS,
   isBusinessDetailContent,
   isBusinessDetailSlug,
+  withBusinessDefaults,
 } from "@/lib/business-detail-content";
 import BusinessDetailEditor from "./BusinessDetailEditor";
 
@@ -14,7 +15,7 @@ export default async function BusinessPageAdmin({ params }: { params: Promise<{ 
   if (!isBusinessDetailSlug(slug)) notFound();
   let page: { status: "draft" | "published"; content: unknown; seo: { title?: string; description?: string } | null } | null = null;
   try { page = await queryOne("SELECT status, content, seo FROM pages WHERE slug = $1", [slug]); } catch { /* editor uses supplied fallback until the database is configured */ }
-  const content = isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS[slug];
+  const content = withBusinessDefaults(slug, isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS[slug]);
   return <>
     <h1 style={{ fontSize: "1.6rem", marginBottom: 6 }}>{content.hero.title}</h1>
     <p style={{ color: "var(--grey-5)", marginBottom: 22 }}>Edit the supplied business template. Changes remain a draft until published.</p>

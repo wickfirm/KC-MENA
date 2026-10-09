@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
-import ListingPageShell from "@/components/site/ListingPageShell";
 import JobApplyForm from "@/components/site/JobApplyForm";
 import OpenApplicationForm from "@/components/site/OpenApplicationForm";
 import "./careers.css";
@@ -20,8 +19,12 @@ export default async function CareersPage() {
   let jobs: Job[] = [];
   try { jobs = await query("SELECT id, title, department, location, employment, description FROM job_openings WHERE status = 'open' AND (closing_date IS NULL OR closing_date >= current_date) ORDER BY created_at DESC"); } catch { /* The template remains useful before the CMS database is connected. */ }
   return <main>
-    <ListingPageShell content={content}>
-      {jobs.length ? (
+    <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
+      <div className="wrap"><h1>{content.hero.title}</h1></div>
+    </section>
+    {jobs.length ? (
+      <section className="section">
+        <div className="wrap">
         <div style={{ display: "grid", gap: 1, borderTop: "1px solid var(--line)", marginTop: 30 }}>
           {jobs.map((job) => (
             <article key={job.id} style={{ padding: "24px 0", borderBottom: "1px solid var(--line)", display: "grid", gridTemplateColumns: "1fr auto", gap: 20, alignItems: "center" }}>
@@ -34,10 +37,9 @@ export default async function CareersPage() {
             </article>
           ))}
         </div>
-      ) : (
-        <p style={{ maxWidth: 650, marginTop: 24, color: "var(--grey-5)" }}>{content.emptyMessage}</p>
-      )}
-    </ListingPageShell>
-    <OpenApplicationForm />
+        </div>
+      </section>
+    ) : null}
+    <OpenApplicationForm content={content.careerForm} />
   </main>;
 }
