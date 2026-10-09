@@ -19,6 +19,7 @@ export default function LocalBusinessPageView({ content, projects = [] }: { cont
               <div className="stat-block" key={x.label}><div className="stat-num">{x.value}</div><div className="stat-label">{x.label}</div></div>
             ))}
           </div>
+          {content.intro.footnote && <a className="stat-footnote" href={content.intro.footnote.href} target="_blank" rel="noopener">{content.intro.footnote.label}</a>}
         </div>
       </section>
       {content.panels.map((x, i) => (

@@ -10,6 +10,12 @@
   --accent-red: #A6192E;
 }
 
+/* The delivered pages use the browser's 16px body baseline. The admin
+   stylesheet intentionally uses 15px, so keep this correction site-scoped. */
+body {
+  font-size: 16px;
+}
+
 html,
 body {
   max-width: 100%;
