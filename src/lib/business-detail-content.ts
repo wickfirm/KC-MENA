@@ -20,7 +20,13 @@ export type BusinessCallout = {
 export type BusinessDetailContent = {
   version: 1;
   hero: { title: string; image: string };
-  overview: { eyebrow: string; heading: string };
+  overview: { eyebrow: string; heading: string; body?: string };
+  /** Detailed track-record layout used by the Global Business reference page. */
+  platformMetrics?: {
+    primary: Array<{ value: string; label: string }>;
+    sectors: Array<{ value: string; label: string; detail: string }>;
+    source: { label: string; href: string };
+  };
   metrics?: Array<{ value: string; label: string }>;
   metricsSource?: { label: string; href: string };
   /** "Three businesses, one platform." band (global-businesses only). */
@@ -84,7 +90,21 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
   "global-businesses": {
     version: 1,
     hero: { title: "Global Business", image: "/images/logistics_home.webp" },
-    overview: { eyebrow: "Our global businesses", heading: "Creating value through a disciplined global platform." },
+    overview: {
+      eyebrow: "Our global businesses",
+      heading: "Creating value through a disciplined global platform.",
+      body: "Our project pipeline and assets under management span Logistics, Hotel Business, Healthcare, and overseas markets, each business held to the same standard of discipline and governance as our Tokyo-headquartered parent.",
+    },
+    platformMetrics: {
+      primary: [{ value: "$5.17B", label: "Total Project Value & AUM" }, { value: "129", label: "Projects in Pipeline & Under Management" }],
+      sectors: [
+        { value: "$2.33B", label: "Logistics", detail: "29 projects" },
+        { value: "$2.30B", label: "Hotel Business", detail: "68 projects" },
+        { value: "$0.28B", label: "Healthcare", detail: "17 projects" },
+        { value: "$0.19B", label: "Overseas / Other", detail: "9 projects" },
+      ],
+      source: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
+    },
     metrics: [
       { value: "$5.17B", label: "Total Project Value & AUM" },
       { value: "129", label: "Projects in Pipeline & Under Management" },
@@ -105,9 +125,9 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
       { eyebrow: "Investors & Media", heading: "Investor Relations.", body: "For financial disclosures, IR presentations, and the latest news from Kasumigaseki Capital, visit our parent company's official Investor Relations page.", href: "https://kasumigaseki.co.jp/en/ir/", label: "View Investor Relations", variant: "ir" },
     ],
     sections: [
-      { eyebrow: "Logistics", heading: "Cold, dry, and automated — built as one network.", body: "LOGI FLAG and COLD X NETWORK combine dry, chilled, frozen, and automated supply-chain infrastructure across Japan.", image: "/images/logistics.webp" },
-      { eyebrow: "Hotel Business", heading: "Five brands, one hospitality platform.", body: "FAV Hospitality Group spans seven x seven, edit x seven, FAV, BASE LAYER HOTEL, and HOTEL FORK & KNIFE.", image: "/images/hotel business.webp" },
-      { eyebrow: "Healthcare", heading: "Medically ready environments, built around dignity.", body: "KC Welfare and the CLASWELL model develop medically ready environments with resident dignity at the center.", image: "/images/healthcare-stack-1.webp" },
+      { eyebrow: "Logistics", heading: "Cold, dry, and automated — built as one network.", body: "LOGI FLAG and COLD X NETWORK combine dry, chilled, frozen, and automated supply-chain infrastructure across Japan.", image: "/images/logistics_home.webp", action: { label: "Visit website", href: "https://logiflag.com/", external: true } },
+      { eyebrow: "Hotel Business", heading: "Five brands, one hospitality platform.", body: "FAV Hospitality Group spans seven x seven, edit x seven, FAV, BASE LAYER HOTEL, and HOTEL FORK & KNIFE.", image: "/images/hotel business.webp", action: { label: "Visit website", href: "https://favhospitalitygroup.com/", external: true } },
+      { eyebrow: "Healthcare", heading: "Medically ready environments, built around dignity.", body: "KC Welfare and the CLASWELL model develop medically ready environments with resident dignity at the center.", image: "/images/healthcare-stack-1.webp", action: { label: "Visit website", href: "https://kc-welfare.co.jp/", external: true } },
     ],
   },
 };
@@ -149,5 +169,17 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
 /** Fill DB-saved content with the delivered defaults for any field the CMS
  *  entry does not provide yet (sections added after the initial save). */
 export function withBusinessDefaults(slug: BusinessDetailSlug, content: BusinessDetailContent): BusinessDetailContent {
-  return { ...DEFAULT_BUSINESS_DETAILS[slug], ...content };
+  const defaults = DEFAULT_BUSINESS_DETAILS[slug];
+  return {
+    ...defaults,
+    ...content,
+    hero: { ...defaults.hero, ...content.hero },
+    overview: { ...defaults.overview, ...content.overview },
+    platformMetrics: content.platformMetrics ?? defaults.platformMetrics,
+    sections: content.sections.map((section, index) => ({
+      ...defaults.sections[index],
+      ...section,
+      action: section.action ?? defaults.sections[index]?.action,
+    })),
+  };
 }

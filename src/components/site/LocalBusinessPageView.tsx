@@ -22,9 +22,8 @@ export default function LocalBusinessPageView({ content, projects = [] }: { cont
           {content.intro.footnote && <a className="stat-footnote" href={content.intro.footnote.href} target="_blank" rel="noopener">{content.intro.footnote.label}</a>}
         </div>
       </section>
-      {content.panels.map((x, i) => (
-        <section className={`biz-split${i === 1 ? " rev" : ""}`} key={x.eyebrow}>
-          <div className="biz-panel">
+      {content.panels.map((x, i) => {
+        const panel = <div className="biz-panel">
             <div className="biz-panel-inner">
               <span className="eyebrow">{x.eyebrow}</span>
               <h2>{x.heading}</h2>
@@ -32,10 +31,10 @@ export default function LocalBusinessPageView({ content, projects = [] }: { cont
               <p>{x.body}</p>
               <Link href={x.href} className="btn btn-outline-w">Know More</Link>
             </div>
-          </div>
-          <div className="biz-photo" style={{ backgroundImage: `url('${x.image}')` }} />
-        </section>
-      ))}
+          </div>;
+        const image = <div className="biz-photo" style={{ backgroundImage: `url('${x.image}')` }} />;
+        return <section className={`biz-split${i === 1 ? " rev" : ""}`} key={x.eyebrow}>{i === 1 ? <>{image}{panel}</> : <>{panel}{image}</>}</section>;
+      })}
       <SectionContact
         eyebrow={c.eyebrow}
         heading={c.heading}

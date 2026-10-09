@@ -164,6 +164,8 @@ nav a:hover::after, nav a.active::after {
   }
 
 /* ---------- shared rhythm ---------- */
+.platform-heading{font-size:clamp(1.6rem,2.6vw,2.15rem);max-width:26ch;}
+.platform-intro{margin-top:18px;}
   .section {
     padding:64px 0;
   }

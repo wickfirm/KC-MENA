@@ -27,9 +27,19 @@ export default function BusinessDetailPageView({ content, projects = [] }: { con
       </section>
       <section className="section">
         <div className="wrap">
-          <div className="head"><span className="eyebrow">{content.overview.eyebrow}</span><h2>{content.overview.heading}</h2></div>
-          {content.metrics && <div className="stat-grid">{content.metrics.map((metric) => <div className="stat-block" key={metric.label}><div className="stat-num">{metric.value}</div><div className="stat-label">{metric.label}</div></div>)}</div>}
-          {content.metricsSource && <div className="stat-foot"><a href={content.metricsSource.href} target="_blank" rel="noreferrer">&ldquo;{content.metricsSource.label}&rdquo;</a></div>}
+          {content.platformMetrics ? <>
+            <h2 className="platform-heading">{content.overview.heading}</h2>
+            {content.overview.body && <p className="intro-reg platform-intro">{content.overview.body}</p>}
+            <div className="numbers-platform">
+              <div className="hero-nums">{content.platformMetrics.primary.map((metric) => <div className="hero-num-block" key={metric.label}><div className="hero-num">{metric.value}</div><div className="hero-num-label">{metric.label} <sup>1</sup></div></div>)}</div>
+              <div className="sec-list">{content.platformMetrics.sectors.map((metric) => <div className="sec-row" key={metric.label}><div className="sec-num">{metric.value}</div><div className="sec-label">{metric.label}<span>{metric.detail}</span></div></div>)}</div>
+            </div>
+            <div className="track-foot"><a href={content.platformMetrics.source.href} target="_blank" rel="noreferrer">&ldquo;{content.platformMetrics.source.label}&rdquo;</a></div>
+          </> : <>
+            <div className="head"><span className="eyebrow">{content.overview.eyebrow}</span><h2>{content.overview.heading}</h2></div>
+            {content.metrics && <div className="stat-grid">{content.metrics.map((metric) => <div className="stat-block" key={metric.label}><div className="stat-num">{metric.value}</div><div className="stat-label">{metric.label}</div></div>)}</div>}
+            {content.metricsSource && <div className="stat-foot"><a href={content.metricsSource.href} target="_blank" rel="noreferrer">&ldquo;{content.metricsSource.label}&rdquo;</a></div>}
+          </>}
         </div>
       </section>
       {content.bizBand && (
