@@ -4,6 +4,9 @@ import SiteFooter from "@/components/site/SiteFooter";
 import { getSiteSettings } from "@/lib/settings";
 import "./styles/tokens.css";
 import "./styles/base.css";
+// This is the delivered client stylesheet, retained as the final visual
+// parity layer over the CMS-safe shared styles above.
+import "./styles/reference-parity.css";
 
 export const metadata: Metadata = {
   title: { default: "Kasumigaseki MENA", template: "%s — Kasumigaseki MENA" },

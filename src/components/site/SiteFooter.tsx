@@ -75,7 +75,6 @@ export default function SiteFooter({ settings }: { settings: SiteSettings }) {
               <li><a href="/privacy-policy/">Privacy Policy</a></li>
               <li><a href="/cookie-policy/">Cookie Policy</a></li>
               <li><a href="/legal-notice/">Legal Notice</a></li>
-              <li><a href="/faq/">FAQ</a></li>
               {contact.phone && <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a></li>}
               {contact.email && <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
             </ul>
