@@ -10,5 +10,5 @@ export async function generateMetadata(): Promise<Metadata> { const page = await
 
 export default async function Page() {
   const [page, projects] = await Promise.all([getPageBySlug("f-and-b"), getPublishedProjectsBySector("f-and-b")]);
-  return <BusinessDetailPageView content={withBusinessDefaults("f-and-b", isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS["f-and-b"])} projects={projects} compactOverview />;
+  return <BusinessDetailPageView content={withBusinessDefaults("f-and-b", isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS["f-and-b"])} projects={projects} referenceOverviewWidth />;
 }
