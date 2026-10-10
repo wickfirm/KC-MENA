@@ -32,12 +32,12 @@ body {
 }
 
 .header-in {
-  min-height: 78px;
-  padding: 0 var(--site-gutter) !important;
+  min-height: 0;
+  padding: 20px 5vw !important;
 }
 
 .logo-lockup {
-  gap: 14px;
+  gap: 12px;
 }
 
 .site-logo {
@@ -48,25 +48,25 @@ body {
 }
 
 nav ul {
-  gap: 22px;
+  gap: 24px;
   align-items: center;
 }
 
 nav a,
 .contact-link {
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 }
 
 nav a::after {
-  background: var(--accent-red) !important;
-  height: 2px !important;
+  background: var(--black) !important;
+  height: 1px !important;
 }
 
 nav a.active::after,
 nav a:hover::after {
-  background: var(--accent-red) !important;
+  background: var(--black) !important;
 }
 
 .hero-band {

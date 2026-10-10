@@ -68,6 +68,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     hero: { title: "Investment & Asset Management", image: "/images/reference/real-estate-hero.webp" },
     overview: { eyebrow: "By The Numbers", heading: "A regional investment and asset management business built around disciplined underwriting, selective market access, and long-term value creation." },
     metrics: [{ value: "4", label: "Key Dubai Districts" }, { value: "$156.5M", label: "Active Assets" }, { value: "60", label: "Investment Exposure" }, { value: "26 + 3", label: "Units + Plots" }],
+    metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
     sections: [
       { eyebrow: "Investment & Asset Management", heading: "This is not a listings business. It is an investment business.", body: "Kasumigaseki MENA identifies inefficiencies in product, location, pricing, and timing. The current Dubai portfolio spans high-performing districts including Downtown, Dubai Hills, Hartland, and Palm Jumeirah.", image: "/images/stower-furnished.webp", action: { label: "Investment enquiries", href: "/contact-us/" } },
@@ -80,6 +81,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     hero: { title: "Food & Beverage", image: "/images/reference/fnb-hero.webp" },
     overview: { eyebrow: "Business Snapshot", heading: "A Tokyo-rooted dining concept in Dubai built around Neo-Japanese cuisine, charcoal fire, premium ingredients from Japan, and hospitality designed to leave a mark." },
     metrics: [{ value: "Vida", label: "Emirates Hills" }, { value: "Neo", label: "Japanese Cuisine" }, { value: "Charcoal", label: "Fire-Led Menu" }, { value: "Keigo Abe", label: "Chef-Led Concept" }],
+    metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
     sections: [
       { eyebrow: "Food & Beverage", heading: "Authentic Japanese dining, translated for Dubai without diluting the craft.", body: "Kasumigaseki Restaurant is positioned as a Japanese dining experience brought from Tokyo to a global audience. The concept blends disciplined technique with a contemporary expression, giving Dubai a restaurant that feels both premium and current.", image: "/images/f&b.webp", action: { label: "Vida Emirates Hills", href: "https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac", external: true } },

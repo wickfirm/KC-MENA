@@ -129,6 +129,16 @@ nav a:hover::after, nav a.active::after {
     background:var(--black);
   }
 
+  /* The reference form uses the original 1220px outer wrapper with its
+     internal 6vw gutters. Keep this scoped to Careers so the shared site
+     layout can retain its CMS-friendly page widths. */
+  .form-band .wrap {
+    width:100% !important;
+    max-width:1220px !important;
+    padding-left:6vw !important;
+    padding-right:6vw !important;
+  }
+
 .form-grid {
     display:grid;
     grid-template-columns:0.85fr 1.3fr;
