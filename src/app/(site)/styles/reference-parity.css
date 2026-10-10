@@ -151,6 +151,13 @@ nav a:hover::after {
   letter-spacing: 0 !important;
 }
 
+/* The Local, Investment, and F&B opening statements use the narrower
+   reference measure; other page headings retain the shared layout. */
+.local-business-overview,
+.business-detail-overview {
+  max-width: 680px !important;
+}
+
 .intro-reg {
   max-width: 680px;
 }

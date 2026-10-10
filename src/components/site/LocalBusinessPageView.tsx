@@ -13,7 +13,7 @@ export default function LocalBusinessPageView({ content, projects = [] }: { cont
       </section>
       <section className="section">
         <div className="wrap">
-          <div className="head"><span className="eyebrow">By The Numbers</span><h2>{content.intro.heading}</h2></div>
+          <div className="head local-business-overview"><span className="eyebrow">By The Numbers</span><h2>{content.intro.heading}</h2></div>
           <div className="stat-grid">
             {content.intro.metrics.map((x) => (
               <div className="stat-block" key={x.label}><div className="stat-num">{x.value}</div><div className="stat-label">{x.label}</div></div>

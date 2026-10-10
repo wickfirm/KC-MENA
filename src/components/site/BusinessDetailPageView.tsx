@@ -14,7 +14,7 @@ const CONTACT_DEFAULTS = {
   email: "info.dubai@kasumigaseki.co.jp",
 };
 
-export default function BusinessDetailPageView({ content, projects = [] }: { content: BusinessDetailContent; projects?: PublicProject[] }) {
+export default function BusinessDetailPageView({ content, projects = [], compactOverview = false }: { content: BusinessDetailContent; projects?: PublicProject[]; compactOverview?: boolean }) {
   function splitSection(section: BusinessDetailContent["sections"][number], reversed: boolean) {
     const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
     const image = <div className="biz-photo" style={{ backgroundImage: `url('${section.image}')` }} />;
@@ -36,7 +36,7 @@ export default function BusinessDetailPageView({ content, projects = [] }: { con
             </div>
             <div className="track-foot"><a href={content.platformMetrics.source.href} target="_blank" rel="noreferrer">&ldquo;{content.platformMetrics.source.label}&rdquo;</a></div>
           </> : <>
-            <div className="head"><span className="eyebrow">{content.overview.eyebrow}</span><h2>{content.overview.heading}</h2></div>
+            <div className={`head${compactOverview ? " business-detail-overview" : ""}`}><span className="eyebrow">{content.overview.eyebrow}</span><h2>{content.overview.heading}</h2></div>
             {content.metrics && <div className="stat-grid">{content.metrics.map((metric) => <div className="stat-block" key={metric.label}><div className="stat-num">{metric.value}</div><div className="stat-label">{metric.label}</div></div>)}</div>}
             {content.metricsSource && <div className="stat-foot"><a href={content.metricsSource.href} target="_blank" rel="noreferrer">&ldquo;{content.metricsSource.label}&rdquo;</a></div>}
           </>}
