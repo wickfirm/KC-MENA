@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import { validateModuleDocument, type ModuleDocument } from "@/lib/content-modules";
 
@@ -43,6 +44,7 @@ export async function PUT(req: NextRequest) {
       [payload.status === "draft" ? "draft" : "published", JSON.stringify(payload.content), JSON.stringify(payload.seo ?? {}), session.id]
     );
     await logActivity({ action: "content.save", summary: "Saved Home page", actor: session, entityType: "site-page", entityId: "home" });
+    await recordVersion("page", { ...rows[0], slug: "home" }, session);
     return NextResponse.json({ page: rows[0] });
   } catch (error) {
     console.error("PUT /api/site-pages/home error:", error);

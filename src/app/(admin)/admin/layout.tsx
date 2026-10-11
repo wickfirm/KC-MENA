@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import LogoutButton from "./LogoutButton";
+import UnsavedGuard from "@/components/admin/UnsavedGuard";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         )}
       </aside>
       <main style={{ flex: 1, padding: "32px 40px", minWidth: 0 }}>{children}</main>
+      <UnsavedGuard />
     </div>
   );
 }

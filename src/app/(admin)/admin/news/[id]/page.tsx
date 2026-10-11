@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import NewsEditor from "./NewsEditor";
 import { queryOne } from "@/lib/db";
 
@@ -40,6 +41,7 @@ export default async function NewsEditPage({ params }: { params: Promise<{ id: s
       ) : (
         <div className="card">Post not found (or database unavailable).</div>
       )}
+    {!isNew && post ? <VersionHistory entity="news" entityId={id} /> : null}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, denyUnless } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
 
@@ -39,6 +40,7 @@ export async function PUT(req: NextRequest) {
       [SETTINGS_KEY, JSON.stringify(settings)]
     );
     await logActivity({ action: "settings.save", summary: "Saved site settings", actor: session, entityType: "settings", entityId: SETTINGS_KEY });
+    await recordVersion("settings", rows[0], session);
     return NextResponse.json({ settings: rows[0]?.value ?? settings });
   } catch (error) {
     console.error("PUT /api/settings error:", error);

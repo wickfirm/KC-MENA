@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import type { NewsPayload } from "../route";
 
@@ -55,6 +56,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     );
     if (!rows[0]) return NextResponse.json({ error: "Post not found" }, { status: 404 });
     await logActivity({ action: "content.save", summary: `Saved news post “${rowLabel(rows[0])}”`, actor: session, entityType: "news", entityId: rowId(rows[0]) });
+    await recordVersion("news", rows[0], session);
     return NextResponse.json({ post: rows[0] });
   } catch (err) {
     console.error("PUT /api/news/:id error:", err);

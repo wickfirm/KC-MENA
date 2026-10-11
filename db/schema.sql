@@ -196,3 +196,19 @@ CREATE TABLE IF NOT EXISTS activity_log (
 );
 CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_activity_action  ON activity_log(action, created_at DESC);
+
+-- ---------- CONTENT VERSION HISTORY (db/migrations/002-content-versions.sql) ----------
+CREATE TABLE IF NOT EXISTS content_versions (
+  id             BIGSERIAL PRIMARY KEY,
+  entity_type    TEXT        NOT NULL,
+  entity_id      TEXT        NOT NULL,
+  version_number INTEGER     NOT NULL,
+  label          TEXT        NOT NULL,
+  snapshot       JSONB       NOT NULL,
+  author_id      INTEGER,
+  author_email   TEXT,
+  author_name    TEXT,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (entity_type, entity_id, version_number)
+);
+CREATE INDEX IF NOT EXISTS idx_content_versions_entity ON content_versions(entity_type, entity_id, version_number DESC);

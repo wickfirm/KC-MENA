@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 import type { ProjectPayload } from "../route";
@@ -33,6 +34,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
        Number.isFinite(p.sort_order) ? p.sort_order : null]
     );
     if (rows[0]) await logActivity({ action: "content.save", summary: `Saved project “${rowLabel(rows[0])}”`, actor: session, entityType: "project", entityId: rowId(rows[0]) });
+    if (rows[0]) await recordVersion("project", rows[0], session);
     return rows[0] ? NextResponse.json({ project: rows[0] }) : NextResponse.json({ error: "Project not found" }, { status: 404 });
   } catch (err) { console.error("PUT /api/projects/:id error:", err); return NextResponse.json({ error: "Could not update project" }, { status: 500 }); }
 }

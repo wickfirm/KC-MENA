@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import type { FaqPayload } from "../route";
 
@@ -43,6 +44,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     );
     if (!rows[0]) return NextResponse.json({ error: "FAQ not found" }, { status: 404 });
     await logActivity({ action: "content.save", summary: `Saved FAQ “${rowLabel(rows[0])}”`, actor: session, entityType: "faq", entityId: rowId(rows[0]) });
+    await recordVersion("faq", rows[0], session);
     return NextResponse.json({ faq: rows[0] });
   } catch (err) {
     console.error("PUT /api/faqs/:id error:", err);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import { isLocalBusinessContent, type LocalBusinessContent } from "@/lib/local-business-content";
 
@@ -22,6 +23,7 @@ export async function PUT(req: NextRequest) {
     if (current) await query("INSERT INTO page_revisions (page_id, content, seo, created_by) VALUES ($1, $2::jsonb, $3::jsonb, $4)", [current.id, JSON.stringify(current.content), JSON.stringify(current.seo ?? {}), session.id]);
     const rows = await query(`INSERT INTO pages (slug, title, status, content, seo, updated_by) VALUES ('local-business', 'Local Business', $1, $2::jsonb, $3::jsonb, $4) ON CONFLICT (slug) DO UPDATE SET status = EXCLUDED.status, content = EXCLUDED.content, seo = EXCLUDED.seo, updated_by = EXCLUDED.updated_by, updated_at = now() RETURNING id, title, status, content, seo, updated_at`, [payload.status === "draft" ? "draft" : "published", JSON.stringify(payload.content), JSON.stringify(payload.seo ?? {}), session.id]);
     await logActivity({ action: "content.save", summary: "Saved Local Business page", actor: session, entityType: "site-page", entityId: "local-business" });
+    await recordVersion("page", { ...rows[0], slug: "local-business" }, session);
     return NextResponse.json({ page: rows[0] });
   } catch (error) {
     console.error("PUT /api/site-pages/local-business error:", error);

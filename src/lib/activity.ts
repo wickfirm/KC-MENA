@@ -12,6 +12,7 @@ export const activityActionLabels = {
   "auth.logout": "Sign-outs",
   "content.save": "Content saves",
   "content.delete": "Content deletions",
+  "content.restore": "Version restores",
   "settings.save": "Settings saves",
   "user.create": "Users created",
   "user.update": "User changes",

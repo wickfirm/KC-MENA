@@ -1,4 +1,6 @@
 import Link from "next/link";
+import RowActions from "@/components/admin/RowActions";
+import ListFilter from "@/components/admin/ListFilter";
 import { query } from "@/lib/db";
 import FaqRowActions from "./FaqRowActions";
 
@@ -43,6 +45,10 @@ export default async function FaqsAdminPage() {
       )}
 
       {rows.length > 0 && (
+        <ListFilter placeholder="Search questions" statuses={[{ value: "published", label: "Published" }, { value: "hidden", label: "Hidden" }]} />
+      )}
+
+      {rows.length > 0 && (
         <div className="card" style={{ padding: 0, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
             <thead>
@@ -56,7 +62,7 @@ export default async function FaqsAdminPage() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id} style={{ borderBottom: "1px solid var(--grey-1)" }}>
+                <tr key={r.id} data-list-row data-status={r.is_published ? "published" : "hidden"} data-search={`${r.question} ${r.category ?? ""}`} style={{ borderBottom: "1px solid var(--grey-1)" }}>
                   <td style={{ padding: "12px 16px" }}>{r.sort_order}</td>
                   <td style={{ padding: "12px 16px", fontWeight: 600 }}>{r.question}</td>
                   <td style={{ padding: "12px 16px" }}>{r.category ?? "General"}</td>
@@ -70,6 +76,7 @@ export default async function FaqsAdminPage() {
                       Edit
                     </Link>
                     <FaqRowActions id={r.id} isPublished={r.is_published} />
+                    <RowActions entity="faq" id={r.id} live={r.is_published} showPublish={false} />
                   </td>
                 </tr>
               ))}

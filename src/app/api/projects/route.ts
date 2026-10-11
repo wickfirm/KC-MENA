@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 
@@ -43,6 +44,7 @@ export async function POST(req: NextRequest) {
        JSON.stringify(p.metadata ?? {}), Number.isFinite(p.sort_order) ? p.sort_order : 0]
     );
     await logActivity({ action: "content.save", summary: `Created project “${rowLabel(rows[0])}”`, actor: session, entityType: "project", entityId: rowId(rows[0]) });
+    await recordVersion("project", rows[0], session);
     return NextResponse.json({ project: rows[0] }, { status: 201 });
   } catch (err) {
     console.error("POST /api/projects error:", err);

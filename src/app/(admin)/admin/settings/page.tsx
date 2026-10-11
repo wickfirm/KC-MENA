@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import { requireAdminPage } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
 import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
@@ -32,6 +33,7 @@ export default async function SettingsAdminPage() {
       ) : (
         <SettingsEditor settings={settings!} />
       )}
+    {!dbError ? <VersionHistory entity="settings" entityId={SETTINGS_KEY} /> : null}
     </>
   );
 }

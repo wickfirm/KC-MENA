@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
+import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import type { PagePayload } from "../route";
 
@@ -64,6 +65,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       ]
     );
     await logActivity({ action: "content.save", summary: `Saved page “${rowLabel(rows[0])}”`, actor: session, entityType: "page", entityId: rowId(rows[0]) });
+    await recordVersion("page", rows[0], session);
     return NextResponse.json({ page: rows[0] });
   } catch (err) {
     console.error("PUT /api/pages/:id error:", err);

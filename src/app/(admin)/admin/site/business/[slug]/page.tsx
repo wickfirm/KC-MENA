@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import { notFound } from "next/navigation";
 import { queryOne } from "@/lib/db";
 import {
@@ -20,5 +21,6 @@ export default async function BusinessPageAdmin({ params }: { params: Promise<{ 
     <h1 style={{ fontSize: "1.6rem", marginBottom: 6 }}>{content.hero.title}</h1>
     <p style={{ color: "var(--grey-5)", marginBottom: 22 }}>Edit the supplied business template. Changes remain a draft until published.</p>
     <BusinessDetailEditor slug={slug} content={content} status={page?.status ?? "draft"} seo={page?.seo ?? {}} />
+  <VersionHistory entity="page" entityId={slug} />
   </>;
 }

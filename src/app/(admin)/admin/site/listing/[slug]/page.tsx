@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/lib/pages";
 import { DEFAULT_LISTING_CONTENT, isListingContent, isListingSlug, LISTING_SLUGS, withListingDefaults } from "@/lib/listing-content";
@@ -32,6 +33,7 @@ export default async function ListingAdminPage({ params }: { params: Promise<{ s
         status={page?.status === "draft" ? "draft" : "published"}
         seo={{ title: page?.seo?.title, description: page?.seo?.description }}
       />
+    <VersionHistory entity="page" entityId={slug} />
     </>
   );
 }

@@ -102,6 +102,18 @@ Custom JWT auth (jose, HS256) + bcrypt (cost 12) credentials in the `users` tabl
 `httpOnly`, `SameSite=Lax` cookie `kc_session`, 7-day TTL. `src/middleware.ts` guards `/admin/*`
 except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
 
+## Editorial safety (Phase B)
+
+- **Version history:** every content save calls `recordVersion()` (`src/lib/versions.ts`) → `content_versions`
+  (newest 10 per record). Entities: `page` (keyed by slug), `news`, `faq`, `project`, `job`, `settings`.
+  Slugs are not versioned. Restore = `POST /api/versions/:id/restore` (settings: admin only); it writes the
+  snapshot back and records a new version. UI: `<VersionHistory entity entityId />` under each editor.
+  New saveable entity → add it to `versionEntities` and call `recordVersion` after its save.
+- **Unsaved changes:** `UnsavedGuard` (admin layout) warns on leaving any `<form>` inside `<main>` with edits.
+- **Lists:** `ListFilter` (client search + status chips over rows tagged `data-list-row/data-status/data-search`)
+  and `RowActions` → `POST /api/content/:entity/:id` (`publish | unpublish | duplicate`; copies start unpublished).
+- Migration: `db/migrations/002-content-versions.sql` (apply before deploying).
+
 ## UI conventions
 
 - Admin console: hand-rolled — inline `style={{}}` objects plus shared classes from

@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import FaqEditor from "./FaqEditor";
 import { queryOne } from "@/lib/db";
 
@@ -29,6 +30,7 @@ export default async function FaqEditPage({ params }: { params: Promise<{ id: st
     <>
       <h1 style={{ fontSize: "1.6rem", marginBottom: 22 }}>{isNew ? "New Question" : "Edit Question"}</h1>
       {isNew || faq ? <FaqEditor faq={faq} /> : <div className="card">FAQ not found (or database unavailable).</div>}
+    {!isNew && faq ? <VersionHistory entity="faq" entityId={id} /> : null}
     </>
   );
 }

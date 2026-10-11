@@ -34,7 +34,7 @@ Port **patterns, not code**. KPD uses Prisma; KC MENA stays on raw SQL (decision
 | 10 | **Content status model** | `DRAFT / PUBLISHED / ARCHIVED`; one-click Publish / Unpublish / Archive / Restore-as-draft | News: `draft / in_review / published`; jobs/projects/FAQs: draft/published | 🟡 | S | KC MENA already has `in_review` (KPD doesn't). Add archive + row-level status actions |
 | 11 | **List pages** | Search, kind + status filter chips with counts, duplicate, publish/unpublish, "View live ↗" | News list: last 100, status pill only | 🟡 | M | Search, filter chips, duplicate, view-live. Same for projects/jobs/FAQs |
 | 12 | **Reorder** | `moveProject`, `moveProjectModule` (up/down) | Check per-entity; no generic mechanism | 🟡 | S | Needed where display order matters (projects, FAQs, jobs) |
-| 13 | **News / articles** | Kind (news/blog), summary, paragraph body, cover + **cover alt text**, `publishedAt` rewritten on every publish-save (documented gotcha), RSS-originated link | Category, excerpt, body, cover, in_review state, RSS link | 🟡 | S | Add cover **alt text**; do **not** copy the `publishedAt` rewrite quirk |
+| 13 | **News / articles** (cover alt text: n/a — the cover renders as a CSS background, so alt text cannot appear without changing the delivered markup) | Kind (news/blog), summary, paragraph body, cover + **cover alt text**, `publishedAt` rewritten on every publish-save (documented gotcha), RSS-originated link | Category, excerpt, body, cover, in_review state, RSS link | 🟡 | S | Add cover **alt text**; do **not** copy the `publishedAt` rewrite quirk |
 | 14 | **RSS pipeline** | Cron every 30 min → pending items → approve (creates *published* article in a transaction) / reject; audited | Manual "Fetch feeds now", sources CRUD, approve creates a **draft** | 🟡 | S | KC MENA's draft-first approval is stricter, keep it. Add Vercel Cron + audit entries |
 | 15 | **Submissions (inbox)** | Status `NEW/SYNCED/FAILED`, `details` JSON `[{label,value}]` shown per form, per-row **Retry sync**, `syncError`, dashboard alerts | Read-only table, `sf_sync_status`, `meta` JSON, 250-row cap, no detail view | 🟡 | M | Add detail view, structured details, filters, paging. Retry depends on #16 |
 | 16 | **Salesforce dual-write** | `salesforce.ts` OAuth password grant + Lead create; local-first, failure → `FAILED` + 201 | Not built (queued Phase 3); schema already has `sf_*` columns | ❌ | L | Needs client credentials/field mapping (open question Q5) |
@@ -65,10 +65,10 @@ Each phase ships independently and keeps `next build` green.
 5. Vitest + unit tests for guards, password rules, activity writer (row 26).
 
 ### Phase B — Editorial safety
-1. Version history UI + restore for pages (data already exists), then extend to news, projects, settings with keep-5 (row 6).
+1. Version history UI + restore for pages (data already exists), then extend to news, projects, settings with keep-5 (row 6). Built: keep-10 per record.
 2. `unsaved-guard`, `confirm-button`, flash messages, section-nav shared components (row 9).
 3. Row-level status actions (publish/unpublish/archive/restore) and duplicate; search and filter chips on list pages (rows 10–12).
-4. News cover alt text (row 13).
+4. ~~News cover alt text~~ dropped (see row 13). Archive status deferred: it needs CHECK-constraint changes and a client decision.
 
 ### Phase C — Inbox & integrations
 1. Submission detail view, structured details, filters/paging (row 15).

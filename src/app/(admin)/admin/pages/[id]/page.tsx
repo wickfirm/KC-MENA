@@ -1,3 +1,4 @@
+import VersionHistory from "@/components/admin/VersionHistory";
 import PageEditor from "./PageEditor";
 import { queryOne } from "@/lib/db";
 
@@ -36,6 +37,7 @@ export default async function PageEditRoute({ params }: { params: Promise<{ id: 
       ) : (
         <div className="card">Page not found (or database unavailable).</div>
       )}
+    {page ? <VersionHistory entity="page" entityId={page.slug} /> : null}
     </>
   );
 }

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import RowActions from "@/components/admin/RowActions";
+import ListFilter from "@/components/admin/ListFilter";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -42,6 +44,10 @@ export default async function NewsListPage() {
       )}
 
       {rows.length > 0 && (
+        <ListFilter placeholder="Search news" statuses={[{ value: "published", label: "Published" }, { value: "in_review", label: "In review" }, { value: "draft", label: "Draft" }]} />
+      )}
+
+      {rows.length > 0 && (
         <div className="card" style={{ padding: 0, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem" }}>
             <thead>
@@ -55,7 +61,7 @@ export default async function NewsListPage() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id} style={{ borderBottom: "1px solid var(--grey-1)" }}>
+                <tr key={r.id} data-list-row data-status={r.status} data-search={`${r.title} ${r.category ?? ""} ${r.slug}`} style={{ borderBottom: "1px solid var(--grey-1)" }}>
                   <td style={{ padding: "12px 16px", fontWeight: 600 }}>{r.title}</td>
                   <td style={{ padding: "12px 16px" }}>{r.category ?? "—"}</td>
                   <td style={{ padding: "12px 16px" }}>
@@ -65,10 +71,16 @@ export default async function NewsListPage() {
                   <td style={{ padding: "12px 16px" }}>
                     {r.published_at ? new Date(r.published_at).toLocaleDateString() : "—"}
                   </td>
-                  <td style={{ padding: "12px 16px" }}>
+                  <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
                     <Link href={`/admin/news/${r.id}`} style={{ fontWeight: 700, textDecoration: "underline" }}>
                       Edit
                     </Link>
+                    {r.status === "published" && (
+                      <Link href={`/news/${r.slug}`} target="_blank" style={{ marginLeft: 12, textDecoration: "underline" }}>
+                        View live ↗
+                      </Link>
+                    )}
+                    <RowActions entity="news" id={r.id} live={r.status === "published"} />
                   </td>
                 </tr>
               ))}
