@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { canViewPath, roleLabel } from "@/lib/permissions";
 import LogoutButton from "./LogoutButton";
+import AdminNav from "@/components/admin/AdminNav";
 import UnsavedGuard from "@/components/admin/UnsavedGuard";
 import EditorEnhancer from "@/components/admin/EditorEnhancer";
 import "./admin-ux.css";
@@ -60,8 +61,6 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-const linkStyle: React.CSSProperties = { padding: "7px 12px", borderRadius: 2, fontSize: "0.85rem", fontWeight: 600, display: "block" };
-
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSession();
   // Real (database-backed) access check for the screen being opened; the middleware only fast-rejects.
@@ -72,67 +71,26 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .filter((g) => g.items.length > 0);
 
   return (
-    <div data-role={user?.role ?? "viewer"} style={{ display: "flex", minHeight: "100vh" }}>
-      <aside
-        style={{
-          width: 230,
-          flexShrink: 0,
-          background: "#0a0a0a",
-          color: "#c7c7c7",
-          padding: "24px 0",
-          display: "flex",
-          flexDirection: "column",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflowY: "auto",
-        }}
-      >
-        <div style={{ padding: "0 24px 22px", borderBottom: "1px solid #2a2a2a" }}>
-          <p style={{ fontWeight: 700, color: "#fff", letterSpacing: "0.08em" }}>KC MENA</p>
-          <p style={{ fontSize: "0.68rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#9a9a9a" }}>
-            CMS Console
-          </p>
+    <div data-role={user?.role ?? "viewer"} className="cms-shell">
+      <aside className="cms-side">
+        <div className="cms-side__brand">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/Landscape%20-%20Logo%20-%20Wordmark%20KME.webp" alt="Kasumigaseki" width={170} />
+          <p>CMS Console</p>
         </div>
-        <nav aria-label="Admin" style={{ flex: 1, padding: "10px 12px" }}>
-          {groups.map((group, i) => (
-            <div key={group.heading ?? i} style={{ marginBottom: 10 }}>
-              {group.heading && (
-                <p
-                  style={{
-                    padding: "10px 12px 4px",
-                    fontSize: "0.62rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                    color: "#7d7d7d",
-                  }}
-                >
-                  {group.heading}
-                </p>
-              )}
-              {group.items.map((item) => (
-                <Link key={item.href} href={item.href} style={linkStyle}>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          ))}
-        </nav>
+        <AdminNav groups={groups} />
         {user && (
-          <div style={{ padding: "16px 24px 0", borderTop: "1px solid #2a2a2a", fontSize: "0.8rem" }}>
-            <p style={{ color: "#fff", fontWeight: 600 }}>{user.name || user.email}</p>
-            <p style={{ color: "#9a9a9a", marginBottom: 6 }}>{roleLabel(user.role)}</p>
-            <p style={{ marginBottom: 10 }}>
-              <Link href="/admin/account" style={{ textDecoration: "underline", color: "#c7c7c7" }}>
-                My account
-              </Link>
+          <div className="cms-side__foot">
+            <p className="cms-side__name">{user.name || user.email}</p>
+            <p className="cms-side__role">{roleLabel(user.role)}</p>
+            <p>
+              <Link href="/admin/account">My account</Link>
             </p>
             <LogoutButton />
           </div>
         )}
       </aside>
-      <main style={{ flex: 1, padding: "32px 40px", minWidth: 0 }}>
+      <main className="cms-main">
         {user?.role === "viewer" && (
           <div className="card" style={{ borderLeft: "4px solid var(--grey-4)", marginBottom: 20, padding: "12px 18px", fontSize: ".85rem" }}>
             You have view-only access. You can look at everything you are allowed to see, but changes are disabled.

@@ -65,8 +65,9 @@ export default function EditorEnhancer({ role = "editor" }: { role?: string }) {
       setItems(found.length >= 3 ? found : []);
       setActive(found[0]?.id ?? "");
     };
-    // Editors render their sections after hydration; scan again shortly after navigation.
-    const timers = [setTimeout(scan, 50), setTimeout(scan, 400)];
+    // Scan only after React has hydrated the editor (touching server-rendered nodes earlier causes hydration
+    // mismatches), and once more in case the sections render late.
+    const timers = [setTimeout(scan, 450), setTimeout(scan, 1500)];
     return () => {
       cancelled = true;
       timers.forEach(clearTimeout);

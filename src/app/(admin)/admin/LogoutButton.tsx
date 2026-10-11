@@ -11,18 +11,7 @@ export default function LogoutButton() {
         router.replace("/admin/login");
         router.refresh();
       }}
-      style={{
-        background: "transparent",
-        border: "1px solid #4a4a4a",
-        color: "#c7c7c7",
-        padding: "6px 14px",
-        fontSize: "0.72rem",
-        fontWeight: 700,
-        textTransform: "uppercase",
-        letterSpacing: "0.06em",
-        cursor: "pointer",
-        borderRadius: 2,
-      }}
+      className="cms-side__logout"
     >
       Sign out
     </button>
