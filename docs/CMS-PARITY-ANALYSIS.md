@@ -76,7 +76,7 @@ Each phase ships independently and keeps `next build` green.
 3. Career CV upload to private R2 storage (row 18).
 4. RSS cron + audit entries (row 14).
 
-### Phase D — Polish
+### Phase D — Polish (built; page previews already existed under /preview/*, news preview added)
 1. Grouped sidebar, role badge, dashboard "needs attention" and quick actions (rows 7–8).
 2. Media: validation, copy-link, audit (row 19).
 3. Draft preview route (row 22).

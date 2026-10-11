@@ -36,6 +36,12 @@ export default async function NewsEditPage({ params }: { params: Promise<{ id: s
       <h1 style={{ fontSize: "1.6rem", marginBottom: 22 }}>
         {isNew ? "New News Post" : "Edit News Post"}
       </h1>
+      {!isNew && post && (
+        <p style={{ marginBottom: 16 }}>
+          <a href={`/preview/news/${id}`} target="_blank" rel="noopener" className="btn">Preview ↗</a>
+          <span style={{ color: "var(--grey-5)", fontSize: ".8rem", marginLeft: 10 }}>Shows the last saved version.</span>
+        </p>
+      )}
       {isNew || post ? (
         <NewsEditor post={post} />
       ) : (

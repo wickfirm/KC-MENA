@@ -129,6 +129,14 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
   `src/lib/rss-ingest.ts`. Items only enter the review queue. Raise the frequency only on a plan that allows it.
 - Migration: `db/migrations/003-submissions.sql` (adds `sf_error`).
 
+## Polish (Phase D)
+
+- Admin sidebar is grouped (`navGroups` in `(admin)/admin/layout.tsx`); the "Administration" group is admin-only.
+  Dashboard: "Needs your attention", quick actions, and (admins) recent activity.
+- Media: client pre-validation, search, per-image alt text (`PUT /api/media/:id`, shown on thumbnails).
+- Draft preview: `/preview/news/:id` (signed-in, any status, noindex) renders the shared
+  `components/site/NewsArticleView` — the same component the public `/news/[slug]` page uses, so they cannot drift.
+
 ## UI conventions
 
 - Admin console: hand-rolled — inline `style={{}}` objects plus shared classes from

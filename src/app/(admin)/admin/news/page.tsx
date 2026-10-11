@@ -80,6 +80,9 @@ export default async function NewsListPage() {
                         View live ↗
                       </Link>
                     )}
+                    <Link href={`/preview/news/${r.id}`} target="_blank" style={{ marginLeft: 12, textDecoration: "underline" }}>
+                      Preview ↗
+                    </Link>
                     <RowActions entity="news" id={r.id} live={r.status === "published"} />
                   </td>
                 </tr>

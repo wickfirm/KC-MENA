@@ -9,6 +9,7 @@ type MediaRow = {
   filename: string;
   mime_type: string | null;
   size_bytes: number | null;
+  alt: string | null;
   created_at: string;
 };
 
@@ -26,7 +27,7 @@ export default async function MediaAdminPage() {
   let dbError: string | null = null;
   try {
     rows = await query<MediaRow>(
-      "SELECT id, url, filename, mime_type, size_bytes, created_at FROM media_assets ORDER BY created_at DESC, id DESC LIMIT 200"
+      "SELECT id, url, filename, mime_type, size_bytes, alt, created_at FROM media_assets ORDER BY created_at DESC, id DESC LIMIT 200"
     );
   } catch (err) {
     dbError = err instanceof Error ? err.message : "Database unavailable";
