@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /**
@@ -45,4 +45,28 @@ export function publicUrl(key: string): string {
   const base = process.env.R2_PUBLIC_BASE_URL;
   if (!base) throw new Error("R2_PUBLIC_BASE_URL is not set (bucket public domain)");
   return `${base.replace(/\/$/, "")}/${key}`;
+}
+
+/**
+ * Bucket for applicant CVs. Set R2_CV_BUCKET to a PRIVATE bucket (no public domain) so CVs are
+ * only reachable through the authenticated admin download; falls back to R2_BUCKET.
+ */
+export function cvBucket(): string {
+  return process.env.R2_CV_BUCKET || r2Bucket();
+}
+
+/** Server-side upload of a small object (used for applicant CVs). */
+export async function putObject(bucket: string, key: string, body: Uint8Array, contentType: string): Promise<void> {
+  await r2().send(new PutObjectCommand({ Bucket: bucket, Key: key, Body: body, ContentType: contentType }));
+}
+
+/** Fetch an object as a web stream, with its content type and length. */
+export async function getObject(bucket: string, key: string) {
+  const out = await r2().send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  if (!out.Body) throw new Error("Object has no body");
+  return {
+    stream: out.Body.transformToWebStream(),
+    contentType: out.ContentType ?? "application/octet-stream",
+    length: out.ContentLength,
+  };
 }

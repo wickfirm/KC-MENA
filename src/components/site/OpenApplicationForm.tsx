@@ -5,8 +5,8 @@ import type { ListingContent } from "@/lib/listing-content";
 
 /** Open-application form on the Careers page — markup mirrors the delivered
  *  .app-form; submissions persist to /api/submissions (type 'career').
- *  CV files are not stored server-side; the filename is noted on the message
- *  so the team can request the document directly. */
+ *  An attached CV is uploaded with the submission and stored privately (R2);
+ *  the team downloads it from /admin/submissions. */
 export default function OpenApplicationForm({ content }: { content?: ListingContent["careerForm"] }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
@@ -25,22 +25,32 @@ export default function OpenApplicationForm({ content }: { content?: ListingCont
       `Business: ${values.get("fbusiness")}`,
       values.get("fmarket") ? `Preferred market: ${values.get("fmarket")}` : "",
       `Position: ${values.get("frole")}`,
-      cvName ? `CV attached as: ${cvName} (document to follow by email)` : "",
+      cvName ? `CV: ${cvName}` : "",
       String(values.get("fmessage") ?? ""),
     ].filter(Boolean).join("\n");
-    const response = await fetch("/api/submissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "career",
-        source: "careers-open",
-        subject: `Open application: ${values.get("fbusiness")}${values.get("frole") ? ` — ${values.get("frole")}` : ""}`,
-        name: `${first} ${last}`.trim(),
-        email: values.get("femail"),
-        phone: values.get("fphone"),
-        message: details,
-      }),
-    });
+    const fields = {
+      type: "career",
+      source: "careers-open",
+      subject: `Open application: ${values.get("fbusiness")}${values.get("frole") ? ` — ${values.get("frole")}` : ""}`,
+      name: `${first} ${last}`.trim(),
+      email: String(values.get("femail") ?? ""),
+      phone: String(values.get("fphone") ?? ""),
+      message: details,
+    };
+    // With a CV the request is multipart (the file is stored privately server-side); otherwise plain JSON.
+    let response: Response;
+    if (cv instanceof File && cv.size > 0) {
+      const payload = new FormData();
+      Object.entries(fields).forEach(([key, value]) => payload.append(key, value));
+      payload.append("cv", cv);
+      response = await fetch("/api/submissions", { method: "POST", body: payload });
+    } else {
+      response = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+    }
     setBusy(false);
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));

@@ -70,7 +70,7 @@ Each phase ships independently and keeps `next build` green.
 3. Row-level status actions (publish/unpublish/archive/restore) and duplicate; search and filter chips on list pages (rows 10–12).
 4. ~~News cover alt text~~ dropped (see row 13). Archive status deferred: it needs CHECK-constraint changes and a client decision.
 
-### Phase C — Inbox & integrations
+### Phase C — Inbox & integrations (built; Salesforce awaits client credentials and field mapping; structured per-field `details` not built — the forms already write "Label: value" lines into the message, shown verbatim in the detail view)
 1. Submission detail view, structured details, filters/paging (row 15).
 2. Salesforce dual-write + per-row Retry sync + dashboard alerts (rows 16, 7). Blocked on credentials.
 3. Career CV upload to private R2 storage (row 18).

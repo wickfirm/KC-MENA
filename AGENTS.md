@@ -114,6 +114,21 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
   and `RowActions` → `POST /api/content/:entity/:id` (`publish | unpublish | duplicate`; copies start unpublished).
 - Migration: `db/migrations/002-content-versions.sql` (apply before deploying).
 
+## Inbox & integrations (Phase C)
+
+- **Submissions** (`POST /api/submissions`, public): JSON or multipart (CV in field `cv`). Always stored
+  first in `contact_submissions`; the Salesforce mirror runs in `after()` so visitors never wait on it.
+  `src/lib/salesforce.ts` (standard Lead, env `SALESFORCE_*`) is a no-op until configured; rows stay
+  `pending`. Failures set `sf_sync_status='failed'` + `sf_error`; replay with
+  `POST /api/submissions/:id/retry` (button on `/admin/submissions/:id`). Field mapping pending client sign-off.
+- **CVs:** the delivered Careers form already has the `fcv` input; the file is uploaded with the submission
+  (≤4 MB, PDF/DOC/DOCX), stored in R2 under `cv/…` (use a private `R2_CV_BUCKET`), recorded in
+  `meta.cv`, and downloaded only via `GET /api/submissions/:id/cv` (signed-in users).
+- **Admin list:** `/admin/submissions` has type/sync filters, search and paging (25/page).
+- **RSS cron:** `vercel.json` → `GET /api/cron/rss-ingest` (daily; needs `CRON_SECRET`). Shared logic in
+  `src/lib/rss-ingest.ts`. Items only enter the review queue. Raise the frequency only on a plan that allows it.
+- Migration: `db/migrations/003-submissions.sql` (adds `sf_error`).
+
 ## UI conventions
 
 - Admin console: hand-rolled — inline `style={{}}` objects plus shared classes from

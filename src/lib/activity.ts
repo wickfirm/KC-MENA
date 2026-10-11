@@ -23,6 +23,7 @@ export const activityActionLabels = {
   "rss.ingest": "RSS fetches",
   "rss.approve": "RSS approvals",
   "rss.reject": "RSS rejections",
+  "submission.retry": "Salesforce retries",
 } as const;
 
 export type ActivityAction = keyof typeof activityActionLabels;
