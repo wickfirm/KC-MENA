@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { logActivity } from "@/lib/activity";
-import { buildRestoreQuery, getVersion, isVersionEntity, recordVersion, versionEntities, versionRoles } from "@/lib/versions";
+import { buildRestoreQuery, getVersion, isVersionEntity, recordVersion, versionEntities, restorePermission } from "@/lib/versions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: strin
       return NextResponse.json({ error: "Version not found" }, { status: 404 });
     }
     const config = versionEntities[version.entity_type];
-    const denied = denyUnless(session, versionRoles(version.entity_type));
+    const denied = denyUnlessCan(session, restorePermission(version.entity_type));
     if (denied) return denied;
 
     const { text, params } = buildRestoreQuery(version.entity_type, version.entity_id, version.snapshot);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowId } from "@/lib/activity";
 import { query } from "@/lib/db";
 
@@ -26,7 +26,8 @@ export async function GET() {
 /** POST /api/media — register an asset after its browser upload completed (admin only) */
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "media.upload");
+  if (denied || !session) return denied!;
 
   let p: MediaPayload;
   try {

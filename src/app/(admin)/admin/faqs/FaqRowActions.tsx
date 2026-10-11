@@ -29,10 +29,10 @@ export default function FaqRowActions({ id, isPublished }: { id: number; isPubli
 
   return (
     <>
-      <button onClick={toggle} disabled={busy} className="btn" style={{ padding: "4px 10px", fontSize: "0.7rem" }}>
+      <button onClick={toggle} disabled={busy} data-requires="publish" className="btn" style={{ padding: "4px 10px", fontSize: "0.7rem" }}>
         {isPublished ? "Unpublish" : "Publish"}
       </button>
-      <button onClick={remove} disabled={busy} className="btn btn-danger" style={{ padding: "4px 10px", fontSize: "0.7rem", marginLeft: 8 }}>
+      <button onClick={remove} disabled={busy} data-requires="delete" className="btn btn-danger" style={{ padding: "4px 10px", fontSize: "0.7rem", marginLeft: 8 }}>
         Delete
       </button>
     </>

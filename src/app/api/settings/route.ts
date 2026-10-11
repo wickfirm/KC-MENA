@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -10,7 +10,8 @@ export const dynamic = "force-dynamic";
 /** GET /api/settings — current site settings (admin only) */
 export async function GET() {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "settings.manage");
+  if (denied || !session) return denied!;
   try {
     const row = await queryOne<{ value: unknown }>("SELECT value FROM settings WHERE key = $1", [SETTINGS_KEY]);
     return NextResponse.json({ settings: normalizeSiteSettings(row?.value) });
@@ -23,8 +24,8 @@ export async function GET() {
 /** PUT /api/settings — save the whole settings document (admin only) */
 export async function PUT(req: NextRequest) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "settings.manage");
+  if (denied || !session) return denied!;
   let body: { settings?: unknown };
   try {
     body = await req.json();

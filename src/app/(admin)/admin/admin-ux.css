@@ -1,0 +1,64 @@
+/* Admin UX layer: long-page navigation, sticky save bar, loading shell, read-only/role states.
+   Loaded by the admin layout only; uses the site's tokens (--black, --grey-*, --line). */
+
+/* -- Section rail ("On this page") ------------------------------------------------- */
+.cms-rail {
+  position: fixed; top: 84px; right: 20px; width: 210px; max-height: calc(100vh - 170px); overflow: auto;
+  background: var(--white); border: 1px solid var(--line); border-radius: 3px; padding: 14px 12px; z-index: 20;
+}
+.cms-rail__title { display: block; font-size: .64rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--grey-5); margin: 0 0 8px 8px; }
+.cms-rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.cms-rail li button {
+  display: block; width: 100%; text-align: left; padding: 6px 8px; font: inherit; font-size: .8rem; color: var(--grey-6);
+  background: transparent; border: 0; border-left: 2px solid transparent; cursor: pointer;
+}
+.cms-rail li button:hover { background: var(--grey-1); }
+.cms-rail li button.is-active { color: var(--black); font-weight: 700; background: var(--grey-1); border-left-color: var(--black); }
+.cms-rail__toggle {
+  margin: 10px 0 0 8px; padding: 0; font: inherit; font-size: .74rem; font-weight: 600; text-decoration: underline;
+  background: none; border: 0; color: var(--grey-6); cursor: pointer;
+}
+/* Keep the form clear of the rail on wide screens; hide the rail when there is no room. */
+@media (min-width: 1500px) { main form.cms-enhanced { margin-right: 236px; } }
+@media (max-width: 1499px) { .cms-rail { display: none; } }
+
+/* -- Collapsible sections --------------------------------------------------------- */
+main form.cms-enhanced section[data-collapsible] > h2:first-child { cursor: pointer; position: relative; padding-right: 28px; user-select: none; }
+main form.cms-enhanced section[data-collapsible] > h2:first-child::after {
+  content: ""; position: absolute; right: 6px; top: 50%; width: 8px; height: 8px; margin-top: -6px;
+  border-right: 2px solid var(--grey-5); border-bottom: 2px solid var(--grey-5); transform: rotate(45deg); transition: transform .15s;
+}
+main form.cms-enhanced section[data-collapsed] > h2:first-child::after { transform: rotate(-45deg); margin-top: -4px; }
+main form.cms-enhanced section[data-collapsed] > *:not(:first-child) { display: none !important; }
+main form.cms-enhanced section[data-collapsed] > h2:first-child { margin-bottom: 0 !important; }
+
+/* -- Sticky save bar --------------------------------------------------------------- */
+.cms-savebar {
+  position: fixed; left: 230px; right: 0; bottom: 0; z-index: 30; display: flex; align-items: center; justify-content: flex-end; gap: 14px;
+  padding: 10px 40px; background: rgba(255, 255, 255, .96); border-top: 1px solid var(--line); backdrop-filter: blur(6px);
+}
+.cms-savebar__hint { margin-right: auto; font-size: .78rem; color: var(--grey-5); }
+.cms-savebar__top { font: inherit; font-size: .78rem; background: none; border: 0; color: var(--grey-6); text-decoration: underline; cursor: pointer; }
+main { padding-bottom: 84px; }
+@media (max-width: 800px) { .cms-savebar { left: 0; padding: 10px 16px; } }
+
+/* -- Loading shell (shown the instant a link is clicked) --------------------------- */
+.cms-loading { position: relative; display: grid; gap: 18px; max-width: 960px; }
+.cms-loading__bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--black); transform-origin: left; animation: cms-bar 1.4s ease-in-out infinite; z-index: 60; }
+.cms-loading__line { display: block; height: 12px; border-radius: 2px; background: var(--grey-2); animation: cms-pulse 1.2s ease-in-out infinite; }
+.cms-loading__line--title { height: 26px; width: 36%; }
+.cms-loading__line--text { width: 60%; }
+.cms-loading__line--short { width: 45%; }
+.cms-loading__card { display: grid; gap: 10px; padding: 24px; background: var(--white); border: 1px solid var(--line); border-radius: 3px; }
+.cms-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@keyframes cms-bar { 0% { transform: scaleX(.05); } 50% { transform: scaleX(.7); } 100% { transform: scaleX(1); opacity: .2; } }
+@keyframes cms-pulse { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .cms-loading__bar, .cms-loading__line { animation: none; } }
+
+/* -- Role-based controls ----------------------------------------------------------
+   Controls a role cannot use are marked data-requires="write|publish|delete" and hidden here.
+   The server enforces the same rules (src/lib/permissions.ts); this only removes dead buttons. */
+[data-role="editor"] [data-requires="delete"],
+[data-role="contributor"] [data-requires="delete"],
+[data-role="contributor"] [data-requires="publish"],
+[data-role="viewer"] [data-requires] { display: none !important; }

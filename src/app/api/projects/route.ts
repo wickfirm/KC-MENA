@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { allowedStatus } from "@/lib/permissions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query } from "@/lib/db";
@@ -27,7 +28,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.write");
+  if (denied || !session) return denied!;
   let p: ProjectPayload;
   try { p = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
   const name = p.name?.trim();
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest) {
     const rows = await query(
       `INSERT INTO projects (slug, name, sector, status, location, summary, description, images, metadata, sort_order)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8::text::jsonb,$9::text::jsonb,$10) RETURNING *`,
-      [slug, name, sector, p.status === "published" ? "published" : "draft", p.location?.trim() || null,
+      [slug, name, sector, allowedStatus(session.role, p.status === "published" ? "published" : "draft"), p.location?.trim() || null,
        p.summary?.trim() || null, p.description?.trim() || null, JSON.stringify(p.images ?? []),
        JSON.stringify(p.metadata ?? {}), Number.isFinite(p.sort_order) ? p.sort_order : 0]
     );

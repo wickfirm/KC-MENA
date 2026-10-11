@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { presignUpload, publicUrl } from "@/lib/r2";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,8 @@ const ALLOWED_PREFIXES = ["image/", "application/pdf"];
  */
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "media.upload");
+  if (denied || !session) return denied!;
 
   let body: { filename?: string; contentType?: string; size?: number };
   try {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -8,7 +8,9 @@ import { isAboutContent, type AboutContent } from "@/lib/about-content";
 export const dynamic = "force-dynamic";
 
 export async function PUT(req: NextRequest) {
-  const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await getSession();
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!;
   let body: { status?: string; seo?: Record<string, string>; content?: AboutContent };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
   if (typeof (body.content as unknown) === "string") {

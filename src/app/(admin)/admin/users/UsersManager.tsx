@@ -2,12 +2,13 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { roles, roleLabels, roleSummaries, type Role } from "@/lib/permissions";
 
 export type TeamUser = {
   id: number;
   email: string;
   name: string;
-  role: "admin" | "editor";
+  role: Role;
   is_active: boolean;
   last_login_at: string | null;
   created_at: string;
@@ -118,8 +119,9 @@ export default function UsersManager({ initial, meId }: { initial: TeamUser[]; m
                       onChange={(e) => call(`/api/users/${u.id}`, "PUT", { role: e.target.value })}
                       aria-label={`Role for ${u.email}`}
                     >
-                      <option value="admin">Administrator</option>
-                      <option value="editor">Editor</option>
+                      {roles.map((r) => (
+                        <option key={r} value={r}>{roleLabels[r]}</option>
+                      ))}
                     </select>
                   </td>
                   <td style={{ padding: "12px 16px" }}>
@@ -157,6 +159,18 @@ export default function UsersManager({ initial, meId }: { initial: TeamUser[]; m
         </table>
       </div>
 
+      <div className="card" style={{ maxWidth: 760, marginBottom: 24 }}>
+        <h2 style={{ fontSize: "1.1rem", marginBottom: 10 }}>What each role can do</h2>
+        <dl style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "8px 16px", margin: 0, fontSize: ".86rem" }}>
+          {roles.map((r) => (
+            <div key={r} style={{ display: "contents" }}>
+              <dt style={{ fontWeight: 700 }}>{roleLabels[r]}</dt>
+              <dd style={{ margin: 0, color: "var(--grey-6)" }}>{roleSummaries[r]}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
       <form onSubmit={create} className="card" style={{ maxWidth: 560 }}>
         <h2 style={{ fontSize: "1.1rem", marginBottom: 14 }}>Add a team member</h2>
         <div style={{ marginBottom: 14 }}>
@@ -174,8 +188,9 @@ export default function UsersManager({ initial, meId }: { initial: TeamUser[]; m
         <div style={{ marginBottom: 16 }}>
           <label htmlFor="u-role" style={labelStyle}>Role</label>
           <select id="u-role" name="role" defaultValue="editor">
-            <option value="editor">Editor</option>
-            <option value="admin">Administrator</option>
+            {roles.map((r) => (
+              <option key={r} value={r}>{roleLabels[r]}</option>
+            ))}
           </select>
         </div>
         <button className="btn btn-dark" type="submit" disabled={busy}>

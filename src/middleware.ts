@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken } from "@/lib/auth";
+import { canViewPath } from "@/lib/permissions";
 
 // Protect the entire /admin area. /admin/login stays public.
 export async function middleware(req: NextRequest) {
@@ -21,7 +22,11 @@ export async function middleware(req: NextRequest) {
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
-  return NextResponse.next();
+  // Fast reject only (the token role can be stale); pages and route handlers re-check against the database.
+  if (!canViewPath(session.role, pathname)) return NextResponse.redirect(new URL("/admin?denied=1", req.url));
+  const headers = new Headers(req.headers);
+  headers.set("x-pathname", pathname);
+  return NextResponse.next({ request: { headers } });
 }
 
 export const config = {

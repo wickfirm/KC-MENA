@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
-import { isVersionEntity, listVersions, versionRoles } from "@/lib/versions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
+import { isVersionEntity, listVersions } from "@/lib/versions";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,8 @@ export async function GET(req: NextRequest) {
   const entity = req.nextUrl.searchParams.get("entity");
   const id = req.nextUrl.searchParams.get("id");
   if (!isVersionEntity(entity) || !id) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  const denied = denyUnless(session, versionRoles(entity));
+  // Anyone signed in may read the history of content they can see; settings history is admin-only.
+  const denied = entity === "settings" ? denyUnlessCan(session, "settings.manage") : session ? null : denyUnlessCan(session, "inbox.read");
   if (denied) return denied;
   try {
     return NextResponse.json({ versions: await listVersions(entity, id) });

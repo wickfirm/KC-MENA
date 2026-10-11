@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import { slugify } from "@/lib/slug";
@@ -21,7 +21,8 @@ type RssItemRow = {
   * an editor reviews and publishes it from the News screen. */
 export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "rss.review");
+  if (denied || !session) return denied!;
 
   const { id } = await context.params;
   const itemId = Number(id);

@@ -1,5 +1,7 @@
 import VersionHistory from "@/components/admin/VersionHistory";
 import NewsEditor from "./NewsEditor";
+import { getSession } from "@/lib/auth";
+import { can } from "@/lib/permissions";
 import { queryOne } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +30,7 @@ async function getPost(id: string): Promise<NewsPost | null> {
 
 export default async function NewsEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const session = await getSession();
   const isNew = id === "new";
   const post = isNew ? null : await getPost(id);
 
@@ -43,7 +46,7 @@ export default async function NewsEditPage({ params }: { params: Promise<{ id: s
         </p>
       )}
       {isNew || post ? (
-        <NewsEditor post={post} />
+        <NewsEditor post={post} canPublish={can(session?.role, "content.publish")} />
       ) : (
         <div className="card">Post not found (or database unavailable).</div>
       )}

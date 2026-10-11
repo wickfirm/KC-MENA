@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
 import { logActivity } from "@/lib/activity";
 import { isSalesforceConfigured } from "@/lib/salesforce";
@@ -11,8 +11,8 @@ export const maxDuration = 30;
 /** POST /api/submissions/:id/retry — replay the Salesforce sync for a stored enquiry. */
 export async function POST(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin", "editor"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "messages.manage");
+  if (denied || !session) return denied!;
 
   const id = Number((await ctx.params).id);
   if (!Number.isInteger(id)) return NextResponse.json({ error: "Invalid id" }, { status: 400 });

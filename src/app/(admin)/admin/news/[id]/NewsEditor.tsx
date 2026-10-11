@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { NewsPost } from "./page";
 
-export default function NewsEditor({ post }: { post: NewsPost | null }) {
+export default function NewsEditor({ post, canPublish = true }: { post: NewsPost | null; canPublish?: boolean }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -101,7 +101,7 @@ export default function NewsEditor({ post }: { post: NewsPost | null }) {
           <select id="status" name="status" defaultValue={post?.status ?? "draft"}>
             <option value="draft">Draft</option>
             <option value="in_review">In Review</option>
-            <option value="published">Published</option>
+            {(canPublish || post?.status === "published") && <option value="published">Published</option>}
           </select>
         </Field>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 10 }}>
@@ -112,7 +112,7 @@ export default function NewsEditor({ post }: { post: NewsPost | null }) {
             Cancel
           </button>
           {post && (
-            <button type="button" className="btn btn-danger" onClick={remove} disabled={saving || deleting}>
+            <button type="button" className="btn btn-danger" data-requires="delete" onClick={remove} disabled={saving || deleting}>
               {deleting ? "…" : "Delete"}
             </button>
           )}

@@ -1,9 +1,11 @@
 import { SignJWT, jwtVerify } from "jose";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { queryOne } from "@/lib/db";
+import { can, normaliseRole, type Permission, type Role } from "@/lib/permissions";
 
 const COOKIE_NAME = "kc_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
@@ -12,7 +14,7 @@ export type SessionUser = {
   id: number;
   email: string;
   name: string;
-  role: "admin" | "editor";
+  role: Role;
 };
 
 function secretKey(): Uint8Array {
@@ -41,12 +43,20 @@ export async function verifySessionToken(token: string): Promise<SessionUser | n
       id: payload.id,
       email: payload.email,
       name: (payload.name as string) ?? "",
-      role: (payload.role as SessionUser["role"]) ?? "editor",
+      role: normaliseRole(payload.role),
     };
   } catch {
     return null;
   }
 }
+
+/** One users-row lookup per request (React cache): the layout, page and actions share it. */
+const loadUser = cache((id: number) =>
+  queryOne<{ id: number; email: string; name: string; role: string; is_active: boolean }>(
+    "SELECT id, email, name, role, is_active FROM users WHERE id = $1",
+    [id]
+  )
+);
 
 /**
  * Read the session from the request cookie (server components / route handlers).
@@ -64,12 +74,9 @@ export async function getSession(): Promise<SessionUser | null> {
   const claims = await verifySessionToken(token);
   if (!claims) return null;
   try {
-    const row = await queryOne<{ id: number; email: string; name: string; role: string; is_active: boolean }>(
-      "SELECT id, email, name, role, is_active FROM users WHERE id = $1",
-      [claims.id]
-    );
+    const row = await loadUser(claims.id);
     if (!row || !row.is_active) return null;
-    return { id: row.id, email: row.email, name: row.name, role: row.role === "admin" ? "admin" : "editor" };
+    return { id: row.id, email: row.email, name: row.name, role: normaliseRole(row.role) };
   } catch (error) {
     console.error("[auth] live session check failed, trusting token:", error);
     return claims;
@@ -89,6 +96,23 @@ export function denyUnless(session: SessionUser | null, roles: SessionUser["role
     return NextResponse.json({ error: "You do not have permission to do that" }, { status: 403 });
   }
   return null;
+}
+
+/** Route-handler guard: the 401/403 response to send, or null when the session holds the permission. */
+export function denyUnlessCan(session: SessionUser | null, permission: Permission): NextResponse | null {
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!can(session.role, permission)) {
+    return NextResponse.json({ error: "You do not have permission to do that" }, { status: 403 });
+  }
+  return null;
+}
+
+/** Server-component guard: sign-in required, then the permission; otherwise back to the dashboard. */
+export async function requirePermissionPage(permission: Permission): Promise<SessionUser> {
+  const session = await getSession();
+  if (!session) redirect("/admin/login");
+  if (!can(session.role, permission)) redirect("/admin?denied=1");
+  return session;
 }
 
 /** Server-component guard for admin-only screens. Editors are sent back to the dashboard. */
@@ -122,7 +146,7 @@ export async function verifyCredentials(
     id: row.id,
     email: row.email,
     name: row.name,
-    role: row.role === "admin" ? "admin" : "editor",
+    role: normaliseRole(row.role),
   };
 }
 

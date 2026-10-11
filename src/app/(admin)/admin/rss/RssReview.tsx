@@ -55,8 +55,8 @@ export default function RssReview({ initial }: { initial: Item[] }) {
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             {item.status === "pending" && <>
-              <button className="btn btn-dark" disabled={busyId === item.id} onClick={() => review(item.id, "approve")}>{busyId === item.id ? "…" : "Approve"}</button>
-              <button className="btn btn-danger" disabled={busyId === item.id} onClick={() => review(item.id, "reject")}>Reject</button>
+              <button className="btn btn-dark" data-requires="publish" disabled={busyId === item.id} onClick={() => review(item.id, "approve")}>{busyId === item.id ? "…" : "Approve"}</button>
+              <button className="btn btn-danger" data-requires="publish" disabled={busyId === item.id} onClick={() => review(item.id, "reject")}>Reject</button>
             </>}
             {item.status === "approved" && item.news_post_id && <a className="btn" href="/admin/news">Open in News</a>}
             {item.status === "rejected" && <span className="status-pill status-draft">Rejected</span>}

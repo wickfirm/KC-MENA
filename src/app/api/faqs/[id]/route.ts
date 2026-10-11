@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -10,7 +10,8 @@ export const dynamic = "force-dynamic";
 /** PUT /api/faqs/:id — update (admin only) */
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!;
 
   const { id } = await ctx.params;
   const faqId = Number(id);
@@ -55,7 +56,8 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 /** DELETE /api/faqs/:id — delete (admin only) */
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.delete");
+  if (denied || !session) return denied!;
 
   const { id } = await ctx.params;
   const faqId = Number(id);

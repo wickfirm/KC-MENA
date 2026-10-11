@@ -24,7 +24,7 @@ export default function RetrySyncButton({ id }: { id: number }) {
   }
 
   return (
-    <div style={{ marginTop: 12 }}>
+    <div data-requires="publish" style={{ marginTop: 12 }}>
       <button type="button" className="btn btn-dark" disabled={busy} onClick={retry}>
         {busy ? "Syncing…" : "Retry sync"}
       </button>

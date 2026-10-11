@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -10,7 +10,8 @@ type Payload = { status?: "draft" | "published"; seo?: { title?: string; descrip
 
 export async function PUT(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!;
   let payload: Payload;
   try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }
 , { status: 400 }); }

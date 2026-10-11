@@ -50,11 +50,11 @@ export default function RowActions({
   return (
     <>
       {showPublish && (
-        <button type="button" className="btn" style={small} disabled={busy} onClick={() => run(live ? "unpublish" : "publish")}>
+        <button type="button" className="btn" style={small} disabled={busy} data-requires="publish" onClick={() => run(live ? "unpublish" : "publish")}>
           {live ? "Unpublish" : "Publish"}
         </button>
       )}
-      <button type="button" className="btn" style={small} disabled={busy} onClick={() => run("duplicate")}>
+      <button type="button" className="btn" style={small} disabled={busy} data-requires="write" onClick={() => run("duplicate")}>
         Duplicate
       </button>
       {error && <span className="error-msg" style={{ marginLeft: 8 }}>{error}</span>}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -19,7 +19,8 @@ type Payload = {
 
 export async function PUT(req: NextRequest, context: { params: Promise<{ slug: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!;
 
   const { slug } = await context.params;
   if (!isBusinessDetailSlug(slug)) return NextResponse.json({ error: "Unknown business page" }, { status: 404 });

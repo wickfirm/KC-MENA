@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { can, mayEditContent } from "@/lib/permissions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -18,17 +19,28 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
 }
 
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await getSession();
+  const denied = denyUnlessCan(session, "content.write");
+  if (denied || !session) return denied!;
   const id = idFrom((await ctx.params).id); if (!id) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   let p: ProjectPayload; try { p = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
   if (p.sector !== undefined && !SECTORS.includes(p.sector)) return NextResponse.json({ error: "Choose a valid sector" }, { status: 400 });
   try {
+    if (!can(session.role, "content.editLive")) {
+      const current = await queryOne<{ status: string }>("SELECT status FROM projects WHERE id = $1", [id]);
+      if (!current) return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      if (!mayEditContent(session.role, current.status)) {
+        return NextResponse.json({ error: "This project is live. Only an Editor can change it." }, { status: 403 });
+      }
+    }
+    const requested = p.status === "published" ? "published" : p.status === "draft" ? "draft" : null;
+    const storedStatus = requested && !can(session.role, "content.publish") ? "draft" : requested;
     const rows = await query(
       `UPDATE projects SET name=COALESCE($2,name), slug=COALESCE($3,slug), sector=COALESCE($4,sector), status=COALESCE($5,status),
        location=$6, summary=$7, description=$8, images=COALESCE($9::text::jsonb,images), metadata=COALESCE($10::text::jsonb,metadata),
        sort_order=COALESCE($11,sort_order), updated_at=now() WHERE id=$1 RETURNING *`,
       [id, p.name?.trim() || null, p.slug ? slugify(p.slug) : null, p.sector ?? null,
-       p.status === "published" ? "published" : p.status === "draft" ? "draft" : null,
+       storedStatus,
        p.location?.trim() || null, p.summary?.trim() || null, p.description?.trim() || null,
        p.images ? JSON.stringify(p.images) : null, p.metadata ? JSON.stringify(p.metadata) : null,
        Number.isFinite(p.sort_order) ? p.sort_order : null]
@@ -40,7 +52,9 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 }
 
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await getSession();
+  const denied = denyUnlessCan(session, "content.delete");
+  if (denied || !session) return denied!;
   const id = idFrom((await ctx.params).id); if (!id) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   try { const row = await queryOne("DELETE FROM projects WHERE id = $1 RETURNING id", [id]); if (row) await logActivity({ action: "content.delete", summary: `Deleted project #${id}`, actor: session, entityType: "project", entityId: id }); return row ? NextResponse.json({ ok: true }) : NextResponse.json({ error: "Project not found" }, { status: 404 }); }
   catch (err) { console.error("DELETE /api/projects/:id error:", err); return NextResponse.json({ error: "Could not delete project" }, { status: 500 }); }

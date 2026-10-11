@@ -122,7 +122,7 @@ export default function MediaLibrary({ rows }: { rows: MediaRow[] }) {
 
   return (
     <>
-      <div className="card" style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", marginBottom: 20 }}>
+      <div className="card" data-requires="write" style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", marginBottom: 20 }}>
         <input
           ref={fileInput}
           type="file"
@@ -182,7 +182,7 @@ export default function MediaLibrary({ rows }: { rows: MediaRow[] }) {
                   )}
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {isImage && (
-                      <button className="btn" style={{ padding: "4px 8px", fontSize: "0.7rem" }} onClick={() => editAlt(m)}>
+                      <button className="btn" data-requires="write" style={{ padding: "4px 8px", fontSize: "0.7rem" }} onClick={() => editAlt(m)}>
                         Alt text
                       </button>
                     )}
@@ -192,7 +192,7 @@ export default function MediaLibrary({ rows }: { rows: MediaRow[] }) {
                     <a href={m.url} target="_blank" rel="noopener" className="btn" style={{ padding: "4px 8px", fontSize: "0.7rem", textDecoration: "none" }}>
                       View
                     </a>
-                    <button className="btn btn-danger" style={{ padding: "4px 8px", fontSize: "0.7rem", marginLeft: "auto" }} onClick={() => remove(m.id, m.filename)}>
+                    <button className="btn btn-danger" data-requires="delete" style={{ padding: "4px 8px", fontSize: "0.7rem", marginLeft: "auto" }} onClick={() => remove(m.id, m.filename)}>
                       Delete
                     </button>
                   </div>

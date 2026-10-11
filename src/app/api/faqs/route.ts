@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query } from "@/lib/db";
@@ -25,7 +25,8 @@ export async function GET() {
 /** POST /api/faqs — create (admin only) */
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!;
 
   let p: FaqPayload;
   try {

@@ -79,7 +79,7 @@ export default function UnsavedGuard() {
       style={{
         position: "fixed",
         right: 20,
-        bottom: 20,
+        bottom: 72,
         zIndex: 50,
         background: "#fdf0d4",
         color: "#6b4a00",

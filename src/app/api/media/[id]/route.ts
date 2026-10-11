@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 
@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
  */
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "media.delete");
+  if (denied || !session) return denied!;
 
   const { id } = await ctx.params;
   const mediaId = Number(id);
@@ -33,8 +33,8 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: str
 /** PUT /api/media/:id — update a library item's alt text (any signed-in user). */
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin", "editor"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "media.upload");
+  if (denied || !session) return denied!;
 
   const mediaId = Number((await ctx.params).id);
   if (!Number.isInteger(mediaId)) return NextResponse.json({ error: "Invalid id" }, { status: 400 });

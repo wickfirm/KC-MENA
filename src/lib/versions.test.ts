@@ -32,6 +32,10 @@ describe("buildRestoreQuery", () => {
     expect(text).toContain("UPDATE pages SET title = $2, status = $3, content = $4::text::jsonb, seo = $5::text::jsonb, updated_at = now() WHERE slug = $1");
     expect(params).toEqual(["about-us", "About", "published", '{"a":1}', "{}"]);
   });
+  it("unwraps JSON columns that were snapshotted as strings (pre-fix versions)", () => {
+    const { params } = buildRestoreQuery("page", "home", { title: "Home", seo: '{"title":"T"}' });
+    expect(params[2]).toBe('{"title":"T"}');
+  });
   it("uses a numeric id for id-keyed entities", () => {
     const { params } = buildRestoreQuery("faq", "12", { question: "Q", answer: "A" });
     expect(params[0]).toBe(12);

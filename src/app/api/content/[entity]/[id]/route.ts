@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { can } from "@/lib/permissions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { query, queryOne } from "@/lib/db";
 import { logActivity, rowId, rowLabel } from "@/lib/activity";
 import { recordVersion, type VersionEntity } from "@/lib/versions";
@@ -61,8 +62,8 @@ async function freeSlug(table: string, base: string): Promise<string> {
  */
 export async function POST(req: NextRequest, ctx: { params: Promise<{ entity: string; id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin", "editor"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "content.write");
+  if (denied || !session) return denied!;
 
   const { entity, id } = await ctx.params;
   const config = Object.prototype.hasOwnProperty.call(ENTITIES, entity) ? ENTITIES[entity] : null;
@@ -78,6 +79,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ entity: st
 
   try {
     if (body.action === "publish" || body.action === "unpublish") {
+      if (!can(session.role, "content.publish")) return NextResponse.json({ error: "Only an Editor can publish or unpublish." }, { status: 403 });
       const set = body.action === "publish" ? config.publish : config.unpublish;
       const rows = await query(`UPDATE ${config.table} SET ${set}, updated_at = now() WHERE id = $1 RETURNING *`, [rowKey]);
       if (!rows[0]) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -91,6 +93,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ entity: st
     }
 
     if (body.action === "duplicate") {
+      // Contributors may copy the content they write (news, projects); FAQs and jobs are live-page content.
+      if ((entity === "faq" || entity === "job") && !can(session.role, "content.editLive")) {
+        return NextResponse.json({ error: "You do not have permission to do that" }, { status: 403 });
+      }
       const source = await queryOne<Record<string, unknown>>(`SELECT * FROM ${config.table} WHERE id = $1`, [rowKey]);
       if (!source) return NextResponse.json({ error: "Not found" }, { status: 404 });
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { allowedStatus, can, mayEditContent } from "@/lib/permissions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
@@ -10,7 +11,8 @@ export const dynamic = "force-dynamic";
 /** PUT /api/news/:id — update a post (admin only) */
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.write");
+  if (denied || !session) return denied!;
 
   const { id } = await ctx.params;
   const postId = Number(id);
@@ -23,9 +25,16 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const status = ["draft", "in_review", "published"].includes(p.status ?? "") ? p.status! : "draft";
+  const status = allowedStatus(session.role, ["draft", "in_review", "published"].includes(p.status ?? "") ? p.status! : "draft");
 
   try {
+    if (!can(session.role, "content.editLive")) {
+      const current = await queryOne<{ status: string }>("SELECT status FROM news_posts WHERE id = $1", [postId]);
+      if (!current) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+      if (!mayEditContent(session.role, current.status)) {
+        return NextResponse.json({ error: "This post is live. Only an Editor can change it." }, { status: 403 });
+      }
+    }
     const rows = await query(
       `UPDATE news_posts SET
          title = COALESCE($2, title),
@@ -67,7 +76,8 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 /** DELETE /api/news/:id — delete a post (admin only) */
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.delete");
+  if (denied || !session) return denied!;
 
   const { id } = await ctx.params;
   const postId = Number(id);

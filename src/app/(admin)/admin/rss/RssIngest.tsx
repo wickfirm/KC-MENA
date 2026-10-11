@@ -35,7 +35,7 @@ export default function RssIngest() {
 
   return (
     <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
-      <button className="btn btn-dark" onClick={run} disabled={busy}>
+      <button className="btn btn-dark" data-requires="publish" onClick={run} disabled={busy}>
         {busy ? "Fetching feeds…" : "Fetch feeds now"}
       </button>
       {message && <span style={{ fontSize: ".82rem", color: "var(--grey-5)" }}>{message}</span>}

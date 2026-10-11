@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless, hashPassword } from "@/lib/auth";
+import { isRole } from "@/lib/permissions";
+import { getSession, denyUnlessCan, hashPassword } from "@/lib/auth";
 import { query, queryOne } from "@/lib/db";
 import { logActivity } from "@/lib/activity";
 import { passwordProblem } from "@/lib/password-rules";
@@ -20,8 +21,8 @@ async function activeAdminCount(): Promise<number> {
  */
 export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "team.manage");
+  if (denied || !session) return denied!;
 
   const userId = Number((await ctx.params).id);
   if (!Number.isInteger(userId)) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
@@ -40,11 +41,11 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
     const removesAdmin = target.role === "admin" && target.is_active;
 
     // Validate everything before writing anything.
-    const role = body.role === undefined ? undefined : body.role === "admin" ? "admin" : "editor";
+    const role = body.role === undefined ? undefined : isRole(body.role) ? body.role : "editor";
     const active = body.is_active === undefined ? undefined : Boolean(body.is_active);
     const problem = body.password === undefined ? null : passwordProblem(body.password);
     if (problem) return NextResponse.json({ error: problem }, { status: 400 });
-    if (role === "editor" && removesAdmin && (await activeAdminCount()) <= 1) {
+    if (role !== undefined && role !== "admin" && removesAdmin && (await activeAdminCount()) <= 1) {
       return NextResponse.json({ error: "You need at least one active administrator. Promote someone else first." }, { status: 400 });
     }
     if (active === false) {
@@ -84,8 +85,8 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 /** DELETE /api/users/:id — delete an account (admin only). Not yourself; not the last active admin. */
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "team.manage");
+  if (denied || !session) return denied!;
 
   const userId = Number((await ctx.params).id);
   if (!Number.isInteger(userId)) return NextResponse.json({ error: "Invalid id" }, { status: 400 });

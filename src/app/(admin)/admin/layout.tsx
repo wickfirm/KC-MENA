@@ -1,7 +1,12 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
+import { canViewPath, roleLabel } from "@/lib/permissions";
 import LogoutButton from "./LogoutButton";
 import UnsavedGuard from "@/components/admin/UnsavedGuard";
+import EditorEnhancer from "@/components/admin/EditorEnhancer";
+import "./admin-ux.css";
 
 export const dynamic = "force-dynamic";
 
@@ -59,10 +64,15 @@ const linkStyle: React.CSSProperties = { padding: "7px 12px", borderRadius: 2, f
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getSession();
-  const groups = navGroups.filter((g) => !g.adminOnly || user?.role === "admin");
+  // Real (database-backed) access check for the screen being opened; the middleware only fast-rejects.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  if (user && pathname && !canViewPath(user.role, pathname)) redirect("/admin?denied=1");
+  const groups = navGroups
+    .map((g) => ({ ...g, items: g.items.filter((item) => !user || canViewPath(user.role, item.href)) }))
+    .filter((g) => g.items.length > 0);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div data-role={user?.role ?? "viewer"} style={{ display: "flex", minHeight: "100vh" }}>
       <aside
         style={{
           width: 230,
@@ -112,7 +122,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {user && (
           <div style={{ padding: "16px 24px 0", borderTop: "1px solid #2a2a2a", fontSize: "0.8rem" }}>
             <p style={{ color: "#fff", fontWeight: 600 }}>{user.name || user.email}</p>
-            <p style={{ color: "#9a9a9a", marginBottom: 6 }}>{user.role === "admin" ? "Administrator" : "Editor"}</p>
+            <p style={{ color: "#9a9a9a", marginBottom: 6 }}>{roleLabel(user.role)}</p>
             <p style={{ marginBottom: 10 }}>
               <Link href="/admin/account" style={{ textDecoration: "underline", color: "#c7c7c7" }}>
                 My account
@@ -122,8 +132,21 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         )}
       </aside>
-      <main style={{ flex: 1, padding: "32px 40px", minWidth: 0 }}>{children}</main>
+      <main style={{ flex: 1, padding: "32px 40px", minWidth: 0 }}>
+        {user?.role === "viewer" && (
+          <div className="card" style={{ borderLeft: "4px solid var(--grey-4)", marginBottom: 20, padding: "12px 18px", fontSize: ".85rem" }}>
+            You have view-only access. You can look at everything you are allowed to see, but changes are disabled.
+          </div>
+        )}
+        {user?.role === "contributor" && (
+          <div className="card" style={{ borderLeft: "4px solid var(--grey-4)", marginBottom: 20, padding: "12px 18px", fontSize: ".85rem" }}>
+            You are a Contributor: your news and projects are saved as drafts (news can be submitted for review). An Editor publishes them.
+          </div>
+        )}
+        {children}
+      </main>
       <UnsavedGuard />
+      <EditorEnhancer role={user?.role ?? "viewer"} />
     </div>
   );
 }

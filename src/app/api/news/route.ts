@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { allowedStatus, can } from "@/lib/permissions";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
-import { query } from "@/lib/db";
+import { query, queryOne } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,8 @@ export async function GET() {
 /** POST /api/news — create a post (admin only) */
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "content.write");
+  if (denied || !session) return denied!;
 
   let p: NewsPayload;
   try {
@@ -42,7 +44,12 @@ export async function POST(req: NextRequest) {
   if (!p.title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
 
   const slug = slugify(p.slug?.trim() || p.title);
-  const status = ["draft", "in_review", "published"].includes(p.status ?? "") ? p.status! : "draft";
+  const status = allowedStatus(session.role, ["draft", "in_review", "published"].includes(p.status ?? "") ? p.status! : "draft");
+  // Without edit-live rights a save must never overwrite an existing (possibly live) post via the slug upsert.
+  if (!can(session.role, "content.editLive")) {
+    const existing = await queryOne("SELECT 1 FROM news_posts WHERE slug = $1", [slug]);
+    if (existing) return NextResponse.json({ error: "A post with that web address already exists. Change the title or slug." }, { status: 409 });
+  }
 
   try {
     const rows = await query(

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { ingestActiveFeeds } from "@/lib/rss-ingest";
 
@@ -9,7 +9,8 @@ export const maxDuration = 60;
 /** POST /api/rss/ingest — pull every active feed and queue new items for review. */
 export async function POST() {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnlessCan(session, "rss.review");
+  if (denied || !session) return denied!;
 
   let result;
   try {

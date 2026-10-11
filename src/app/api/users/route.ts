@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless, hashPassword } from "@/lib/auth";
+import { isRole } from "@/lib/permissions";
+import { getSession, denyUnlessCan, hashPassword } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { logActivity } from "@/lib/activity";
 import { passwordProblem } from "@/lib/password-rules";
@@ -11,8 +12,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** GET /api/users — team list (admin only) */
 export async function GET() {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "team.manage");
+  if (denied || !session) return denied!;
   try {
     const users = await query(
       "SELECT id, email, name, role, is_active, last_login_at, created_at FROM users ORDER BY created_at ASC"
@@ -27,8 +28,8 @@ export async function GET() {
 /** POST /api/users — create an account (admin only). Body: { name, email, password, role } */
 export async function POST(req: NextRequest) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "team.manage");
+  if (denied || !session) return denied!;
 
   let body: { name?: string; email?: string; password?: string; role?: string };
   try {
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
   }
   const name = body.name?.trim() ?? "";
   const email = body.email?.trim().toLowerCase() ?? "";
-  const role = body.role === "admin" ? "admin" : "editor";
+  const role = isRole(body.role) ? body.role : "editor";
   if (!name) return NextResponse.json({ error: "Enter the person's name" }, { status: 400 });
   if (!EMAIL_RE.test(email)) return NextResponse.json({ error: "Enter a valid email address" }, { status: 400 });
   const problem = passwordProblem(body.password ?? "");

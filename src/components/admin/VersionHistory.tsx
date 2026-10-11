@@ -75,7 +75,7 @@ export default function VersionHistory({ entity, entityId }: { entity: string; e
                   </td>
                   <td style={{ padding: "8px 0", textAlign: "right" }}>
                     {i > 0 && (
-                      <button type="button" className="btn" disabled={busy} onClick={() => restore(v)}>
+                      <button type="button" className="btn" data-requires="publish" disabled={busy} onClick={() => restore(v)}>
                         Restore
                       </button>
                     )}

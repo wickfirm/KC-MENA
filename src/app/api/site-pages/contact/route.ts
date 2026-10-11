@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
 import { isContactContent, type ContactContent } from "@/lib/contact-content";
 export const dynamic = "force-dynamic";
-export async function PUT(req: NextRequest) { const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 }); let payload: { status?: "draft" | "published"; seo?: { title?: string; description?: string }; content?: ContactContent }; try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }
+export async function PUT(req: NextRequest) { const session = await getSession();
+  const denied = denyUnlessCan(session, "content.editLive");
+  if (denied || !session) return denied!; let payload: { status?: "draft" | "published"; seo?: { title?: string; description?: string }; content?: ContactContent }; try { payload = await req.json(); } catch { return NextResponse.json({ error: "Invalid request body" }
 , { status: 400 }); }
   if (typeof (payload.content as unknown) === "string") {
     try { payload.content = JSON.parse(payload.content as unknown as string); } catch { /* validation will reject */ }

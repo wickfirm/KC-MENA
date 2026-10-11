@@ -41,9 +41,9 @@ export function isVersionEntity(value: unknown): value is VersionEntity {
   return typeof value === "string" && Object.prototype.hasOwnProperty.call(versionEntities, value);
 }
 
-/** Roles allowed to view/restore versions of an entity (site-wide settings are admin-only). */
-export function versionRoles(entity: VersionEntity): ("admin" | "editor")[] {
-  return (versionEntities[entity] as EntityConfig).adminOnly ? ["admin"] : ["admin", "editor"];
+/** Permission needed to restore versions of an entity (site-wide settings are admin-only). */
+export function restorePermission(entity: VersionEntity): "settings.manage" | "content.editLive" {
+  return (versionEntities[entity] as EntityConfig).adminOnly ? "settings.manage" : "content.editLive";
 }
 
 export type VersionSnapshot = Record<string, unknown>;
@@ -75,7 +75,11 @@ export function buildRestoreQuery(
   const sets: string[] = [];
   for (const col of config.cols) {
     if (!(col in snapshot)) continue;
-    const value = snapshot[col];
+    let value = snapshot[col];
+    // Snapshots saved before the JSON-encoding fix may hold a JSON column as a string of JSON: unwrap it.
+    if (config.json.includes(col) && typeof value === "string" && /^\s*[\[{]/.test(value)) {
+      try { value = JSON.parse(value); } catch { /* keep as is */ }
+    }
     params.push(config.json.includes(col) ? JSON.stringify(value ?? null) : value ?? null);
     sets.push(`${col} = $${params.length}${config.json.includes(col) ? "::text::jsonb" : ""}`);
   }

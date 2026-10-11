@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, denyUnless } from "@/lib/auth";
+import { getSession, denyUnlessCan } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
 import { cvBucket, getObject } from "@/lib/r2";
 import type { CvMeta } from "@/lib/submissions";
@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic";
 /** GET /api/submissions/:id/cv — authenticated download of an applicant's CV. */
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession();
-  const denied = denyUnless(session, ["admin", "editor"]);
-  if (denied) return denied;
+  const denied = denyUnlessCan(session, "inbox.read");
+  if (denied || !session) return denied!;
 
   const id = Number((await ctx.params).id);
   if (!Number.isInteger(id)) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
