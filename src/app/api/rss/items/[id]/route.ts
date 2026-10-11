@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 
@@ -46,6 +47,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     if (body.action === "reject") {
       if (item.status === "approved") return NextResponse.json({ error: "Approved items cannot be rejected" }, { status: 400 });
       await query("UPDATE rss_items SET status = 'rejected', reviewed_by = $2, reviewed_at = now() WHERE id = $1", [itemId, session.id]);
+      await logActivity({ action: "rss.reject", summary: `Rejected RSS item “${item.title}”`, actor: session, entityType: "rss_item", entityId: itemId });
       return NextResponse.json({ ok: true, status: "rejected" });
     }
 
@@ -74,6 +76,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       "UPDATE rss_items SET status = 'approved', reviewed_by = $2, reviewed_at = now(), news_post_id = $3 WHERE id = $1",
       [itemId, session.id, postId]
     );
+    await logActivity({ action: "rss.approve", summary: `Approved RSS item “${item.title}” as a draft news post`, actor: session, entityType: "rss_item", entityId: itemId });
     return NextResponse.json({ ok: true, status: "approved", newsPostId: postId });
   } catch (error) {
     console.error(`PUT /api/rss/items/${itemId} error:`, error);

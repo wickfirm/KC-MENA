@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 import type { ProjectPayload } from "../route";
@@ -31,6 +32,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
        p.images ? JSON.stringify(p.images) : null, p.metadata ? JSON.stringify(p.metadata) : null,
        Number.isFinite(p.sort_order) ? p.sort_order : null]
     );
+    if (rows[0]) await logActivity({ action: "content.save", summary: `Saved project “${rowLabel(rows[0])}”`, actor: session, entityType: "project", entityId: rowId(rows[0]) });
     return rows[0] ? NextResponse.json({ project: rows[0] }) : NextResponse.json({ error: "Project not found" }, { status: 404 });
   } catch (err) { console.error("PUT /api/projects/:id error:", err); return NextResponse.json({ error: "Could not update project" }, { status: 500 }); }
 }
@@ -38,6 +40,6 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const session = await getSession(); if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const id = idFrom((await ctx.params).id); if (!id) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
-  try { const row = await queryOne("DELETE FROM projects WHERE id = $1 RETURNING id", [id]); return row ? NextResponse.json({ ok: true }) : NextResponse.json({ error: "Project not found" }, { status: 404 }); }
+  try { const row = await queryOne("DELETE FROM projects WHERE id = $1 RETURNING id", [id]); if (row) await logActivity({ action: "content.delete", summary: `Deleted project #${id}`, actor: session, entityType: "project", entityId: id }); return row ? NextResponse.json({ ok: true }) : NextResponse.json({ error: "Project not found" }, { status: 404 }); }
   catch (err) { console.error("DELETE /api/projects/:id error:", err); return NextResponse.json({ error: "Could not delete project" }, { status: 500 }); }
 }

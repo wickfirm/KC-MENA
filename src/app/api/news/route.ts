@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query } from "@/lib/db";
 import { slugify } from "@/lib/slug";
 
@@ -66,6 +67,7 @@ export async function POST(req: NextRequest) {
         session.id,
       ]
     );
+    await logActivity({ action: "content.save", summary: `Created news post “${rowLabel(rows[0])}”`, actor: session, entityType: "news", entityId: rowId(rows[0]) });
     return NextResponse.json({ post: rows[0] }, { status: 201 });
   } catch (err) {
     console.error("POST /api/news error:", err);

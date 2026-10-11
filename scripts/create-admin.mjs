@@ -35,7 +35,7 @@ const sql = postgres(process.env.DATABASE_URL, { prepare: false });
 const rows = await sql.unsafe(
   `INSERT INTO users (email, password_hash, name, role)
    VALUES ($1, $2, $3, 'admin')
-   ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = 'admin'
+   ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = 'admin', is_active = true
    RETURNING id, email, role`,
   [email.trim().toLowerCase(), hash, name ?? ""]
 );

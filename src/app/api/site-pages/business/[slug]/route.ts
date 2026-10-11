@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import {
   isBusinessDetailContent,
@@ -54,6 +55,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ slug: s
        RETURNING id, title, status, content, seo, updated_at`,
       [slug, payload.content.hero.title, payload.status === "draft" ? "draft" : "published", JSON.stringify(payload.content), JSON.stringify(payload.seo ?? {}), session.id]
     );
+    await logActivity({ action: "content.save", summary: `Saved business page “${rowLabel(rows[0])}”`, actor: session, entityType: "site-page", entityId: rowId(rows[0]) });
     return NextResponse.json({ page: rows[0] });
   } catch (error) {
     console.error(`PUT /api/site-pages/business/${slug} error:`, error);

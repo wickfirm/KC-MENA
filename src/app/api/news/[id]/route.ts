@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import type { NewsPayload } from "../route";
 
@@ -53,6 +54,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       ]
     );
     if (!rows[0]) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    await logActivity({ action: "content.save", summary: `Saved news post “${rowLabel(rows[0])}”`, actor: session, entityType: "news", entityId: rowId(rows[0]) });
     return NextResponse.json({ post: rows[0] });
   } catch (err) {
     console.error("PUT /api/news/:id error:", err);
@@ -72,6 +74,7 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: str
   try {
     const row = await queryOne("DELETE FROM news_posts WHERE id = $1 RETURNING id", [postId]);
     if (!row) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    await logActivity({ action: "content.delete", summary: `Deleted news post #${postId}`, actor: session, entityType: "news", entityId: postId });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/news/:id error:", err);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession, denyUnless } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
 
@@ -21,7 +22,8 @@ export async function GET() {
 /** PUT /api/settings — save the whole settings document (admin only) */
 export async function PUT(req: NextRequest) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const denied = denyUnless(session, ["admin"]);
+  if (denied) return denied;
   let body: { settings?: unknown };
   try {
     body = await req.json();
@@ -36,6 +38,7 @@ export async function PUT(req: NextRequest) {
        RETURNING key, value, updated_at`,
       [SETTINGS_KEY, JSON.stringify(settings)]
     );
+    await logActivity({ action: "settings.save", summary: "Saved site settings", actor: session, entityType: "settings", entityId: SETTINGS_KEY });
     return NextResponse.json({ settings: rows[0]?.value ?? settings });
   } catch (error) {
     console.error("PUT /api/settings error:", error);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import { validateModuleDocument, type ModuleDocument } from "@/lib/content-modules";
 
@@ -41,6 +42,7 @@ export async function PUT(req: NextRequest) {
        RETURNING id, title, status, content, seo, updated_at`,
       [payload.status === "draft" ? "draft" : "published", JSON.stringify(payload.content), JSON.stringify(payload.seo ?? {}), session.id]
     );
+    await logActivity({ action: "content.save", summary: "Saved Home page", actor: session, entityType: "site-page", entityId: "home" });
     return NextResponse.json({ page: rows[0] });
   } catch (error) {
     console.error("PUT /api/site-pages/home error:", error);

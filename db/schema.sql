@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS users (
   name          TEXT NOT NULL DEFAULT '',
   role          TEXT NOT NULL DEFAULT 'editor'
                 CHECK (role IN ('admin', 'editor')),
+  is_active     BOOLEAN NOT NULL DEFAULT true,   -- deactivated users cannot sign in (db/migrations/001)
+  last_login_at TIMESTAMPTZ,
+  password_changed_at TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -178,5 +181,18 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-
-
+-- ---------- AUDIT TRAIL (db/migrations/001-governance.sql) ----------
+CREATE TABLE IF NOT EXISTS activity_log (
+  id          BIGSERIAL PRIMARY KEY,
+  action      TEXT        NOT NULL,
+  summary     TEXT        NOT NULL,
+  actor_id    INTEGER,
+  actor_email TEXT,
+  actor_name  TEXT,
+  entity_type TEXT,
+  entity_id   TEXT,
+  metadata    JSONB,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_activity_action  ON activity_log(action, created_at DESC);

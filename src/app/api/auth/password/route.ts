@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, hashPassword, verifyCredentials } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { passwordProblem } from "@/lib/password-rules";
+import { logActivity } from "@/lib/activity";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +24,8 @@ export async function POST(req: NextRequest) {
   const current = body.current ?? "";
   const next = body.next ?? "";
 
-  if (next.length < 10) {
-    return NextResponse.json({ error: "New password must be at least 10 characters" }, { status: 400 });
-  }
-  if (!/[A-Za-z]/.test(next) || !/[0-9]/.test(next)) {
-    return NextResponse.json({ error: "New password must contain letters and numbers" }, { status: 400 });
-  }
+  const problem = passwordProblem(next);
+  if (problem) return NextResponse.json({ error: problem }, { status: 400 });
 
   const user = await verifyCredentials(session.email, current);
   if (!user) {
@@ -35,7 +33,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    await query("UPDATE users SET password_hash = $2 WHERE id = $1", [session.id, await hashPassword(next)]);
+    await query("UPDATE users SET password_hash = $2, password_changed_at = now() WHERE id = $1", [session.id, await hashPassword(next)]);
+    await logActivity({ action: "user.password", summary: `${session.name || session.email} changed their own password`, actor: session, entityType: "user", entityId: session.id });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("POST /api/auth/password error:", err);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
         p.is_published ?? true,
       ]
     );
+    await logActivity({ action: "content.save", summary: `Created FAQ “${rowLabel(rows[0])}”`, actor: session, entityType: "faq", entityId: rowId(rows[0]) });
     return NextResponse.json({ faq: rows[0] }, { status: 201 });
   } catch (err) {
     console.error("POST /api/faqs error:", err);

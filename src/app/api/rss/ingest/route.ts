@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import { query } from "@/lib/db";
 import { fetchFeed } from "@/lib/rss";
 
@@ -44,5 +45,6 @@ export async function POST() {
   );
 
   const imported = perSource.reduce((sum, result) => sum + (result.ok ? result.imported : 0), 0);
+  await logActivity({ action: "rss.ingest", summary: `Fetched RSS feeds, ${imported} new item(s)`, actor: session });
   return NextResponse.json({ ok: true, imported, sources: perSource });
 }

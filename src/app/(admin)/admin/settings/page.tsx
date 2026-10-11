@@ -1,3 +1,4 @@
+import { requireAdminPage } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
 import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
 import SettingsEditor from "./SettingsEditor";
@@ -5,6 +6,7 @@ import SettingsEditor from "./SettingsEditor";
 export const dynamic = "force-dynamic";
 
 export default async function SettingsAdminPage() {
+  await requireAdminPage();
   let settings;
   let dbError: string | null = null;
   try {

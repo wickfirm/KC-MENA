@@ -2,12 +2,13 @@
   "name": "kc-mena",
   "version": "0.1.0",
   "private": true,
-  "description": "Kasumigaseki Capital MENA — Next.js website with ground-up custom CMS",
+  "description": "Kasumigaseki Capital MENA \u2014 Next.js website with ground-up custom CMS",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "admin:create": "node scripts/create-admin.mjs"
+    "admin:create": "node scripts/create-admin.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1127.0",
@@ -25,7 +26,8 @@
     "@types/react-dom": "^19.1.0",
     "cheerio": "^1.2.0",
     "exceljs": "^4.4.0",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20"

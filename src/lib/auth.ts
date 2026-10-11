@@ -1,5 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { queryOne } from "@/lib/db";
 
@@ -46,12 +48,55 @@ export async function verifySessionToken(token: string): Promise<SessionUser | n
   }
 }
 
-/** Read the session from the request cookie (server components / route handlers). */
+/**
+ * Read the session from the request cookie (server components / route handlers).
+ *
+ * The signed cookie alone cannot tell whether the account was deactivated,
+ * deleted or re-roled after sign-in, so the users row is re-checked here and
+ * the role/name come from the database, not the token. If the database is
+ * unreachable the token is trusted (the admin UI then shows its own
+ * "Database not connected" states; mutations fail on their own).
+ */
 export async function getSession(): Promise<SessionUser | null> {
   const store = await cookies();
   const token = store.get(COOKIE_NAME)?.value;
   if (!token) return null;
-  return verifySessionToken(token);
+  const claims = await verifySessionToken(token);
+  if (!claims) return null;
+  try {
+    const row = await queryOne<{ id: number; email: string; name: string; role: string; is_active: boolean }>(
+      "SELECT id, email, name, role, is_active FROM users WHERE id = $1",
+      [claims.id]
+    );
+    if (!row || !row.is_active) return null;
+    return { id: row.id, email: row.email, name: row.name, role: row.role === "admin" ? "admin" : "editor" };
+  } catch (error) {
+    console.error("[auth] live session check failed, trusting token:", error);
+    return claims;
+  }
+}
+
+/**
+ * Role guard for route handlers. Returns the 401/403 response to send, or null
+ * when the session may proceed.
+ *   admin  — everything: content, media, settings, users, activity log.
+ *   editor — content, media uploads, submissions and RSS review; no settings,
+ *            no user management, no activity log, no media deletion.
+ */
+export function denyUnless(session: SessionUser | null, roles: SessionUser["role"][]): NextResponse | null {
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!roles.includes(session.role)) {
+    return NextResponse.json({ error: "You do not have permission to do that" }, { status: 403 });
+  }
+  return null;
+}
+
+/** Server-component guard for admin-only screens. Editors are sent back to the dashboard. */
+export async function requireAdminPage(): Promise<SessionUser> {
+  const session = await getSession();
+  if (!session) redirect("/admin/login");
+  if (session.role !== "admin") redirect("/admin?denied=1");
+  return session;
 }
 
 export const SESSION_COOKIE = COOKIE_NAME;
@@ -68,8 +113,9 @@ export async function verifyCredentials(
     name: string;
     role: string;
     password_hash: string;
-  }>("SELECT id, email, name, role, password_hash FROM users WHERE email = $1", [email]);
-  if (!row) return null;
+    is_active: boolean;
+  }>("SELECT id, email, name, role, password_hash, is_active FROM users WHERE email = $1", [email]);
+  if (!row || !row.is_active) return null;
   const ok = await bcrypt.compare(password, row.password_hash);
   if (!ok) return null;
   return {

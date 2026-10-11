@@ -20,14 +20,15 @@ npm run dev                   # local dev (http://localhost:3000)
 npm run build                 # production build (also the only type check)
 npm start                     # serve production build
 npm run admin:create -- you@example.com "StrongPassword" "Your Name"   # upsert CMS admin
+npm test                      # Vitest — unit tests for src/lib (auth roles, activity log, password rules)
 node scripts/test-db.mjs      # diagnose the Supabase connection (never prints the URL)
 node scripts/check-users.mjs  # list CMS users (same env-loading as test-db)
 node scripts/extract-legal.mjs # regenerate db/seed-pages.sql from public/ static HTML
 node scripts/build-content-audit.mjs # rebuild KC-Content-Review/ (audit xlsx + google-doc-templates/*.docx; needs `npm i --no-save exceljs docx`)
 ```
 
-- **There is no lint/test/typecheck script and no ESLint/Prettier config.** Type errors surface
-  only via `next build` (or `npx tsc --noEmit`). Node >= 20.
+- **There is no lint script and no ESLint/Prettier config.** Type errors surface
+  only via `next build` (or `npx tsc --noEmit`); unit tests run with `npm test`. Node >= 20.
 - Apply schema/seed via the Supabase dashboard SQL Editor (`db/schema.sql`, then
   `db/seed-faqs.sql`, `db/seed-pages.sql`). Don't run `psql` on the pooler string.
 
@@ -87,6 +88,15 @@ db/                schema.sql + seed files
   they never overwrite CMS edits.
 
 ## Auth
+
+**Roles (enforced).** `admin`: everything. `editor`: content, media uploads, submissions, RSS review;
+**no** site settings, team management, activity log or media deletion. `getSession()` re-checks the
+`users` row on every call (deactivated/deleted accounts are rejected immediately; role comes from the
+DB, not the token) and trusts the token only if the DB is unreachable. Route handlers gate with
+`denyUnless(session, ["admin"])`; admin-only pages call `requireAdminPage()`. Every mutation calls
+`logActivity()` (best-effort, never throws) → `/admin/activity`. Team CRUD: `/admin/users` +
+`/api/users*` (guards: ≥1 active admin, no self-delete/deactivate). Schema for this lives in
+`db/migrations/001-governance.sql` — **apply it in the Supabase SQL Editor before deploying**.
 
 Custom JWT auth (jose, HS256) + bcrypt (cost 12) credentials in the `users` table. Session is an
 `httpOnly`, `SameSite=Lax` cookie `kc_session`, 7-day TTL. `src/middleware.ts` guards `/admin/*`

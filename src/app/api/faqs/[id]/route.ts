@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowLabel, rowId } from "@/lib/activity";
 import { query, queryOne } from "@/lib/db";
 import type { FaqPayload } from "../route";
 
@@ -41,6 +42,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       ]
     );
     if (!rows[0]) return NextResponse.json({ error: "FAQ not found" }, { status: 404 });
+    await logActivity({ action: "content.save", summary: `Saved FAQ “${rowLabel(rows[0])}”`, actor: session, entityType: "faq", entityId: rowId(rows[0]) });
     return NextResponse.json({ faq: rows[0] });
   } catch (err) {
     console.error("PUT /api/faqs/:id error:", err);
@@ -60,6 +62,7 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: str
   try {
     const row = await queryOne("DELETE FROM faqs WHERE id = $1 RETURNING id", [faqId]);
     if (!row) return NextResponse.json({ error: "FAQ not found" }, { status: 404 });
+    await logActivity({ action: "content.delete", summary: `Deleted FAQ #${faqId}`, actor: session, entityType: "faq", entityId: faqId });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DELETE /api/faqs/:id error:", err);

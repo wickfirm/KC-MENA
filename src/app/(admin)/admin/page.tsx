@@ -13,7 +13,8 @@ type Counts = {
   rss_pending: number;
 };
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const denied = (await searchParams).denied;
   let counts: Counts | null = null;
   let dbError: string | null = null;
   try {
@@ -58,6 +59,12 @@ export default async function AdminDashboard() {
             Set <code>DATABASE_URL</code> (Vercel Postgres) and apply <code>db/schema.sql</code>.
             <br />Detail: {dbError}
           </p>
+        </div>
+      )}
+
+      {denied && (
+        <div className="card" style={{ borderLeft: "4px solid #9a6b00", marginBottom: 24 }}>
+          That area is for administrators only.
         </div>
       )}
 

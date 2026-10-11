@@ -4,7 +4,7 @@ import LogoutButton from "./LogoutButton";
 
 export const dynamic = "force-dynamic";
 
-const navItems = [
+const navItems: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/site/home", label: "Home page" },
   { href: "/admin/site/about", label: "About Us" },
@@ -25,7 +25,9 @@ const navItems = [
   { href: "/admin/jobs", label: "Careers" },
   { href: "/admin/submissions", label: "Submissions" },
   { href: "/admin/rss", label: "RSS Pipeline" },
-  { href: "/admin/settings", label: "Site Settings" },
+  { href: "/admin/settings", label: "Site Settings", adminOnly: true },
+  { href: "/admin/users", label: "Team", adminOnly: true },
+  { href: "/admin/activity", label: "Activity log", adminOnly: true },
   { href: "/admin/account", label: "Account" },
 ];
 
@@ -52,7 +54,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </p>
         </div>
         <nav style={{ flex: 1, padding: "14px 12px", display: "flex", flexDirection: "column", gap: 2 }}>
-          {navItems.map((item) => (
+          {navItems.filter((item) => !item.adminOnly || user?.role === "admin").map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -70,7 +72,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {user && (
           <div style={{ padding: "16px 24px 0", borderTop: "1px solid #2a2a2a", fontSize: "0.8rem" }}>
             <p style={{ color: "#fff", fontWeight: 600 }}>{user.name || user.email}</p>
-            <p style={{ color: "#9a9a9a", marginBottom: 10 }}>{user.role}</p>
+            <p style={{ color: "#9a9a9a", marginBottom: 10 }}>{user.role === "admin" ? "Administrator" : "Editor"}</p>
             <LogoutButton />
           </div>
         )}

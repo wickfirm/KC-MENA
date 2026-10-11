@@ -5,6 +5,8 @@ import {
   SESSION_COOKIE,
   SESSION_MAX_AGE,
 } from "@/lib/auth";
+import { query } from "@/lib/db";
+import { logActivity } from "@/lib/activity";
 
 export async function POST(req: NextRequest) {
   let body: { email?: string; password?: string };
@@ -31,8 +33,11 @@ export async function POST(req: NextRequest) {
     );
   }
   if (!user) {
+    await logActivity({ action: "auth.login_failed", summary: `Failed sign-in for ${email}`, metadata: { email } });
     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
   }
+  await query("UPDATE users SET last_login_at = now() WHERE id = $1", [user.id]).catch(() => undefined);
+  await logActivity({ action: "auth.login", summary: `${user.name || user.email} signed in`, actor: user, entityType: "user", entityId: user.id });
 
   const token = await createSessionToken(user);
   const res = NextResponse.json({ user });

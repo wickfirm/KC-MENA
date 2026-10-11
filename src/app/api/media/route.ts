@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { logActivity, rowId } from "@/lib/activity";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
         session.id,
       ]
     );
+    await logActivity({ action: "media.upload", summary: `Uploaded media “${p.filename}”`, actor: session, entityType: "media", entityId: rowId(rows[0]) });
     return NextResponse.json({ media: rows[0] }, { status: 201 });
   } catch (err) {
     console.error("POST /api/media error:", err);
