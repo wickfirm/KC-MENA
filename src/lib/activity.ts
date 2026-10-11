@@ -42,7 +42,7 @@ export async function logActivity(input: ActivityInput): Promise<void> {
   try {
     await query(
       `INSERT INTO activity_log (action, summary, actor_id, actor_email, actor_name, entity_type, entity_id, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8::text::jsonb)`,
       [
         input.action,
         input.summary.slice(0, 500),

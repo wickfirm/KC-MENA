@@ -40,13 +40,13 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ slug: s
     );
     if (current) {
       await query(
-        "INSERT INTO page_revisions (page_id, content, seo, created_by) VALUES ($1, $2::jsonb, $3::jsonb, $4)",
+        "INSERT INTO page_revisions (page_id, content, seo, created_by) VALUES ($1, $2::text::jsonb, $3::text::jsonb, $4)",
         [current.id, JSON.stringify(current.content), JSON.stringify(current.seo ?? {}), session.id]
       );
     }
     const rows = await query(
       `INSERT INTO pages (slug, title, status, content, seo, updated_by)
-       VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6)
+       VALUES ($1, $2, $3, $4::text::jsonb, $5::text::jsonb, $6)
        ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, status = EXCLUDED.status,
          content = EXCLUDED.content, seo = EXCLUDED.seo, updated_by = EXCLUDED.updated_by, updated_at = now()
        RETURNING id, title, status, content, seo, updated_at`,

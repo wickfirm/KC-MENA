@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest) {
   const settings = normalizeSiteSettings(body.settings);
   try {
     const rows = await query(
-      `INSERT INTO settings (key, value, updated_at) VALUES ($1, $2::jsonb, now())
+      `INSERT INTO settings (key, value, updated_at) VALUES ($1, $2::text::jsonb, now())
        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
        RETURNING key, value, updated_at`,
       [SETTINGS_KEY, JSON.stringify(settings)]

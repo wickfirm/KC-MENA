@@ -112,3 +112,40 @@ The original `CMS-REFERENCE-HANDOVER-REQUEST.md` asked for a full feature invent
 3. **KPD's own AGENTS.md is stale** on roles ("no role-based authorization"). The code, `requireRole()` in `src/lib/auth.ts`, and the "work order 2026-10" comment are authoritative.
 4. **Don't copy KPD's quirks:** the `publishedAt` rewrite on every re-save, slug collisions surfacing as raw DB errors, and the per-file `slugify()`.
 5. Public-site resilience rules (graceful DB failure) are unchanged by any of this.
+
+---
+
+# Round 2: look & feel, UX and handover (re-read of the latest KPD)
+
+**Correction to §1.** Round 1 compared KC MENA with KPD's local `main`, which is 17 commits behind. The
+latest KPD is `origin/main` @ `686fd0c` (checked out at `KPD/.claude/worktrees/legacy-page-styling-7e559e`).
+It adds roles/permissions, previews of unsaved changes, drag-and-drop reordering, captions, a restyle, a
+loading shell and an in-CMS guide. Round 1 also left "Visual consistency material" (§5 of the original
+handover request) out of scope; this section closes that.
+
+| # | KPD latest | KC MENA now | Gap | Effort |
+|---|---|---|---|---|
+| E1 | **Four roles** (ADMIN, EDITOR, CONTRIBUTOR, VIEWER) from one pure `src/lib/permissions.ts`: `can(role, perm)`, `canViewPath`, `mayEditContent`, `allowedStatus`; 11 permissions. Contributors write drafts only; Viewers read-only; only Admin deletes | 2 roles, ad-hoc `denyUnless([...])` in ~8 routes | Replace with a permissions module; a `requirePermission` on **every** write route (the KPD recap notes their API routes only checked "signed in" until fixed); role CHECK on `users.role` to widen | M |
+| E2 | `data-requires="publish\|delete"` on controls, hidden by role classes set in the layout | Editors/Viewers see buttons they cannot use (they get 403) | Add attribute + layout role class + CSS | S |
+| E3 | **Preview with unsaved changes** on every editor that goes live on save: one throw-away draft row per user per page (2 h expiry, never public), admin-only preview route overlays it on saved content; page markup lives in shared view components | Previews show *saved* content only (`/preview/*`, `/preview/news/:id`) | Draft-preview table/rows, `previewDraft` endpoint + "Preview" button in each editor, overlay in the existing preview routes | M–L |
+| E4 | Drag-and-drop reorder (`useDragReorder`, handle-only, keyboard Move up/down kept) for gallery images and repeatable cards | No reordering in the repeater editors (Home, About, Local Business, Business, Contact, Listing) | Shared hook + apply to each repeater | M |
+| E5 | Per-image captions stored with the image (`gallery-content.ts`, paired before blank rows are dropped, unit-tested) | Captions only where the delivered markup already has them | Only where the **delivered** pages show captions; do not add UI the front-end can't render | S–M |
+| E6 | **Speed:** `loading.tsx` shell with a progress bar, cached per-request user lookup, parallel queries | No `loading.tsx`; **my Phase A made it worse**: `getSession()` queries the DB on every call, uncached, several times per page | Wrap in React `cache()`, add `loading.tsx`, `Promise.all` the dashboard/list queries | S |
+| E7 | **Visual identity:** admin.css on a token system matched to the client's site (measured, black/white, Figtree, square cards, pill buttons), real horizontal logo in the sidebar, labelled-rule section headers, consistent list/editor pattern | Inline-style admin; text "KC MENA" in the sidebar; `globals.css` basics | Measure KC MENA's CSS first (site tokens: `--black #0a0a0a`, greys, `--accent-red #a6192e`, Figtree + Noto Serif), then tokens → sweep inline colours → real logo (`public/images/kasumigaseki-logo.svg`, wordmark KME) | L |
+| E8 | Hydration safety: delivered HTML injected via `dangerouslySetInnerHTML` is balanced and LF-normalised (`html-lf.ts`) | KC MENA renders delivered pages as React routes, so this mostly does not apply | Verify only; add an LF check if raw HTML fields are ever introduced | S |
+| E9 | New developments appear automatically in menu/footer | Header/footer are settings-driven; projects render in a band | Not applicable | none |
+| E10 | **Handover/UAT:** in-CMS Guide page (279 lines: per role, preview, galleries, removing things), UAT test accounts per role (SQL, bcrypt), checklist sheet with Pass/Fail, client email, single issue channel | None | Write guide page, test-account SQL, checklist, email | M |
+| E11 | Rendered-text comparison of live vs local `<main>` after any view extraction | I extracted `NewsArticleView` and diffed source only | Compare rendered `<main>` of one live article and `/careers` before/after | S |
+| E12 | Lessons: Supabase pooler "can't reach DB" can mean wrong password (add `sslmode=require`); Vercel deploy can sit in "Deploying outputs…" 10+ min; don't say "tested" until real production saves | n/a | Add to AGENTS.md gotchas | S |
+
+## Proposed Phase E order
+1. **E6 speed** (fixes my regression).
+2. **E1 + E2 permissions**, then roles in the Team screen and activity labels.
+3. **E3 unsaved-changes preview**, starting with News and Home (highest use).
+4. **E4 drag reorder**, then **E5 captions** only where the front-end shows them.
+5. **E7 visual pass** (measure → tokens → logo), after behaviour is stable so it is reviewed once.
+6. **E10 guide + UAT package**, **E11 rendered-text check**, **E12 gotchas**.
+
+## Decisions for the client
+- Are the **four KPD roles** wanted for KC MENA, or only Admin/Editor? (KPD's client work order defined them.)
+- Should the KC MENA admin share KPD's exact UI (Figtree/Inter, pill buttons, `Messages`/`Team`/`News inbox` labels) or the KC MENA site's own look?

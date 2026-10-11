@@ -77,7 +77,7 @@ export function buildRestoreQuery(
     if (!(col in snapshot)) continue;
     const value = snapshot[col];
     params.push(config.json.includes(col) ? JSON.stringify(value ?? null) : value ?? null);
-    sets.push(`${col} = $${params.length}${config.json.includes(col) ? "::jsonb" : ""}`);
+    sets.push(`${col} = $${params.length}${config.json.includes(col) ? "::text::jsonb" : ""}`);
   }
   if (sets.length === 0) throw new Error("Snapshot has no restorable fields");
   return {
@@ -115,7 +115,7 @@ export async function recordVersion(
       try {
         await query(
           `INSERT INTO content_versions (entity_type, entity_id, version_number, label, snapshot, author_id, author_email, author_name)
-           SELECT $1, $2, COALESCE(MAX(version_number), 0) + 1, $3, $4::jsonb, $5, $6, $7
+           SELECT $1, $2, COALESCE(MAX(version_number), 0) + 1, $3, $4::text::jsonb, $5, $6, $7
            FROM content_versions WHERE entity_type = $1 AND entity_id = $2`,
           [entity, entityId, text.slice(0, 160), snapshot, actor?.id ?? null, actor?.email ?? null, actor?.name || null]
         );

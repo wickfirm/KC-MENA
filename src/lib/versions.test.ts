@@ -29,7 +29,7 @@ describe("entityIdFromRow", () => {
 describe("buildRestoreQuery", () => {
   it("casts JSON columns and targets the right key", () => {
     const { text, params } = buildRestoreQuery("page", "about-us", { title: "About", status: "published", content: { a: 1 }, seo: {} });
-    expect(text).toContain("UPDATE pages SET title = $2, status = $3, content = $4::jsonb, seo = $5::jsonb, updated_at = now() WHERE slug = $1");
+    expect(text).toContain("UPDATE pages SET title = $2, status = $3, content = $4::text::jsonb, seo = $5::text::jsonb, updated_at = now() WHERE slug = $1");
     expect(params).toEqual(["about-us", "About", "published", '{"a":1}', "{}"]);
   });
   it("uses a numeric id for id-keyed entities", () => {

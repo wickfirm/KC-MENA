@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
 
     // Snapshot the pre-update version
     await query(
-      "INSERT INTO page_revisions (page_id, content, seo, created_by) VALUES ($1, $2::jsonb, $3::jsonb, $4)",
+      "INSERT INTO page_revisions (page_id, content, seo, created_by) VALUES ($1, $2::text::jsonb, $3::text::jsonb, $4)",
       [pageId, JSON.stringify(current.content), JSON.stringify(current.seo ?? {}), session.id]
     );
 
@@ -50,8 +50,8 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
       `UPDATE pages SET
          title = COALESCE($2, title),
          status = COALESCE($3, status),
-         content = COALESCE($4::jsonb, content),
-         seo = COALESCE($5::jsonb, seo),
+         content = COALESCE($4::text::jsonb, content),
+         seo = COALESCE($5::text::jsonb, seo),
          updated_by = $6,
          updated_at = now()
        WHERE id = $1 RETURNING *`,

@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   try {
     const rows = await query(
       `INSERT INTO projects (slug, name, sector, status, location, summary, description, images, metadata, sort_order)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10) RETURNING *`,
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8::text::jsonb,$9::text::jsonb,$10) RETURNING *`,
       [slug, name, sector, p.status === "published" ? "published" : "draft", p.location?.trim() || null,
        p.summary?.trim() || null, p.description?.trim() || null, JSON.stringify(p.images ?? []),
        JSON.stringify(p.metadata ?? {}), Number.isFinite(p.sort_order) ? p.sort_order : 0]

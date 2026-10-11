@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     const rows = await query(
       `INSERT INTO pages (slug, title, status, content, seo, updated_by)
-       VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6) RETURNING *`,
+       VALUES ($1, $2, $3, $4::text::jsonb, $5::text::jsonb, $6) RETURNING *`,
       [
         slug,
         p.title.trim(),

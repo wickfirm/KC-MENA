@@ -100,7 +100,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ entity: st
         if (c === config.titleCol && typeof v === "string") return `${v} (copy)`;
         return v !== null && typeof v === "object" && !(v instanceof Date) ? JSON.stringify(v) : v ?? null;
       });
-      const placeholders = config.copyCols.map((c, i) => (["images", "metadata"].includes(c) ? `$${i + 1}::jsonb` : `$${i + 1}`));
+      const placeholders = config.copyCols.map((c, i) => (["images", "metadata"].includes(c) ? `$${i + 1}::text::jsonb` : `$${i + 1}`));
       // A copy is always created unpublished.
       cols.push(STATUS_COL[entity]);
       values.push(entity === "faq" ? false : "draft");

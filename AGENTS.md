@@ -70,7 +70,8 @@ db/                schema.sql + seed files
 ## Data access & API conventions
 
 - Use `query<T>(sql, params)` / `queryOne<T>` from `src/lib/db.ts` (parameterized `$1` placeholders).
-  JSONB columns: `JSON.stringify(...)` in params + `$n::jsonb` cast in SQL. Never interpolate.
+  JSONB columns: `JSON.stringify(...)` in params + a **`$n::text::jsonb`** cast in SQL (never plain `$n::jsonb`: postgres.js then
+  double-encodes the string and the column holds a JSON string, so reads break; `src/lib/jsonb-casts.test.ts` enforces this). Never interpolate.
 - Route handlers: `export const dynamic = "force-dynamic"`, re-verify session with `getSession()`
   (middleware is NOT enough — the server re-checks per route), return
   `{ error }` + proper status, wrap DB in try/catch with `console.error` + 500.

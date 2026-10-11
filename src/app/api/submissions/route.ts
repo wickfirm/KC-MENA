@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
   try {
     const rows = await query<{ id: number }>(
       `INSERT INTO contact_submissions (type,name,email,phone,subject,message,meta)
-       VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb) RETURNING id`,
+       VALUES ($1,$2,$3,$4,$5,$6,$7::text::jsonb) RETURNING id`,
       [
         type, name, email, body.phone?.trim() || null, body.subject?.trim() || null, body.message?.trim() || null,
         JSON.stringify({ source: body.source ?? "website", jobId: body.jobId ? Number(body.jobId) || null : null, cv: cvMeta, cvError, cvName: cv?.name ?? null }),

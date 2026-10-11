@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest, ctx: { params: Promise<{ id: string 
   try {
     const rows = await query(
       `UPDATE projects SET name=COALESCE($2,name), slug=COALESCE($3,slug), sector=COALESCE($4,sector), status=COALESCE($5,status),
-       location=$6, summary=$7, description=$8, images=COALESCE($9::jsonb,images), metadata=COALESCE($10::jsonb,metadata),
+       location=$6, summary=$7, description=$8, images=COALESCE($9::text::jsonb,images), metadata=COALESCE($10::text::jsonb,metadata),
        sort_order=COALESCE($11,sort_order), updated_at=now() WHERE id=$1 RETURNING *`,
       [id, p.name?.trim() || null, p.slug ? slugify(p.slug) : null, p.sector ?? null,
        p.status === "published" ? "published" : p.status === "draft" ? "draft" : null,
