@@ -1,3 +1,5 @@
+import ClientPageCss from "./ClientPageCss";
+import { clientHeroBackground, type ClientPage } from "@/lib/client-css";
 import type { BusinessDetailContent } from "@/lib/business-detail-content";
 import type { PublicProject } from "@/lib/projects";
 import ProjectsSection from "./ProjectsSection";
@@ -14,31 +16,33 @@ const CONTACT_DEFAULTS = {
   email: "info.dubai@kasumigaseki.co.jp",
 };
 
-export default function BusinessDetailPageView({ content, projects = [], referenceOverviewWidth = false }: { content: BusinessDetailContent; projects?: PublicProject[]; referenceOverviewWidth?: boolean }) {
+export default function BusinessDetailPageView({ content, projects = [], referenceOverviewWidth = false, page }: { page: ClientPage; content: BusinessDetailContent; projects?: PublicProject[]; referenceOverviewWidth?: boolean }) {
   function splitSection(section: BusinessDetailContent["sections"][number], reversed: boolean) {
     const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
     const image = <div className="biz-photo" style={{ backgroundImage: `url('${section.image}')` }} />;
     return <section className={`biz-split${reversed ? " rev" : ""}`} key={`${section.eyebrow}-${section.heading}`}>{reversed ? <>{image}{panel}</> : <>{panel}{image}</>}</section>;
   }
   return (
+    <>
+    <ClientPageCss page={page} />
     <main>
-      <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
+      <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
-      <section className="section">
+      <section className="section biz-platform">
         <div className="wrap">
           {content.platformMetrics ? <>
-            <h2 className="platform-heading">{content.overview.heading}</h2>
-            {content.overview.body && <p className="intro-reg platform-intro">{content.overview.body}</p>}
+            <h2 style={{ fontSize: "clamp(1.6rem,2.6vw,2.15rem)", maxWidth: "26ch" }}>{content.overview.heading}</h2>
+            {content.overview.body && <p className="intro-reg" style={{ marginTop: 18 }}>{content.overview.body}</p>}
             <div className="numbers-platform">
               <div className="hero-nums">{content.platformMetrics.primary.map((metric) => <div className="hero-num-block" key={metric.label}><div className="hero-num">{metric.value}</div><div className="hero-num-label">{metric.label} <sup>1</sup></div></div>)}</div>
               <div className="sec-list">{content.platformMetrics.sectors.map((metric) => <div className="sec-row" key={metric.label}><div className="sec-num">{metric.value}</div><div className="sec-label">{metric.label}<span>{metric.detail}</span></div></div>)}</div>
             </div>
-            <div className="track-foot"><a href={content.platformMetrics.source.href} target="_blank" rel="noreferrer">&ldquo;{content.platformMetrics.source.label}&rdquo;</a></div>
+            <div className="track-foot"><a href={content.platformMetrics.source.href} target="_blank" rel="noreferrer">"{content.platformMetrics.source.label}"</a></div>
           </> : <>
             <div className={`head${referenceOverviewWidth ? " business-detail-overview" : ""}`}><span className="eyebrow">{content.overview.eyebrow}</span><h2>{content.overview.heading}</h2></div>
             {content.metrics && <div className="stat-grid">{content.metrics.map((metric) => <div className="stat-block" key={metric.label}><div className="stat-num">{metric.value}</div><div className="stat-label">{metric.label}</div></div>)}</div>}
-            {content.metricsSource && <div className="stat-foot"><a href={content.metricsSource.href} target="_blank" rel="noreferrer">&ldquo;{content.metricsSource.label}&rdquo;</a></div>}
+            {content.metricsSource && <div className="stat-foot"><a href={content.metricsSource.href} target="_blank" rel="noreferrer">"{content.metricsSource.label}"</a></div>}
           </>}
         </div>
       </section>
@@ -69,5 +73,6 @@ export default function BusinessDetailPageView({ content, projects = [], referen
         />
       )}
     </main>
+    </>
   );
 }

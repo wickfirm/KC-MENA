@@ -6,7 +6,6 @@ import Link from "next/link";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
 import ListingPageShell from "@/components/site/ListingPageShell";
-import "./news.css";
 
 
 export const dynamic = "force-dynamic";

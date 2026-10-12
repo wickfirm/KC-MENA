@@ -1,14 +1,18 @@
+import ClientPageCss from "./ClientPageCss";
+import { clientHeroBackground, type ClientPage } from "@/lib/client-css";
 import Link from "next/link";
 import type { LocalBusinessContent } from "@/lib/local-business-content";
 import type { PublicProject } from "@/lib/projects";
 import ProjectsSection from "@/components/site/ProjectsSection";
 import SectionContact from "@/components/site/SectionContact";
 
-export default function LocalBusinessPageView({ content, projects = [] }: { content: LocalBusinessContent; projects?: PublicProject[] }) {
+export default function LocalBusinessPageView({ content, projects = [], page = "local-business" }: { page?: ClientPage; content: LocalBusinessContent; projects?: PublicProject[] }) {
   const c = content.contact;
   return (
+    <>
+    <ClientPageCss page={page} />
     <main>
-      <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
+      <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
       <section className="section">
@@ -51,5 +55,6 @@ export default function LocalBusinessPageView({ content, projects = [] }: { cont
       />
       <ProjectsSection projects={projects} heading="Projects in the UAE" />
     </main>
+    </>
   );
 }

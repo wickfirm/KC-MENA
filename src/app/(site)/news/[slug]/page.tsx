@@ -1,3 +1,4 @@
+import ClientPageCss from "@/components/site/ClientPageCss";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { queryOne } from "@/lib/db";
@@ -52,7 +53,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ sl
   if (!post) notFound();
 
   return (
-    <>
+    <><ClientPageCss page="news" />
       <NewsArticleView post={post} />
       <JsonLd
         data={[

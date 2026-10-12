@@ -15,5 +15,5 @@ export default async function ListingDraftPreview({ params, searchParams }: { pa
   if (!isListingSlug(slug)) notFound();
   const draft = (await searchParams).draft ? ((await loadDraft(`page:listing/${slug}`)) as { content?: unknown } | null) : null;
   const source = draft ? draft.content : (await getPageBySlug(slug, false))?.content;
-  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/listing/${slug}`} /><ListingPageShell content={isListingContent(source) ? source : DEFAULT_LISTING_CONTENT[slug]} /></>;
+  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/listing/${slug}`} /><ListingPageShell page={slug === "careers" ? "careers" : "news"} content={isListingContent(source) ? source : DEFAULT_LISTING_CONTENT[slug]} /></>;
 }

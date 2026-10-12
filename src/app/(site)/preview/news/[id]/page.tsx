@@ -1,3 +1,4 @@
+import ClientPageCss from "@/components/site/ClientPageCss";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
@@ -42,7 +43,7 @@ export default async function NewsPreviewPage({ params, searchParams }: { params
   if (!post) notFound();
 
   return (
-    <>
+    <><ClientPageCss page="news" />
       <PreviewBanner
         unsaved={Boolean(draft)}
         editHref={id === "new" ? "/admin/news/new" : `/admin/news/${id}`}

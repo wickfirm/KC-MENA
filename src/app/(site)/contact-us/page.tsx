@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { clientHeroBackground } from "@/lib/client-css";
+import ClientPageCss from "@/components/site/ClientPageCss";
 import { getPageBySlug } from "@/lib/pages";
 import { getSiteSettings } from "@/lib/settings";
-import "./contact.css";
 import { DEFAULT_CONTACT_CONTENT, isContactContent } from "@/lib/contact-content";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import JsonLd from "@/components/site/JsonLd";
@@ -20,8 +21,8 @@ const MAP_URLS: Record<string, string> = {
 export default async function ContactPage() {
   const [page, settings] = await Promise.all([getPageBySlug("contact-us"), getSiteSettings()]);
   const content = isContactContent(page?.content) ? page.content : DEFAULT_CONTACT_CONTENT;
-  return <><main>
-    <section className="hero-band" style={{ "--hero-image": "url('/images/office.webp')" } as React.CSSProperties}><div className="wrap"><h1>{content.heroTitle}</h1></div></section>
+  return <><ClientPageCss page="contact-us" /><main>
+    <section className="hero-band" style={clientHeroBackground("contact-us", "/images/office.webp")}><div className="wrap"><h1>{content.heroTitle}</h1></div></section>
     <section className="section">
       <div className="wrap">
         <div className="loc-grid">

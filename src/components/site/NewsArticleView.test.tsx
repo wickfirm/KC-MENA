@@ -35,7 +35,7 @@ describe("NewsArticleView", () => {
     expect(html).toContain("<p>Second paragraph.</p>");
     expect(html).toContain("Insights");
     expect(html).toContain("11 October 2026");
-    expect(html).toContain("--hero-image:url(&#x27;/images/cover.jpg&#x27;)");
+    expect(html).toContain("url(&#x27;/images/cover.jpg&#x27;) center/cover no-repeat");
     expect(html).toContain("Back to News");
   });
 
