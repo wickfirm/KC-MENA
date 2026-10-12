@@ -94,7 +94,9 @@ db/                schema.sql + seed files
 **no** site settings, team management, activity log or media deletion. `getSession()` re-checks the
 `users` row on every call (deactivated/deleted accounts are rejected immediately; role comes from the
 DB, not the token) and trusts the token only if the DB is unreachable. Route handlers gate with
-`denyUnless(session, ["admin"])`; admin-only pages call `requireAdminPage()`. Every mutation calls
+`denyUnlessCan(session, "permission")` (**every write route must**); pages use `requirePermissionPage()` / `requireAdminPage()`;
+the middleware only fast-rejects screens (`canViewPath`) and the admin layout re-checks against the DB. Controls a role cannot use carry
+`data-requires="write|publish|delete"` and are hidden by `admin-ux.css`. Every mutation calls
 `logActivity()` (best-effort, never throws) → `/admin/activity`. Team CRUD: `/admin/users` +
 `/api/users*` (guards: ≥1 active admin, no self-delete/deactivate). Schema for this lives in
 `db/migrations/001-governance.sql` — **apply it in the Supabase SQL Editor before deploying**.
@@ -137,6 +139,33 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
 - Media: client pre-validation, search, per-image alt text (`PUT /api/media/:id`, shown on thumbnails).
 - Draft preview: `/preview/news/:id` (signed-in, any status, noindex) renders the shared
   `components/site/NewsArticleView` — the same component the public `/news/[slug]` page uses, so they cannot drift.
+
+## Editor UX (long pages, previews, ordering)
+
+- `components/admin/EditorEnhancer.tsx` (mounted once in the admin layout) gives every editor form: the "On this page" rail built from
+  `<section><h2>` headings, click-to-collapse sections, Collapse/Expand all, a sticky Save bar, and viewer read-only. It scans the DOM
+  only after hydration (never touch server-rendered nodes earlier) and is tested in jsdom (`EditorEnhancer.test.tsx`).
+- **Preview unsaved:** the Save bar's *Preview unsaved* button wraps `window.fetch` for one request: the editor's own save payload goes
+  to `POST /api/preview-draft` (`src/lib/preview-drafts.ts`, one throw-away row per user per page in `settings`, key
+  `preview:<userId>:<key>`, 2 h expiry) and the `/preview/*` routes show it with `?draft=1`. Add a previewable editor by extending
+  `previewTarget()`, the `PREVIEW_PATH` regex in the enhancer, and a `?draft=1` branch in the preview page. The plain "Preview draft"
+  link shows the last *saved* version.
+- **Reordering:** `components/admin/Reorder.tsx` (drag + ↑↓) → `POST /api/reorder` for FAQs (per category) and projects (per sector). It
+  re-uses the group's existing `sort_order` values so the group's place on the public site never shifts.
+- `admin/guide` is the in-CMS user guide (keep it in step with behaviour); `docs/uat/` + `scripts/uat-accounts.mjs` are the UAT package.
+
+## Gotchas learned the hard way
+
+- **Never `$n::jsonb` with a stringified param** (double-encoding): use `$n::text::jsonb` (enforced by `jsonb-casts.test.ts`).
+- A saved value that "disappears on refresh" while version history shows it = check `jsonb_typeof(col)` in the DB, not the editor.
+- React 19.2 reveals streamed Suspense content on `requestAnimationFrame`: in a **hidden/background tab** (including the desktop app's
+  embedded browser pane) the page stays on the `loading.tsx` skeleton. It is not an app bug; foreground the tab.
+- Supabase pooler: "Can't reach database server" can really be a wrong password; add `sslmode=require` to see the real error.
+- Windows: CRLF line endings; stop dev servers before `next build` if files are locked.
+- Vercel: a deploy can sit in "Deploying outputs…" for ten minutes or more even though the build succeeded; read the log before assuming
+  the code failed. Production `main` only changes when `main` is pushed; branch pushes are Previews.
+- Do not say "tested" until real saves have been made in production and the stored data checked; unit tests do not replace that.
+- Shell/heredoc quoting breaks on apostrophes in generated files: write files with the editor tool, not `cat <<EOF`.
 
 ## UI conventions
 

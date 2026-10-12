@@ -2,6 +2,9 @@ import Link from "next/link";
 import RowActions from "@/components/admin/RowActions";
 import ListFilter from "@/components/admin/ListFilter";
 import { query } from "@/lib/db";
+import { getSession } from "@/lib/auth";
+import { can } from "@/lib/permissions";
+import { ReorderButtons, ReorderRows } from "@/components/admin/Reorder";
 import FaqRowActions from "./FaqRowActions";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +18,7 @@ type FaqRow = {
 };
 
 export default async function FaqsAdminPage() {
+  const canReorder = can((await getSession())?.role, "content.publish");
   let rows: FaqRow[] = [];
   let dbError: string | null = null;
   try {
@@ -44,6 +48,7 @@ export default async function FaqsAdminPage() {
         </div>
       )}
 
+      {rows.length > 1 && canReorder && <ReorderRows entity="faq" />}
       {rows.length > 0 && (
         <ListFilter placeholder="Search questions" statuses={[{ value: "published", label: "Published" }, { value: "hidden", label: "Hidden" }]} />
       )}
@@ -62,7 +67,7 @@ export default async function FaqsAdminPage() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id} data-list-row data-status={r.is_published ? "published" : "hidden"} data-search={`${r.question} ${r.category ?? ""}`} style={{ borderBottom: "1px solid var(--grey-1)" }}>
+                <tr key={r.id} data-list-row data-reorder-row data-id={r.id} data-group={r.category ?? "General"} data-status={r.is_published ? "published" : "hidden"} data-search={`${r.question} ${r.category ?? ""}`} style={{ borderBottom: "1px solid var(--grey-1)" }}>
                   <td style={{ padding: "12px 16px" }}>{r.sort_order}</td>
                   <td style={{ padding: "12px 16px", fontWeight: 600 }}>{r.question}</td>
                   <td style={{ padding: "12px 16px" }}>{r.category ?? "General"}</td>
@@ -76,6 +81,7 @@ export default async function FaqsAdminPage() {
                       Edit
                     </Link>
                     <FaqRowActions id={r.id} isPublished={r.is_published} />
+                    <ReorderButtons entity="faq" id={r.id} group={r.category ?? "General"} />
                     <RowActions entity="faq" id={r.id} live={r.is_published} showPublish={false} />
                   </td>
                 </tr>

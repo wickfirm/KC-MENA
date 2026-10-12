@@ -106,4 +106,94 @@ describe("EditorEnhancer", () => {
     expect((document.querySelector("main form select") as HTMLSelectElement).disabled).toBe(true);
     expect(document.querySelector(".cms-savebar")).toBeNull();
   });
+
+  describe("Preview unsaved", () => {
+    const realFetch = globalThis.fetch;
+    afterEach(() => {
+      globalThis.fetch = realFetch;
+      vi.unstubAllGlobals();
+    });
+
+    /** Backend stand-in. Installed BEFORE the enhancer mounts, like the real page where the app's fetch is already in place. */
+    function stubBackend() {
+      const calls: { url: string; init?: RequestInit }[] = [];
+      globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        calls.push({ url, init });
+        if (url === "/api/preview-draft") return new Response(JSON.stringify({ ok: true, url: "/preview/home?draft=1" }), { status: 200 });
+        return new Response(JSON.stringify({ page: {} }), { status: 200 });
+      }) as typeof fetch;
+      return calls;
+    }
+
+    /** Wire the form like a real editor: onSubmit builds a payload and PUTs it to its save endpoint. */
+    function wireEditorSave(endpoint: string, method = "PUT") {
+      const form = document.querySelector("main form") as HTMLFormElement;
+      const results: Response[] = [];
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        results.push(await window.fetch(endpoint, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: "draft", content: { hero: "typed" } }) }));
+      });
+      return results;
+    }
+
+    it("sends the editor's unsaved payload to /api/preview-draft instead of saving, and opens the preview", async () => {
+      pathname = "/admin/site/home";
+      const calls = stubBackend();
+      mountEditorForm();
+      await mount();
+      const win = { closed: false, close: vi.fn(), location: { href: "" } };
+      vi.stubGlobal("open", vi.fn(() => win));
+      const results = wireEditorSave("/api/site-pages/home");
+
+      const button = [...document.querySelectorAll(".cms-savebar button")].find((b) => b.textContent === "Preview unsaved") as HTMLButtonElement;
+      expect(button).toBeTruthy();
+      await act(async () => button.click());
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(50);
+      });
+
+      expect(calls.map((c) => c.url)).toEqual(["/api/preview-draft"]); // the real save endpoint was never called
+      expect(JSON.parse(String(calls[0].init?.body))).toEqual({ path: "/api/site-pages/home", payload: { status: "draft", content: { hero: "typed" } } });
+      expect(win.location.href).toBe("/preview/home?draft=1");
+      expect(results[0].ok).toBe(false); // so the editor does not claim "Saved"
+      expect((await results[0].json()).error).toMatch(/Nothing was saved/);
+    });
+
+    it("leaves normal saves untouched", async () => {
+      pathname = "/admin/site/home";
+      const calls = stubBackend();
+      mountEditorForm();
+      await mount();
+      wireEditorSave("/api/site-pages/home");
+      await act(async () => (document.querySelector("main form") as HTMLFormElement).requestSubmit());
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(50);
+      });
+      expect(calls.map((c) => c.url)).toEqual(["/api/site-pages/home"]);
+    });
+
+    it("only offers Preview on previewable editors, not for viewers", async () => {
+      pathname = "/admin/site/contact";
+      mountEditorForm();
+      await mount();
+      expect([...document.querySelectorAll(".cms-savebar button")].some((b) => b.textContent === "Preview unsaved")).toBe(false);
+    });
+
+    it("closes the blank tab when the form never submits (validation failure)", async () => {
+      pathname = "/admin/news/12";
+      mountEditorForm();
+      const form = document.querySelector("main form") as HTMLFormElement;
+      form.requestSubmit = vi.fn(); // validation blocked the submit: nothing is fetched
+      await mount();
+      const win = { closed: false, close: vi.fn(), location: { href: "" } };
+      vi.stubGlobal("open", vi.fn(() => win));
+      const button = [...document.querySelectorAll(".cms-savebar button")].find((b) => b.textContent === "Preview unsaved") as HTMLButtonElement;
+      await act(async () => button.click());
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(7000);
+      });
+      expect(win.close).toHaveBeenCalled();
+    });
+  });
 });

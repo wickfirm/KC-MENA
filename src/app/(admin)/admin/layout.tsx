@@ -15,7 +15,7 @@ type NavItem = { href: string; label: string };
 type NavGroup = { heading?: string; adminOnly?: boolean; items: NavItem[] };
 
 const navGroups: NavGroup[] = [
-  { items: [{ href: "/admin", label: "Dashboard" }] },
+  { items: [{ href: "/admin", label: "Dashboard" }, { href: "/admin/guide", label: "Guide" }] },
   {
     heading: "Site pages",
     items: [

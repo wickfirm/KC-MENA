@@ -149,3 +149,19 @@ handover request) out of scope; this section closes that.
 ## Decisions for the client
 - Are the **four KPD roles** wanted for KC MENA, or only Admin/Editor? (KPD's client work order defined them.)
 - Should the KC MENA admin share KPD's exact UI (Figtree/Inter, pill buttons, `Messages`/`Team`/`News inbox` labels) or the KC MENA site's own look?
+
+
+## Round 2 status (updated 2026-10-12)
+
+| # | Item | Status |
+|---|---|---|
+| E1/E2 | Four roles, permission module, `data-requires`, role-aware nav | **Built** (`005-roles.sql` applied) |
+| E3 | Preview with unsaved changes | **Built** for Home, About, Local Business, Business pages, Careers/FAQ/News page shells and news posts. **Not** for Contact (no preview route) or the generic legal-page editor |
+| E4 | Drag-and-drop reorder | **Built** for FAQs and projects, where order is stored. The page editors have fixed-shape content (no add/remove cards), so there is nothing to reorder there |
+| E5 | Per-image captions | **Not built**: the delivered pages show no captions, so a field would have no effect |
+| E6 | Speed (loading shell, cached user lookup) | **Built** |
+| E7 | Visual identity | **Built** (KC MENA tokens, real logos, themed components); needs the client's eye |
+| E8 | Hydration safety | Verified by design: the enhancer scans after hydration |
+| E10 | In-CMS guide, UAT accounts, checklist | **Built** (`/admin/guide`, `docs/uat/`, `scripts/uat-accounts.mjs`) |
+| E11 | Rendered-output check | `NewsArticleView` structure is pinned by a render test; live-vs-local rendered text still needs a production check |
+| E12 | Gotchas | In `AGENTS.md` |

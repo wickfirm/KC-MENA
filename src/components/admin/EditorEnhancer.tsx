@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Item = { id: string; label: string; collapsible: boolean };
 
@@ -16,12 +16,57 @@ type Item = { id: string; label: string; collapsible: boolean };
 /** Screens whose form is a content editor (not search boxes or the team form). */
 const EDITOR_PATH = /^\/admin\/(site\/|pages\/|news\/|faqs\/|jobs\/|projects\/|settings)/;
 
+/** Editors that can show their unsaved changes in a preview tab (see src/lib/preview-drafts.ts). */
+const PREVIEW_PATH = /^\/admin\/(site\/(home|about|local-business|business\/[^/]+|listing\/[^/]+)|news\/[^/]+)\/?$/;
+
+type PreviewIntent = { win: Window | null };
+
 export default function EditorEnhancer({ role = "editor" }: { role?: string }) {
   const pathname = usePathname();
   const [items, setItems] = useState<Item[]>([]);
   const [hasForm, setHasForm] = useState(false);
   const [active, setActive] = useState("");
   const [allCollapsed, setAllCollapsed] = useState(false);
+  const intent = useRef<PreviewIntent | null>(null);
+  const canPreview = PREVIEW_PATH.test(pathname) && role !== "viewer";
+
+  // "Preview unsaved": the editor's own save code builds the payload; this wrapper diverts that one request
+  // to /api/preview-draft (a private, expiring draft) instead of saving, then opens the preview tab.
+  useEffect(() => {
+    const original = window.fetch;
+    const wrapped: typeof window.fetch = async (input, init) => {
+      const pending = intent.current;
+      const method = (init?.method ?? (input instanceof Request ? input.method : "GET")).toUpperCase();
+      if (pending && (method === "PUT" || method === "POST") && typeof init?.body === "string") {
+        const href = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+        const path = new URL(href, window.location.origin).pathname;
+        if (/^\/api\/(site-pages|news)(\/|$)/.test(path)) {
+          intent.current = null;
+          let payload: unknown;
+          try {
+            payload = JSON.parse(init.body);
+          } catch {
+            payload = null;
+          }
+          const res = await original("/api/preview-draft", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path, payload }) });
+          const data = await res.json().catch(() => ({}));
+          const headers = { "Content-Type": "application/json" };
+          if (res.ok && data.url) {
+            if (pending.win && !pending.win.closed) pending.win.location.href = data.url;
+            else window.open(data.url, "_blank");
+            return new Response(JSON.stringify({ error: "Preview opened in a new tab. Nothing was saved." }), { status: 409, headers });
+          }
+          pending.win?.close();
+          return new Response(JSON.stringify({ error: data.error ?? "Could not prepare the preview." }), { status: res.status, headers });
+        }
+      }
+      return original.call(window, input, init);
+    };
+    window.fetch = wrapped;
+    return () => {
+      if (window.fetch === wrapped) window.fetch = original;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,6 +168,22 @@ export default function EditorEnhancer({ role = "editor" }: { role?: string }) {
     form?.requestSubmit();
   }, []);
 
+  const preview = useCallback(() => {
+    const form = document.querySelector<HTMLFormElement>("main form.cms-enhanced");
+    if (!form) return;
+    // Open the tab inside the click so the browser allows it; it is pointed at the preview once the draft is stored.
+    const win = window.open("about:blank", "_blank");
+    intent.current = { win };
+    form.requestSubmit();
+    window.setTimeout(() => {
+      // The form did not submit (validation failed): drop the intent and the blank tab.
+      if (intent.current?.win === win) {
+        intent.current = null;
+        win?.close();
+      }
+    }, 6000);
+  }, []);
+
   if (!hasForm) return null;
   const readOnly = role === "viewer";
   return (
@@ -152,6 +213,11 @@ export default function EditorEnhancer({ role = "editor" }: { role?: string }) {
         <button type="button" className="cms-savebar__top" onClick={() => window.scrollTo({ top: 0, behavior: "auto" })}>
           ↑ Top
         </button>
+        {canPreview && (
+          <button type="button" className="btn" onClick={preview} title="Opens a preview of what you have typed, without saving">
+            Preview unsaved
+          </button>
+        )}
         <button type="button" className="btn btn-dark" onClick={save}>
           Save changes
         </button>

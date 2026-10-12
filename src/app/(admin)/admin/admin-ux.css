@@ -163,3 +163,8 @@ main form.cms-enhanced section[data-collapsed] > h2:first-child { margin-bottom:
 .cms-savebar { background: rgba(255, 255, 255, .94); border-top-color: var(--rule); }
 .cms-rail { border-color: var(--rule); box-shadow: 0 14px 30px -26px rgba(10, 10, 10, .35); }
 .cms-rail li button.is-active { border-left-color: var(--accent-red); }
+
+/* -- Drag-and-drop reordering (FAQs, projects) ------------------------------------------- */
+tr[data-reorder-row][draggable="true"] { cursor: grab; }
+tr[data-reorder-row].is-dragging { opacity: .4; }
+tr[data-reorder-row].is-over { box-shadow: inset 0 3px 0 var(--black); background: #fafaf8; }

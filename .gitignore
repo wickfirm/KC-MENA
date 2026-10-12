@@ -30,3 +30,6 @@ server.log
 server.err
 
 .kc-*
+
+# generated UAT credentials (hashes) - never commit
+uat-test-accounts.sql
