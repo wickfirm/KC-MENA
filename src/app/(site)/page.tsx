@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./home.css";
+import ClientPageCss from "@/components/site/ClientPageCss";
 import HomePageView from "@/components/site/HomePageView";
 import JsonLd from "@/components/site/JsonLd";
 import { normalizeHomeContent } from "@/lib/home-content";
@@ -17,7 +17,7 @@ export default async function HomePage() {
   const page = await getPageBySlug("home");
   const document = normalizeHomeContent(page?.content);
   return (
-    <>
+    <><ClientPageCss page="home" />
       <HomePageView document={document} />
       <JsonLd data={fixedPageJsonLd("home", resolvePageSeo("home", page?.seo))} />
     </>

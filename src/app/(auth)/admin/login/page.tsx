@@ -1,3 +1,4 @@
+import "../../../globals.css";
 import LoginForm from "./LoginForm";
 
 export const dynamic = "force-dynamic";

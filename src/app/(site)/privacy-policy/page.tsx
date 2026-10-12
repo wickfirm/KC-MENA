@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import ClientPageCss from "@/components/site/ClientPageCss";
 import LegalPageView from "@/components/site/LegalPageView";
 import JsonLd from "@/components/site/JsonLd";
 import { getPageBySlug } from "@/lib/pages";
@@ -18,7 +19,7 @@ export default async function PrivacyPolicyPage() {
   const page = await getPageBySlug(SLUG);
   if (!page) notFound();
   return (
-    <>
+    <><ClientPageCss page="privacy-policy" />
       <LegalPageView title={page.title} meta={page.content?.meta} body={page.content?.body} />
       <JsonLd data={fixedPageJsonLd(SLUG, resolvePageSeo(SLUG, page.seo))} />
     </>

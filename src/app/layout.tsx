@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Figtree, Noto_Serif } from "next/font/google";
-import "./globals.css";
 
 // Self-hosted webfonts (the delivered design's type pairing). next/font
 // preloads and inlines them — no render-blocking Google Fonts request.

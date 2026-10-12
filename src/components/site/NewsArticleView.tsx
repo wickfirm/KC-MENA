@@ -1,3 +1,4 @@
+import { clientHeroBackground } from "@/lib/client-css";
 import type { CSSProperties } from "react";
 
 export type NewsArticle = {
@@ -20,7 +21,7 @@ export default function NewsArticleView({ post }: { post: NewsArticle }) {
     <>
       <section
         className="hero-band"
-        style={{ "--hero-image": `url('${post.cover_image ?? "/images/city_tokyo.webp"}')` } as CSSProperties}
+        style={clientHeroBackground("news", post.cover_image ?? "/images/city_tokyo.webp")}
       >
         <div className="wrap">
           <span className="hero-kicker eyebrow">{post.category ?? "News"}</span>

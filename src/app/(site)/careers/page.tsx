@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { clientHeroBackground } from "@/lib/client-css";
+import ClientPageCss from "@/components/site/ClientPageCss";
 import JsonLd from "@/components/site/JsonLd";
 import { getPageBySlug } from "@/lib/pages";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
@@ -6,7 +8,6 @@ import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
 import JobApplyForm from "@/components/site/JobApplyForm";
 import OpenApplicationForm from "@/components/site/OpenApplicationForm";
-import "./careers.css";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +22,8 @@ export default async function CareersPage() {
   const [content, page] = await Promise.all([getListingContent("careers"), getPageBySlug("careers")]);
   let jobs: Job[] = [];
   try { jobs = await query("SELECT id, title, department, location, employment, description FROM job_openings WHERE status = 'open' AND (closing_date IS NULL OR closing_date >= current_date) ORDER BY created_at DESC"); } catch { /* The template remains useful before the CMS database is connected. */ }
-  return <><main>
-    <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
+  return <><ClientPageCss page="careers" /><main>
+    <section className="hero-band" style={clientHeroBackground("careers", content.hero.image)}>
       <div className="wrap"><h1>{content.hero.title}</h1></div>
     </section>
     {jobs.length ? (
@@ -44,5 +45,6 @@ export default async function CareersPage() {
       </section>
     ) : null}
     <OpenApplicationForm content={content.careerForm} />
+    <div style={{ height: 3, background: "var(--white)" }} />
   </main><JsonLd data={fixedPageJsonLd("careers", resolvePageSeo("careers", page?.seo))} /></>;
 }

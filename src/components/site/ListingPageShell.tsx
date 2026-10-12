@@ -1,3 +1,5 @@
+import ClientPageCss from "./ClientPageCss";
+import { clientHeroBackground, type ClientPage } from "@/lib/client-css";
 import type { ReactNode } from "react";
 import type { ListingContent } from "@/lib/listing-content";
 
@@ -8,11 +10,12 @@ import type { ListingContent } from "@/lib/listing-content";
  * posts) is passed through as children between the intro and the news extras.
  * Class names mirror the delivered static markup so the shared base styles apply.
  */
-export default function ListingPageShell({ content, children }: { content: ListingContent; children?: ReactNode }) {
+export default function ListingPageShell({ content, children, page = "news" }: { page?: ClientPage; content: ListingContent; children?: ReactNode }) {
   const isNews = Boolean(content.featuredVideo || content.insightCards?.length || content.disclaimer);
   return (
     <>
-      <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
+      <ClientPageCss page={page} />
+      <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
 

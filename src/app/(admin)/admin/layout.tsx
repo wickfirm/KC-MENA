@@ -7,6 +7,7 @@ import LogoutButton from "./LogoutButton";
 import AdminNav from "@/components/admin/AdminNav";
 import UnsavedGuard from "@/components/admin/UnsavedGuard";
 import EditorEnhancer from "@/components/admin/EditorEnhancer";
+import "../../globals.css";
 import "./admin-ux.css";
 
 export const dynamic = "force-dynamic";

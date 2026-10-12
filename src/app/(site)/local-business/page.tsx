@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/site/JsonLd";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
-import "./local-business.css";
 import { getPageBySlug } from "@/lib/pages";
 import { DEFAULT_LOCAL_BUSINESS, isLocalBusinessContent } from "@/lib/local-business-content";
 import { getPublishedProjectsBySector } from "@/lib/projects";

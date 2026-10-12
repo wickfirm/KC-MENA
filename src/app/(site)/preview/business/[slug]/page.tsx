@@ -15,5 +15,5 @@ export default async function BusinessDraftPreview({ params, searchParams }: { p
   if (!isBusinessDetailSlug(slug)) notFound();
   const draft = (await searchParams).draft ? ((await loadDraft(`page:business/${slug}`)) as { content?: unknown } | null) : null;
   const source = draft ? draft.content : (await getPageBySlug(slug, false))?.content;
-  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/business/${slug}`} /><BusinessDetailPageView content={isBusinessDetailContent(source) ? source : DEFAULT_BUSINESS_DETAILS[slug]} /></>;
+  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/business/${slug}`} /><BusinessDetailPageView page={slug} content={isBusinessDetailContent(source) ? source : DEFAULT_BUSINESS_DETAILS[slug]} /></>;
 }
