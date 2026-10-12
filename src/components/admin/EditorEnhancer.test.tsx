@@ -52,6 +52,15 @@ describe("EditorEnhancer", () => {
     expect(document.querySelectorAll("main form section[data-collapsible]")).toHaveLength(4);
   });
 
+  it("enhances editors whose save button has no explicit type (it still submits)", async () => {
+    mountEditorForm();
+    document.querySelector("main form button")!.removeAttribute("type");
+    pathname = "/admin/site/business/real-estate-development";
+    await mount();
+    expect(document.querySelectorAll(".cms-rail li button")).toHaveLength(4);
+    expect(document.querySelector(".cms-savebar")).not.toBeNull();
+  });
+
   it("collapses a section when its heading is clicked and expands it again", async () => {
     mountEditorForm();
     await mount();

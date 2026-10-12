@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import MediaPicker from "@/components/admin/MediaPicker";
+import { labelStyle, sectionHeading, sectionStyle, subHeading } from "@/components/admin/editor-styles";
 import type { BusinessDetailContent, BusinessDetailSlug } from "@/lib/business-detail-content";
 
 type Props = {
@@ -11,13 +12,8 @@ type Props = {
   seo: { title?: string; description?: string };
 };
 
-const inputStyle = { width: "100%", padding: "9px 10px", border: "1px solid var(--line)", marginTop: 5 };
-
 function Field({ label, name, defaultValue, multiline = false }: { label: string; name: string; defaultValue: string; multiline?: boolean }) {
-  return <label style={{ display: "block", marginBottom: 14, fontSize: ".82rem", fontWeight: 700 }}>
-    {label}
-    {multiline ? <textarea name={name} defaultValue={defaultValue} rows={4} style={inputStyle} /> : <input name={name} defaultValue={defaultValue} style={inputStyle} />}
-  </label>;
+  return <div style={{ marginBottom: 14 }}><label htmlFor={name} style={labelStyle}>{label}</label>{multiline ? <textarea id={name} name={name} defaultValue={defaultValue} rows={4} /> : <input id={name} name={name} defaultValue={defaultValue} />}</div>;
 }
 
 export default function BusinessDetailEditor({ slug, content, status, seo }: Props) {
@@ -68,51 +64,50 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
   }
 
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, marginBottom: 20 }}>
-      <label style={{ fontWeight: 700 }}>Status <select name="status" defaultValue={status} style={{ marginLeft: 8, padding: 7 }}><option value="draft">Draft</option><option value="published">Published</option></select></label>
-      <a className="btn" href={`/preview/business/${slug}`} target="_blank">Preview draft</a>
-    </div>
-    <h2 style={{ fontSize: "1.15rem", marginBottom: 14 }}>Hero and introduction</h2>
-    <Field label="Page title" name="heroTitle" defaultValue={content.hero.title} />
-    <MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} />
-    <Field label="Introduction label" name="overviewEyebrow" defaultValue={content.overview.eyebrow} />
-    <Field label="Introduction heading" name="overviewHeading" defaultValue={content.overview.heading} multiline />
-    <Field label="Introduction body" name="overviewBody" defaultValue={content.overview.body ?? ""} multiline />
-    {content.platformMetrics && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Global platform metrics</h2>
-      <h3 style={{ fontSize: ".9rem", marginBottom: 10 }}>Headline metrics</h3>
+    <div style={{ width: 160 }}><label htmlFor="status" style={labelStyle}>Status</label><select id="status" name="status" defaultValue={status}><option value="draft">Draft</option><option value="published">Published</option></select></div>
+    <section style={sectionStyle}>
+      <h2 style={sectionHeading}>Hero and introduction</h2>
+      <Field label="Page title" name="heroTitle" defaultValue={content.hero.title} />
+      <MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} />
+      <Field label="Introduction label" name="overviewEyebrow" defaultValue={content.overview.eyebrow} />
+      <Field label="Introduction heading" name="overviewHeading" defaultValue={content.overview.heading} multiline />
+      <Field label="Introduction body" name="overviewBody" defaultValue={content.overview.body ?? ""} multiline />
+    </section>
+    {content.platformMetrics && <section style={sectionStyle}>
+      <h2 style={sectionHeading}>Global platform metrics</h2>
+      <h3 style={subHeading}>Headline metrics</h3>
       {content.platformMetrics.primary.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`platform-primary-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`platform-primary-${index}-label`} defaultValue={metric.label} /></div>)}
-      <h3 style={{ fontSize: ".9rem", margin: "16px 0 10px" }}>Sector breakdown</h3>
+      <h3 style={{ ...subHeading, marginTop: 16 }}>Sector breakdown</h3>
       {content.platformMetrics.sectors.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr 1fr", gap: 12 }}><Field label="Value" name={`platform-sector-${index}-value`} defaultValue={metric.value} /><Field label="Sector" name={`platform-sector-${index}-label`} defaultValue={metric.label} /><Field label="Detail" name={`platform-sector-${index}-detail`} defaultValue={metric.detail} /></div>)}
       <Field label="Source label" name="platform-source-label" defaultValue={content.platformMetrics.source.label} /><Field label="Source URL" name="platform-source-href" defaultValue={content.platformMetrics.source.href} />
     </section>}
-    {content.metrics && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Key metrics</h2>{content.metrics.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`metric-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`metric-${index}-label`} defaultValue={metric.label} /></div>)}</section>}
-    {content.metricsSource && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><Field label="Metrics source label" name="metrics-source-label" defaultValue={content.metricsSource.label} /><Field label="Metrics source URL" name="metrics-source-href" defaultValue={content.metricsSource.href} /></section>}
-    {content.bizBand && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Business platform band</h2><Field label="Label" name="biz-band-eyebrow" defaultValue={content.bizBand.eyebrow} /><Field label="Heading" name="biz-band-heading" defaultValue={content.bizBand.heading} /><Field label="Body" name="biz-band-body" defaultValue={content.bizBand.body} multiline /></section>}
-    {content.callouts?.map((callout, index) => <section key={callout.heading} style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Callout {index + 1}</h2><Field label="Label" name={`callout-${index}-eyebrow`} defaultValue={callout.eyebrow} /><Field label="Heading" name={`callout-${index}-heading`} defaultValue={callout.heading} /><Field label="Body" name={`callout-${index}-body`} defaultValue={callout.body} multiline /><Field label="Link URL" name={`callout-${index}-href`} defaultValue={callout.href} /><Field label="Link label" name={`callout-${index}-label`} defaultValue={callout.label} /></section>)}
-    {content.locations && <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}><h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Map locations</h2>{content.locations.map((location, index) => <div key={index} style={{ borderTop: index ? "1px solid var(--line)" : undefined, paddingTop: index ? 16 : 0, marginTop: index ? 16 : 0 }}><Field label="Country" name={`location-${index}-country`} defaultValue={location.country} /><Field label="City" name={`location-${index}-city`} defaultValue={location.city} /><Field label="Address line" name={`location-${index}-line`} defaultValue={location.line} /><MediaPicker name={`location-${index}-image`} label="Image" initialUrl={location.image} /><Field label="Map URL" name={`location-${index}-map-url`} defaultValue={location.mapUrl} /></div>)}</section>}
-    <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Projects band</h2>
+    {content.metrics && <section style={sectionStyle}><h2 style={sectionHeading}>Key metrics</h2>{content.metrics.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`metric-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`metric-${index}-label`} defaultValue={metric.label} /></div>)}</section>}
+    {content.metricsSource && <section style={sectionStyle}><Field label="Metrics source label" name="metrics-source-label" defaultValue={content.metricsSource.label} /><Field label="Metrics source URL" name="metrics-source-href" defaultValue={content.metricsSource.href} /></section>}
+    {content.bizBand && <section style={sectionStyle}><h2 style={sectionHeading}>Business platform band</h2><Field label="Label" name="biz-band-eyebrow" defaultValue={content.bizBand.eyebrow} /><Field label="Heading" name="biz-band-heading" defaultValue={content.bizBand.heading} /><Field label="Body" name="biz-band-body" defaultValue={content.bizBand.body} multiline /></section>}
+    {content.callouts?.map((callout, index) => <section key={callout.heading} style={sectionStyle}><h2 style={sectionHeading}>Callout {index + 1}</h2><Field label="Label" name={`callout-${index}-eyebrow`} defaultValue={callout.eyebrow} /><Field label="Heading" name={`callout-${index}-heading`} defaultValue={callout.heading} /><Field label="Body" name={`callout-${index}-body`} defaultValue={callout.body} multiline /><Field label="Link URL" name={`callout-${index}-href`} defaultValue={callout.href} /><Field label="Link label" name={`callout-${index}-label`} defaultValue={callout.label} /></section>)}
+    {content.locations && <section style={sectionStyle}><h2 style={sectionHeading}>Map locations</h2>{content.locations.map((location, index) => <div key={index} style={{ borderTop: index ? "1px solid var(--line)" : undefined, paddingTop: index ? 16 : 0, marginTop: index ? 16 : 0 }}><Field label="Country" name={`location-${index}-country`} defaultValue={location.country} /><Field label="City" name={`location-${index}-city`} defaultValue={location.city} /><Field label="Address line" name={`location-${index}-line`} defaultValue={location.line} /><MediaPicker name={`location-${index}-image`} label="Image" initialUrl={location.image} /><Field label="Map URL" name={`location-${index}-map-url`} defaultValue={location.mapUrl} /></div>)}</section>}
+    <section style={sectionStyle}>
+      <h2 style={sectionHeading}>Projects band</h2>
       <p style={{ color: "var(--grey-5)", fontSize: ".82rem", marginBottom: 14 }}>
         Published projects assigned to this sector (Projects in the sidebar) appear in a band above the footer.
         Leave the heading empty to use the default wording.
       </p>
       <Field label="Projects heading" name="projectsHeading" defaultValue={content.projectsHeading ?? ""} />
     </section>
-    {content.sections.map((section, index) => <section key={index} style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Content section {index + 1}</h2>
+    {content.sections.map((section, index) => <section key={index} style={sectionStyle}>
+      <h2 style={sectionHeading}>Content section {index + 1}</h2>
       <Field label="Label" name={`section-${index}-eyebrow`} defaultValue={section.eyebrow} />
       <Field label="Heading" name={`section-${index}-heading`} defaultValue={section.heading} multiline />
       <Field label="Body" name={`section-${index}-body`} defaultValue={section.body} multiline />
       <MediaPicker name={`section-${index}-image`} label="Image" initialUrl={section.image} />
       {section.action && <><Field label="CTA label" name={`section-${index}-action-label`} defaultValue={section.action.label} /><Field label="CTA URL" name={`section-${index}-action-href`} defaultValue={section.action.href} /></>}
     </section>)}
-    <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Search appearance</h2>
+    <section style={sectionStyle}>
+      <h2 style={sectionHeading}>Search appearance</h2>
       <Field label="SEO title" name="seoTitle" defaultValue={seo.title ?? ""} />
       <Field label="SEO description" name="seoDescription" defaultValue={seo.description ?? ""} multiline />
     </section>
+    <div style={{ display: "flex", gap: 10, marginTop: 26 }}><button className="btn btn-dark" type="submit" disabled={saving}>{saving ? "Saving…" : "Save changes"}</button><a className="btn" href={`/preview/business/${slug}`} target="_blank">Preview draft</a></div>
     {message && <p className={message.startsWith("Saved") ? "success-msg" : "error-msg"}>{message}</p>}
-    <button className="btn btn-dark" disabled={saving}>{saving ? "Saving…" : "Save changes"}</button>
   </form>;
 }

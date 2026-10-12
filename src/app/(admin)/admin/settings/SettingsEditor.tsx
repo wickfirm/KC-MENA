@@ -2,15 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import type { NavItem, SiteSettings } from "@/lib/settings";
-
-const inputStyle = { width: "100%", padding: "9px 10px", border: "1px solid var(--line)", marginTop: 5 };
+import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
 
 function Field({ label, name, defaultValue, multiline = false }: { label: string; name: string; defaultValue: string; multiline?: boolean }) {
   return (
-    <label style={{ display: "block", marginBottom: 14, fontSize: ".82rem", fontWeight: 700 }}>
-      {label}
-      {multiline ? <textarea name={name} defaultValue={defaultValue} rows={3} style={inputStyle} /> : <input name={name} defaultValue={defaultValue} style={inputStyle} />}
-    </label>
+    <div style={{ marginBottom: 14 }}>
+      <label htmlFor={name} style={labelStyle}>{label}</label>
+      {multiline ? <textarea id={name} name={name} defaultValue={defaultValue} rows={3} /> : <input id={name} name={name} defaultValue={defaultValue} />}
+    </div>
   );
 }
 
@@ -56,14 +55,16 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
 
   return (
     <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
-      <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Contact details</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <Field label="Phone" name="contactPhone" defaultValue={settings.contact.phone} />
-        <Field label="Email" name="contactEmail" defaultValue={settings.contact.email} />
-      </div>
+      <section>
+        <h2 style={sectionHeading}>Contact details</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <Field label="Phone" name="contactPhone" defaultValue={settings.contact.phone} />
+          <Field label="Email" name="contactEmail" defaultValue={settings.contact.email} />
+        </div>
+      </section>
 
-      <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-        <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Header navigation</h2>
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Header navigation</h2>
         {settings.nav.map((item, index) => (
           <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <Field label={`Item ${index + 1} label`} name={`nav-${index}-label`} defaultValue={item.label} />
@@ -73,8 +74,8 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
         <p style={{ color: "var(--grey-5)", fontSize: ".8rem" }}>Leave a label empty to remove that item. Up to 8 items.</p>
       </section>
 
-      <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-        <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Footer</h2>
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Footer</h2>
         <LinesField label="Address" name="addressLines" lines={settings.address.lines} />
         <Field label="Brand copy" name="footerCopy" defaultValue={settings.brand.footerCopy} multiline />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -83,8 +84,8 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
         </div>
       </section>
 
-      <section style={{ borderTop: "1px solid var(--line)", paddingTop: 20, marginTop: 20 }}>
-        <h2 style={{ fontSize: "1.05rem", marginBottom: 14 }}>Contact drawer locations</h2>
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Contact drawer locations</h2>
         {settings.drawer.locations.map((loc, index) => (
           <section key={index} style={{ borderBottom: "1px solid var(--line)", paddingBottom: 16, marginBottom: 16 }}>
             <Field label="Location name" name={`loc-${index}-title`} defaultValue={loc.title} />
@@ -94,10 +95,10 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
         ))}
       </section>
 
-      {message && <p className={message.startsWith("Saved") ? "success-msg" : "error-msg"}>{message}</p>}
-      <button className="btn btn-dark" disabled={saving}>
+      <button className="btn btn-dark" type="submit" disabled={saving} style={{ marginTop: 26 }}>
         {saving ? "Saving…" : "Save settings"}
       </button>
+      {message && <p className={message.startsWith("Saved") ? "success-msg" : "error-msg"}>{message}</p>}
     </form>
   );
 }

@@ -78,7 +78,7 @@ export default function EditorEnhancer({ role = "editor" }: { role?: string }) {
         return;
       }
       const form = document.querySelector<HTMLFormElement>("main form.card, main form[data-editor]");
-      const forms = Array.from(document.querySelectorAll<HTMLFormElement>("main form")).filter((f) => f.querySelector("button[type=submit]"));
+      const forms = Array.from(document.querySelectorAll<HTMLFormElement>("main form")).filter((f) => f.querySelector("button[type=submit], button:not([type])")); // a button with no type submits too
       const target = form && forms.includes(form) ? form : forms[0];
       if (!target) {
         setHasForm(false);
