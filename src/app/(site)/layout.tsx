@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import SiteChrome from "@/components/site/SiteChrome";
 import SiteFooter from "@/components/site/SiteFooter";
+import JsonLd from "@/components/site/JsonLd";
+import { PAGE_SEO, SITE_NAME, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { getSiteSettings } from "@/lib/settings";
+import { SITE_URL } from "@/lib/site";
 import "./styles/tokens.css";
 import "./styles/base.css";
 // This is the delivered client stylesheet, retained as the final visual
@@ -9,9 +12,9 @@ import "./styles/base.css";
 import "./styles/reference-parity.css";
 
 export const metadata: Metadata = {
-  title: { default: "Kasumigaseki MENA", template: "%s — Kasumigaseki MENA" },
-  description:
-    "Kasumigaseki MENA is the regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, building across Development, Investment & Asset Management, and Food & Beverage.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+  description: PAGE_SEO.home.description,
 };
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +22,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <SiteChrome settings={settings} footer={<SiteFooter settings={settings} />}>
       {children}
+      <JsonLd data={[organizationJsonLd(settings), websiteJsonLd()]} />
     </SiteChrome>
   );
 }

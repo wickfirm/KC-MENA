@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/site/JsonLd";
+import { getPageBySlug } from "@/lib/pages";
+import { faqPageJsonLd, fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
 import ListingPageShell from "@/components/site/ListingPageShell";
@@ -9,16 +12,12 @@ export const dynamic = "force-dynamic";
 type FaqRow = { id: number; question: string; answer: string; category: string | null };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await getListingContent("faq");
-  return {
-    title: content.hero.title,
-    description: content.intro,
-    alternates: { canonical: "https://kasumigaseki.ae/faq/" },
-  };
+  const page = await getPageBySlug("faq");
+  return pageMetadata(resolvePageSeo("faq", page?.seo));
 }
 
 export default async function FaqPage() {
-  const content = await getListingContent("faq");
+  const [content, page] = await Promise.all([getListingContent("faq"), getPageBySlug("faq")]);
   let faqs: FaqRow[] = [];
   try {
     faqs = await query<FaqRow>(
@@ -33,6 +32,7 @@ export default async function FaqPage() {
   const categories = [...new Set(faqs.map((f) => f.category ?? "General"))];
 
   return (
+    <>
     <ListingPageShell content={content}>
       {faqs.length === 0 ? (
         <p style={{ color: "var(--grey-5)", marginTop: 24 }}>{content.emptyMessage}</p>
@@ -54,5 +54,7 @@ export default async function FaqPage() {
         ))
       )}
     </ListingPageShell>
+    <JsonLd data={[...fixedPageJsonLd("faq", resolvePageSeo("faq", page?.seo)), ...(faqs.length ? [faqPageJsonLd(faqs)] : [])]} />
+    </>
   );
 }

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/site/JsonLd";
+import { getPageBySlug } from "@/lib/pages";
+import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
 import JobApplyForm from "@/components/site/JobApplyForm";
@@ -10,15 +13,15 @@ export const dynamic = "force-dynamic";
 type Job = { id: number; title: string; department: string | null; location: string | null; employment: string | null; description: string | null };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await getListingContent("careers");
-  return { title: content.hero.title, description: content.intro, alternates: { canonical: "https://kasumigaseki.ae/careers/" } };
+  const page = await getPageBySlug("careers");
+  return pageMetadata(resolvePageSeo("careers", page?.seo));
 }
 
 export default async function CareersPage() {
-  const content = await getListingContent("careers");
+  const [content, page] = await Promise.all([getListingContent("careers"), getPageBySlug("careers")]);
   let jobs: Job[] = [];
   try { jobs = await query("SELECT id, title, department, location, employment, description FROM job_openings WHERE status = 'open' AND (closing_date IS NULL OR closing_date >= current_date) ORDER BY created_at DESC"); } catch { /* The template remains useful before the CMS database is connected. */ }
-  return <main>
+  return <><main>
     <section className="hero-band" style={{ "--hero-image": `url('${content.hero.image}')` } as React.CSSProperties}>
       <div className="wrap"><h1>{content.hero.title}</h1></div>
     </section>
@@ -41,5 +44,5 @@ export default async function CareersPage() {
       </section>
     ) : null}
     <OpenApplicationForm content={content.careerForm} />
-  </main>;
+  </main><JsonLd data={fixedPageJsonLd("careers", resolvePageSeo("careers", page?.seo))} /></>;
 }

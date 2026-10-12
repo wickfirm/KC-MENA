@@ -181,7 +181,12 @@ except `/admin/login` (redirects with `?next=`). Roles: `admin` / `editor`.
   `faq/faq.css`, `home.css`). Reused design
   classes: `.wrap`, `.section`, `.hero-band`, `.eyebrow`, `.legal-hero`, `.legal-content`,
   `.news-grid`, `.news-card`, `.insight-grid`, `.disclaimer`, CSS vars `--ink`, `--grey-5/6`, `--line`.
-- Canonical domain is hardcoded as `https://kasumigaseki.ae/...` in metadata — keep it consistent.
+- **SEO/AEO:** every public page builds its metadata with `pageMetadata(resolvePageSeo(key, page?.seo))` and renders
+  `<JsonLd data={fixedPageJsonLd(...)} />` after its view (`src/lib/seo.ts`). The CMS "SEO title/description" boxes win field by field;
+  empty boxes fall back to the curated copy in `PAGE_SEO` (length-tested). The site layout emits Organization + WebSite JSON-LD;
+  news posts emit NewsArticle; `/faq` emits FAQPage. `src/app/{sitemap,robots}.ts`, `llms.txt/route.ts` and `opengraph-image.tsx`
+  replace the old static files. The canonical host comes from `src/lib/site.ts` (`NEXT_PUBLIC_SITE_URL`, default kasumigaseki.ae);
+  canonical paths have **no trailing slash** (Next redirects `/x/` to `/x`). A new public page needs a `PAGE_SEO` entry.
 
 ## Phase-aware map (what to touch vs. what's placeholder)
 

@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/site/JsonLd";
+import { getPageBySlug } from "@/lib/pages";
+import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 import Link from "next/link";
 import { query } from "@/lib/db";
 import { getListingContent } from "@/lib/listing-content";
@@ -19,16 +22,12 @@ type NewsRow = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await getListingContent("news");
-  return {
-    title: content.hero.title,
-    description: content.intro,
-    alternates: { canonical: "https://kasumigaseki.ae/news/" },
-  };
+  const page = await getPageBySlug("news");
+  return pageMetadata(resolvePageSeo("news", page?.seo));
 }
 
 export default async function NewsPage() {
-  const content = await getListingContent("news");
+  const [content, page] = await Promise.all([getListingContent("news"), getPageBySlug("news")]);
   let posts: NewsRow[] = [];
   try {
     posts = await query<NewsRow>(
@@ -41,6 +40,7 @@ export default async function NewsPage() {
   }
 
   return (
+    <>
     <ListingPageShell content={content}>
       {posts.length > 0 && (
         <div className="news-grid">
@@ -65,5 +65,7 @@ export default async function NewsPage() {
         </div>
       )}
     </ListingPageShell>
+    <JsonLd data={fixedPageJsonLd("news", resolvePageSeo("news", page?.seo), "CollectionPage")} />
+    </>
   );
 }
