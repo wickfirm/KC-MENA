@@ -7,11 +7,13 @@ import { FormEvent, useState } from "react";
 export default function SectionContactForm({
   subjectLabel = "Enquiry Type",
   subjectPlaceholder = "Development, Investment, F&B...",
+  submitLabel = "Send Enquiry",
   successNote = "Thank you — your enquiry has been received. Our team will be in touch shortly.",
   subject = "Website enquiry",
 }: {
   subjectLabel?: string;
   subjectPlaceholder?: string;
+  submitLabel?: string;
   successNote?: string;
   subject?: string;
 }) {
@@ -90,7 +92,7 @@ export default function SectionContactForm({
         {note}
       </div>
       <button type="submit" className="btn btn-solid" disabled={busy}>
-        {busy ? "Sending…" : "Send Enquiry"}
+        {busy ? "Sending…" : submitLabel}
       </button>
     </form>
   );

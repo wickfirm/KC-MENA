@@ -6,16 +6,6 @@ import ProjectsSection from "./ProjectsSection";
 import SectionContact from "./SectionContact";
 import BusinessCalloutBand from "./BusinessCalloutBand";
 
-const CONTACT_DEFAULTS = {
-  officeTitle: "Dubai Office",
-  officeLines: ["Dubai Hills Estate", "Business Park 4, Dubai, UAE", "Office 304-305"],
-  mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6",
-  contactTitle: "Get in Touch",
-  contactBody: "Reach the Kasumigaseki MENA team for corporate, investor, and business enquiries.",
-  phone: "+971 43 88 3099",
-  email: "info.dubai@kasumigaseki.co.jp",
-};
-
 export default function BusinessDetailPageView({ content, projects = [], referenceOverviewWidth = false, page }: { page: ClientPage; content: BusinessDetailContent; projects?: PublicProject[]; referenceOverviewWidth?: boolean }) {
   function splitSection(section: BusinessDetailContent["sections"][number], reversed: boolean) {
     const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
@@ -60,16 +50,22 @@ export default function BusinessDetailPageView({ content, projects = [], referen
       {content.sections.map((section, index) => splitSection(section, index % 2 === 1))}
       {content.callouts?.map((callout) => <BusinessCalloutBand key={callout.heading} callout={callout} locations={content.locations} />)}
       <ProjectsSection projects={projects} heading={content.projectsHeading || "Selected projects"} />
-      {content.contactSection && (
+      {content.contactSection && content.contact && (
         <SectionContact
-          heading={page === "real-estate" ? "Discuss an investment opportunity." : "Let our team get back to you."}
-          officeTitle={CONTACT_DEFAULTS.officeTitle}
-          officeLines={CONTACT_DEFAULTS.officeLines}
-          mapUrl={CONTACT_DEFAULTS.mapUrl}
-          contactTitle={CONTACT_DEFAULTS.contactTitle}
-          contactBody={CONTACT_DEFAULTS.contactBody}
-          phone={CONTACT_DEFAULTS.phone}
-          email={CONTACT_DEFAULTS.email}
+          eyebrow={content.contact.eyebrow}
+          heading={content.contact.heading}
+          officeTitle={content.contact.officeLabel}
+          officeLines={content.contact.officeLines}
+          mapUrl={content.contact.mapUrl}
+          mapLabel={content.contact.mapLabel}
+          contactTitle={content.contact.contactLabel}
+          contactBody={content.contact.body}
+          phone={content.contact.phone}
+          email={content.contact.email}
+          subjectLabel={content.contact.subjectLabel}
+          subjectPlaceholder={content.contact.subjectPlaceholder}
+          submitLabel={content.contact.submitLabel}
+          successMessage={content.contact.successMessage}
         />
       )}
     </main>

@@ -13,6 +13,8 @@ export type SectionContactProps = {
   email: string;
   subjectLabel?: string;
   subjectPlaceholder?: string;
+  submitLabel?: string;
+  successMessage?: string;
 };
 
 /** "Contact us" band shared by Local Business and the four business pages —
@@ -30,6 +32,8 @@ export default function SectionContact({
   email,
   subjectLabel = "Enquiry Type",
   subjectPlaceholder,
+  submitLabel,
+  successMessage,
 }: SectionContactProps) {
   return (
     <section className="section" id="contact">
@@ -67,7 +71,7 @@ export default function SectionContact({
               </p>
             </div>
           </div>
-          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} subject={heading} />
+          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} submitLabel={submitLabel} successNote={successMessage} subject={heading} />
         </div>
       </div>
     </section>

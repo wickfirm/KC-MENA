@@ -34,8 +34,24 @@ export type BusinessDetailContent = {
   /** Location cards inside the "map" callout (global-businesses only). */
   locations?: Array<{ country: string; city: string; line: string; image: string; mapUrl: string }>;
   callouts?: BusinessCallout[];
-  /** Trailing "Let our team get back to you." contact band. */
+  /** Trailing contact band. */
   contactSection?: boolean;
+  contact?: {
+    eyebrow: string;
+    heading: string;
+    officeLabel: string;
+    officeLines: string[];
+    mapUrl: string;
+    mapLabel: string;
+    contactLabel: string;
+    body: string;
+    phone: string;
+    email: string;
+    subjectLabel: string;
+    subjectPlaceholder: string;
+    submitLabel: string;
+    successMessage: string;
+  };
   projectsHeading?: string;
   sections: Array<{
     eyebrow: string;
@@ -57,6 +73,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     metrics: [{ value: "14,000", label: "Sales Experience Center (sq ft)" }, { value: "20–30", label: "Staff Capacity" }, { value: "452,389", label: "Built-Up Area (sq ft)" }, { value: "203,575", label: "Gross Sellable Area (GSA, sq ft)" }],
     metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
+    contact: { eyebrow: "Contact Us", heading: "Let our team get back to you.", officeLabel: "Dubai Office", officeLines: ["Dubai Hills Estate", "Business Park 4, Dubai, UAE", "Office 304-305"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6", mapLabel: "Open in Maps ↗", contactLabel: "Get in Touch", body: "Reach the Kasumigaseki MENA team for corporate, investor, and business enquiries.", phone: "+971 43 88 3099", email: "info.dubai@kasumigaseki.co.jp", subjectLabel: "Enquiry Type", subjectPlaceholder: "Development, Investment, F&B...", submitLabel: "Send Enquiry", successMessage: "Thank you — your enquiry has been received. Our team will be in touch shortly." },
     sections: [
       { eyebrow: "Development Strategy", heading: "Development starts with strategy, but commercialization has to be built in from day one.", body: "Kasumigaseki's model starts by creating value before vertical construction begins: sourcing land, refining the product, shaping the planning strategy, and setting the capital roadmap early. That is how margins are protected before the market starts pricing the project.", image: "/images/Reception kpd.webp", action: { label: "Discuss development", href: "/contact-us/" } },
       { eyebrow: "Development Process", heading: "The model moves from land value to development, launch, and stabilized exit with a clear capital roadmap.", body: "The GCC model expands into project-specific SPEs and JVs, including cooperation with Daito Trust Construction, so Kasumigaseki can control product quality, sales, and execution deeper into the cycle.", image: "/images/sales center b2.webp" },
@@ -76,6 +93,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     ],
     metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
+    contact: { eyebrow: "Contact Us", heading: "Discuss an investment opportunity.", officeLabel: "Dubai Office", officeLines: ["Dubai Hills Estate", "Business Park 4, Dubai, UAE", "Office 304-305"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6", mapLabel: "Open in Maps ↗", contactLabel: "Get in Touch", body: "Reach the Kasumigaseki MENA team for corporate, investor, and business enquiries.", phone: "+971 43 88 3099", email: "info.dubai@kasumigaseki.co.jp", subjectLabel: "Enquiry Type", subjectPlaceholder: "Development, Investment, F&B...", submitLabel: "Send Enquiry", successMessage: "Thank you — your enquiry has been received. Our team will be in touch shortly." },
     sections: [
       { eyebrow: "Investment & Asset Management", heading: "This is not a listings business. It is an investment business.", body: "Kasumigaseki MENA identifies inefficiencies in product, location, pricing, and timing. The current Dubai portfolio spans high-performing districts including Downtown, Dubai Hills, Hartland, and Palm Jumeirah.", image: "/images/stower-furnished.webp", action: { label: "Investment enquiries", href: "/contact-us/" } },
       { eyebrow: "Why Dubai, Why Now", heading: "The thesis is built on growth, liquidity, and international relevance.", body: "The long-term market case is supported by continued population growth, infrastructure expansion, Dubai's 2040 urban master plan, and globally mobile investors seeking security, connectivity, and a tax-efficient base.", image: "/images/imperial avenue view.webp" },
@@ -89,6 +107,7 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     metrics: [{ value: "Vida", label: "Emirates Hills" }, { value: "Neo", label: "Japanese Cuisine" }, { value: "Charcoal", label: "Fire-Led Menu" }, { value: "Keigo Abe", label: "Chef-Led Concept" }],
     metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
+    contact: { eyebrow: "Contact Us", heading: "Let our team get back to you.", officeLabel: "Dubai Office", officeLines: ["Dubai Hills Estate", "Business Park 4, Dubai, UAE", "Office 304-305"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6", mapLabel: "Open in Maps ↗", contactLabel: "Get in Touch", body: "Reach the Kasumigaseki MENA team for corporate, investor, and business enquiries.", phone: "+971 43 88 3099", email: "info.dubai@kasumigaseki.co.jp", subjectLabel: "Enquiry Type", subjectPlaceholder: "Development, Investment, F&B...", submitLabel: "Send Enquiry", successMessage: "Thank you — your enquiry has been received. Our team will be in touch shortly." },
     sections: [
       { eyebrow: "Food & Beverage", heading: "Authentic Japanese dining, translated for Dubai without diluting the craft.", body: "Kasumigaseki Restaurant is positioned as a Japanese dining experience brought from Tokyo to a global audience. The concept blends disciplined technique with a contemporary expression, giving Dubai a restaurant that feels both premium and current.", image: "/images/f&b.webp", action: { label: "Vida Emirates Hills", href: "https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac", external: true } },
       { eyebrow: "Chef & Menu", heading: "The kitchen is led by chef Keigo Abe.", body: "With Michelin-selected recognition in Tokyo, the menu moves across seasonal ingredients, charcoal-fired dishes, omakase-inspired moments, and plates designed for both discovery and repeat visits.", image: "/images/reference/fnb-highlight.webp", action: { label: "F&B enquiries", href: "/contact-us/" } },
@@ -161,6 +180,7 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
       (content.locations === undefined || (Array.isArray(content.locations) && content.locations.every((location) => typeof location?.country === "string" && typeof location?.city === "string" && typeof location?.line === "string" && typeof location?.image === "string" && typeof location?.mapUrl === "string"))) &&
       (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string" && (callout?.variant === undefined || callout.variant === "generic" || callout.variant === "map" || callout.variant === "ir")))) &&
       (content.contactSection === undefined || typeof content.contactSection === "boolean") &&
+      (content.contact === undefined || (typeof content.contact?.eyebrow === "string" && typeof content.contact?.heading === "string" && typeof content.contact?.officeLabel === "string" && Array.isArray(content.contact?.officeLines) && content.contact.officeLines.every((line) => typeof line === "string") && typeof content.contact?.mapUrl === "string" && typeof content.contact?.mapLabel === "string" && typeof content.contact?.contactLabel === "string" && typeof content.contact?.body === "string" && typeof content.contact?.phone === "string" && typeof content.contact?.email === "string" && typeof content.contact?.subjectLabel === "string" && typeof content.contact?.subjectPlaceholder === "string" && typeof content.contact?.submitLabel === "string" && typeof content.contact?.successMessage === "string")) &&
       (content.projectsHeading === undefined || typeof content.projectsHeading === "string") &&
       Array.isArray(content.sections) &&
       content.sections.length > 0 &&
@@ -184,6 +204,7 @@ export function withBusinessDefaults(slug: BusinessDetailSlug, content: Business
     hero: { ...defaults.hero, ...content.hero },
     overview: { ...defaults.overview, ...content.overview },
     platformMetrics: content.platformMetrics ?? defaults.platformMetrics,
+    contact: content.contact ?? defaults.contact,
     // Saved business pages predate some added metrics. Keep their edited values,
     // while appending any new default metrics so public and CMS views stay aligned.
     metrics: content.metrics ? [...content.metrics, ...(defaults.metrics?.slice(content.metrics.length) ?? [])] : defaults.metrics,
