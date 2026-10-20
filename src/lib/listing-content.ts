@@ -69,7 +69,17 @@ const defaults: Record<ListingSlug, ListingContent> = {
 export const DEFAULT_LISTING_CONTENT = defaults;
 
 export function withListingDefaults(slug: ListingSlug, content: ListingContent): ListingContent {
-  return { ...defaults[slug], ...content, hero: { ...defaults[slug].hero, ...content.hero }, careerForm: content.careerForm ?? defaults[slug].careerForm };
+  // A saved listing page may deliberately omit its optional empty-state copy.
+  // Do not restore the seed copy in that case: it would make a cleared CMS
+  // field appear again on the public page. Defaults are still used when no
+  // CMS row is available at all (see getListingContent below).
+  return {
+    ...defaults[slug],
+    ...content,
+    emptyMessage: Object.hasOwn(content, "emptyMessage") ? content.emptyMessage : undefined,
+    hero: { ...defaults[slug].hero, ...content.hero },
+    careerForm: content.careerForm ?? defaults[slug].careerForm,
+  };
 }
 
 export function isListingSlug(value: string): value is ListingSlug {

@@ -38,7 +38,7 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
       eyebrow: value("eyebrow") || undefined,
       heading: value("heading"),
       intro: value("intro"),
-      emptyMessage: value("emptyMessage") || undefined,
+      emptyMessage: value("emptyMessage"),
       careerForm: slug === "careers" ? {
         eyebrow: value("career-form-eyebrow"), heading: value("career-form-heading"), body: value("career-form-body"),
         offices: (content.careerForm?.offices ?? []).map((office, index) => ({ title: value(`career-office-${index}-title`), address: value(`career-office-${index}-address`) })),
