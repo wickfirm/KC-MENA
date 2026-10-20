@@ -8,6 +8,7 @@ import type { SiteSettings } from "@/lib/settings";
  *  to the CMS (contact_submissions) instead of falling back to mailto:. */
 export default function ContactDrawer({ settings, open, onClose, onHoverKeep, onHoverLeave }: { settings: SiteSettings; open: boolean; onClose: () => void; onHoverKeep: () => void; onHoverLeave: () => void }) {
   const [status, setStatus] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [busy, setBusy] = useState(false);
   const { contact, drawer } = settings;
 
@@ -15,27 +16,35 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
     event.preventDefault();
     setBusy(true);
     setStatus("");
-    const values = new FormData(event.currentTarget);
-    const response = await fetch("/api/submissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "contact",
-        source: "contact-drawer",
-        subject: "Kasumigaseki MENA inquiry",
-        name: values.get("name"),
-        email: values.get("email"),
-        message: values.get("message"),
-      }),
-    });
-    setBusy(false);
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      setStatus(data.error ?? "Could not send your enquiry. Please try again.");
-      return;
+    setIsSuccess(false);
+    const form = event.currentTarget;
+    try {
+      const values = new FormData(form);
+      const response = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "contact",
+          source: "contact-drawer",
+          subject: "Kasumigaseki MENA inquiry",
+          name: values.get("name"),
+          email: values.get("email"),
+          message: values.get("message"),
+        }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setStatus(data.error ?? "Could not send your enquiry. Please try again.");
+        return;
+      }
+      form.reset();
+      setIsSuccess(true);
+      setStatus("Thank you — your enquiry has been received.");
+    } catch {
+      setStatus("Could not send your enquiry. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    event.currentTarget.reset();
-    setStatus("Thank you — your enquiry has been received.");
   }
 
   return (
@@ -80,12 +89,12 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
               <label htmlFor="dmessage">Message</label>
               <textarea id="dmessage" name="message" required></textarea>
             </div>
+            <div className={`form-note${status ? " show" : ""}${status && !isSuccess ? " error-msg" : ""}`} id="drawerNote" role={isSuccess ? "status" : "alert"} aria-live="polite">
+              {status}
+            </div>
             <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }} disabled={busy}>
               {busy ? "Sending…" : "Send Enquiry"}
             </button>
-            <div className={`form-note${status ? " show" : ""}`} id="drawerNote" aria-live="polite">
-              {status || "Opens a direct line to our team."}
-            </div>
           </form>
 
           <div className="drawer-direct">

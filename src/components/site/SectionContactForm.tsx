@@ -23,32 +23,39 @@ export default function SectionContactForm({
     event.preventDefault();
     setBusy(true);
     setNote("");
-    const values = new FormData(event.currentTarget);
-    const response = await fetch("/api/submissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "enquiry",
-        source: "section-contact",
-        subject,
-        name: values.get("fname"),
-        email: values.get("femail"),
-        phone: values.get("fphone"),
-        message: [values.get("fsubject") ? `Enquiry type: ${values.get("fsubject")}` : "", values.get("fmessage")]
-          .filter(Boolean)
-          .join("\n\n"),
-      }),
-    });
-    setBusy(false);
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      setNote(data.error ?? "Could not send your enquiry. Please try again.");
+    const form = event.currentTarget;
+    try {
+      const values = new FormData(form);
+      const response = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "enquiry",
+          source: "section-contact",
+          subject,
+          name: values.get("fname"),
+          email: values.get("femail"),
+          phone: values.get("fphone"),
+          message: [values.get("fsubject") ? `Enquiry type: ${values.get("fsubject")}` : "", values.get("fmessage")]
+            .filter(Boolean)
+            .join("\n\n"),
+        }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setNote(data.error ?? "Could not send your enquiry. Please try again.");
+        setDone(false);
+        return;
+      }
+      form.reset();
+      setDone(true);
+      setNote(successNote);
+    } catch {
       setDone(false);
-      return;
+      setNote("Could not send your enquiry. Please try again.");
+    } finally {
+      setBusy(false);
     }
-    event.currentTarget.reset();
-    setDone(true);
-    setNote(successNote);
   }
 
   return (
@@ -79,12 +86,12 @@ export default function SectionContactForm({
           <textarea id="fmessage" name="fmessage" required />
         </div>
       </div>
+      <div className={`form-note${note ? " show" : ""}${note && !done ? " error-msg" : ""}`} role={done ? "status" : "alert"} aria-live="polite">
+        {note}
+      </div>
       <button type="submit" className="btn btn-solid" disabled={busy}>
         {busy ? "Sending…" : "Send Enquiry"}
       </button>
-      <div className={`form-note${done ? " show" : ""}`} aria-live="polite">
-        {note}
-      </div>
     </form>
   );
 }

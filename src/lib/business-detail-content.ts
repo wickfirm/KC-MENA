@@ -67,7 +67,13 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
     version: 1,
     hero: { title: "Investment & Asset Management", image: "/images/reference/real-estate-hero.webp" },
     overview: { eyebrow: "By The Numbers", heading: "A regional investment and asset management business built around disciplined underwriting, selective market access, and long-term value creation." },
-    metrics: [{ value: "4", label: "Key Dubai Districts" }, { value: "$156.5M", label: "Active Assets" }, { value: "60", label: "Investment Exposure" }, { value: "26 + 3", label: "Units + Plots" }],
+    metrics: [
+      { value: "4", label: "Key Dubai Districts" },
+      { value: "$156.5M", label: "Active Assets" },
+      { value: "$304.4M", label: "Total Investment" },
+      { value: "60", label: "Units across total investment exposure" },
+      { value: "26 + 3", label: "Current Units + Plots" },
+    ],
     metricsSource: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     contactSection: true,
     sections: [
@@ -178,6 +184,9 @@ export function withBusinessDefaults(slug: BusinessDetailSlug, content: Business
     hero: { ...defaults.hero, ...content.hero },
     overview: { ...defaults.overview, ...content.overview },
     platformMetrics: content.platformMetrics ?? defaults.platformMetrics,
+    // Saved business pages predate some added metrics. Keep their edited values,
+    // while appending any new default metrics so public and CMS views stay aligned.
+    metrics: content.metrics ? [...content.metrics, ...(defaults.metrics?.slice(content.metrics.length) ?? [])] : defaults.metrics,
     sections: content.sections.map((section, index) => ({
       ...defaults.sections[index],
       ...section,

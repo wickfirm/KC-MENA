@@ -62,7 +62,7 @@ export default function BusinessDetailPageView({ content, projects = [], referen
       <ProjectsSection projects={projects} heading={content.projectsHeading || "Selected projects"} />
       {content.contactSection && (
         <SectionContact
-          heading="Let our team get back to you."
+          heading={page === "real-estate" ? "Discuss an investment opportunity." : "Let our team get back to you."}
           officeTitle={CONTACT_DEFAULTS.officeTitle}
           officeLines={CONTACT_DEFAULTS.officeLines}
           mapUrl={CONTACT_DEFAULTS.mapUrl}
