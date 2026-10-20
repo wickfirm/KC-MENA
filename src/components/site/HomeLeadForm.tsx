@@ -29,6 +29,6 @@ export default function HomeLeadForm() {
     <div className="lead-field"><label htmlFor="lead-phone">Phone</label><input id="lead-phone" name="phone" type="tel" autoComplete="tel" /></div>
     <div className="lead-field"><label htmlFor="lead-interest">I&apos;m interested in</label><select id="lead-interest" name="interest"><option>Development</option><option>Investment &amp; Asset Management</option><option>Food &amp; Beverage</option><option>Careers</option><option>General enquiry</option></select></div>
     <div className="lead-field full"><label htmlFor="lead-message">Message</label><textarea id="lead-message" name="message" /></div>
-    <div className="full"><button type="submit" className="btn btn-solid">Send enquiry</button><p className="lead-note">By submitting, you agree to be contacted about your enquiry. We never share your details.</p>{message && <p className="lead-ok" role="status" style={{ display: "block" }}>{message}</p>}</div>
+    <div className="full"><button type="submit" className="btn btn-solid">Send enquiry</button><p className="lead-note"><em>By submitting your message, you agree to be contacted about your enquiry. We do not share your details outside the purposes described in our privacy policy.</em></p>{message && <p className="lead-ok" role="status" style={{ display: "block" }}>{message}</p>}</div>
   </form>;
 }
