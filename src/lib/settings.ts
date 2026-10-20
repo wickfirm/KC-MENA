@@ -13,10 +13,10 @@ export type SiteSettings = {
 
 const DEFAULTS: SiteSettings = {
   contact: { phone: "+971 43 88 3099", email: "info.dubai@kasumigaseki.co.jp" },
-  address: { lines: ["Dubai Hills Estate, Business Park 4, Office 304-305", "Dubai, United Arab Emirates"] },
+  address: { lines: ["Dubai Hills Estate, Business Park 4, Office 304-305", "Dubai, UAE"] },
   brand: {
     footerCopy:
-      "Kasumigaseki MENA connects regional opportunity with the discipline, capital strength, and operating expertise of Kasumigaseki Capital.",
+      "Kasumigaseki MENA is the regional platform of Tokyo Stock Exchange Prime-listed Kasumigaseki Capital, investing, developing and operating businesses in the UAE with a long-term view.",
   },
   links: { linkedin: "https://ae.linkedin.com/company/kasumigasekimiddleeast", corporate: "https://kasumigaseki.co.jp/en/" },
   nav: [
@@ -28,10 +28,10 @@ const DEFAULTS: SiteSettings = {
   ],
   drawer: {
     locations: [
-      { title: "Dubai Office", lines: ["Dubai Hills Estate", "Business Park 4, Office 304-305", "Dubai, UAE"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" },
-      { title: "Sales Centre", lines: ["Business Bay", "Dubai, UAE"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" },
-      { title: "Miami Location", lines: ["Miami, Florida", "United States"], mapUrl: "https://www.google.com/maps/search/?api=1&query=Miami+Florida" },
-      { title: "Kasumigaseki Restaurant", lines: ["Vida Emirates Hills", "Dubai, UAE"], mapUrl: "https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac" },
+      { title: "Dubai Office", lines: ["Dubai Hills Estate, Business Park 4, Office 304-305"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" },
+      { title: "Sales Centre", lines: ["Business Bay"], mapUrl: "https://maps.app.goo.gl/xESmJtGHPZvotgkJ6" },
+      { title: "Miami Location", lines: ["Miami, Florida"], mapUrl: "https://www.google.com/maps/search/?api=1&query=Miami+Florida" },
+      { title: "Kasumigaseki Restaurant", lines: ["Vida Emirates Hills"], mapUrl: "https://maps.app.goo.gl/i2oFuHW3icgJj1378?g_st=ac" },
     ],
   },
 };

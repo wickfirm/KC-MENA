@@ -47,7 +47,7 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
           <span className="eyebrow">Get in Touch</span>
           <h2 style={{ marginTop: 12, fontSize: "clamp(1.3rem,2vw,1.6rem)" }}>Contact Us</h2>
           <p style={{ marginTop: 12, color: "var(--grey-6)", fontSize: "0.92rem" }}>
-            Reach the Kasumigaseki MENA team, or visit one of our company locations.
+            For corporate, investment, development and partnership enquiries, contact our Dubai team or visit one of our locations.
           </p>
 
           <div className="drawer-locs">

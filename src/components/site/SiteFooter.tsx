@@ -63,9 +63,9 @@ export default function SiteFooter({ settings }: { settings: SiteSettings }) {
           <div>
             <h4>Media &amp; Resources</h4>
             <ul>
-              <li><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">Parent IR</a></li>
-              <li><a href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener">Kasumigaseki Capital</a></li>
-              <li><a href="/news/">News</a></li>
+              <li><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">Parent Investor Relations</a></li>
+              <li><a href="https://kasumigaseki.co.jp/en/news/" target="_blank" rel="noopener">Kasumigaseki Capital News</a></li>
+              <li><a href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener">Global Site</a></li>
             </ul>
           </div>
           <div>
