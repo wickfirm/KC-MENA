@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import type { FooterLink, NavItem, SiteSettings } from "@/lib/settings";
+import TypeFields, { readTypeScale } from "@/components/admin/TypeFields";
 import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
 
 function Field({ label, name, defaultValue, multiline = false }: { label: string; name: string; defaultValue: string; multiline?: boolean }) {
@@ -48,6 +49,22 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
         nameLabel: value("drawerName"), emailLabel: value("drawerEmail"), messageLabel: value("drawerMessage"), submitLabel: value("drawerSubmit"),
         successMessage: value("drawerSuccess"), directPrompt: value("drawerDirect"),
       },
+      type: readTypeScale(value, "site-type"),
+      newsletter: {
+        hidden: form.get("news-hidden") === "on",
+        eyebrow: value("news-eyebrow"),
+        heading: value("news-heading"),
+        body: value("news-body"),
+        emailLabel: value("news-email-label"),
+        placeholder: value("news-placeholder"),
+        submitLabel: value("news-submit"),
+        consent: value("news-consent"),
+        successMessage: value("news-success"),
+        errorMessage: value("news-error"),
+        recipientEmail: value("news-recipient"),
+        emailSubject: value("news-subject"),
+        delivery: (value("news-delivery") || "both") as "inbox" | "email" | "both",
+      },
       cookie: {
         title: value("cookieTitle"), body: value("cookieBody"), policyLabel: value("cookiePolicyLabel"), policyHref: value("cookiePolicyHref"),
         manageLabel: value("cookieManage"), necessaryLabel: value("cookieNecessary"), acceptLabel: value("cookieAccept"), saveLabel: value("cookieSave"),
@@ -80,6 +97,34 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
           <Field label="Phone" name="contactPhone" defaultValue={settings.contact.phone} />
           <Field label="Email" name="contactEmail" defaultValue={settings.contact.email} />
         </div>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Type for every page</h2>
+        <TypeFields prefix="site-type" value={settings.type} legend="Site-wide type" />
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Newsletter</h2>
+        <label style={labelStyle}><input type="checkbox" name="news-hidden" defaultChecked={settings.newsletter?.hidden !== false} /> Hide the newsletter</label>
+        <Field label="Label" name="news-eyebrow" defaultValue={settings.newsletter?.eyebrow ?? ""} />
+        <Field label="Heading" name="news-heading" defaultValue={settings.newsletter?.heading ?? "Stay informed"} />
+        <Field label="Introduction" name="news-body" defaultValue={settings.newsletter?.body ?? ""} multiline />
+        <Field label="Email label" name="news-email-label" defaultValue={settings.newsletter?.emailLabel ?? "Email"} />
+        <Field label="Placeholder" name="news-placeholder" defaultValue={settings.newsletter?.placeholder ?? "name@company.com"} />
+        <Field label="Button" name="news-submit" defaultValue={settings.newsletter?.submitLabel ?? "Subscribe"} />
+        <Field label="Consent" name="news-consent" defaultValue={settings.newsletter?.consent ?? ""} multiline />
+        <Field label="Success message" name="news-success" defaultValue={settings.newsletter?.successMessage ?? "Thank you. You are subscribed."} />
+        <Field label="Error message" name="news-error" defaultValue={settings.newsletter?.errorMessage ?? "Could not subscribe. Please try again."} />
+        <Field label="Recipient email" name="news-recipient" defaultValue={settings.newsletter?.recipientEmail ?? settings.contact.email} />
+        <Field label="Email subject" name="news-subject" defaultValue={settings.newsletter?.emailSubject ?? "Newsletter"} />
+        <label style={labelStyle}>Delivery
+          <select name="news-delivery" defaultValue={settings.newsletter?.delivery ?? "both"}>
+            <option value="both">Save in the inbox and email the recipient</option>
+            <option value="inbox">Save in the inbox only</option>
+            <option value="email">Email the recipient only</option>
+          </select>
+        </label>
       </section>
 
       <section style={sectionStyle}>

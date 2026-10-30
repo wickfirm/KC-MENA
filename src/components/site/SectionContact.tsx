@@ -19,6 +19,11 @@ export type SectionContactProps = {
   emailLabel?: string;
   phoneLabel?: string;
   messageLabel?: string;
+  hidden?: boolean;
+  recipientEmail?: string;
+  emailSubject?: string;
+  delivery?: "inbox" | "email" | "both";
+  errorMessage?: string;
 };
 
 /** "Contact us" band shared by Local Business and the four business pages —
@@ -42,7 +47,13 @@ export default function SectionContact({
   emailLabel,
   phoneLabel,
   messageLabel,
+  hidden,
+  recipientEmail,
+  emailSubject,
+  delivery,
+  errorMessage,
 }: SectionContactProps) {
+  if (hidden) return null;
   return (
     <section className="section" id="contact">
       <div className="wrap">
@@ -70,7 +81,7 @@ export default function SectionContact({
             </div>
             <div className="block">
               <h3>{contactTitle}</h3>
-              <p>{contactBody}</p>
+              {contactBody ? <p>{contactBody}</p> : null}
               <p style={{ marginTop: 10 }}>
                 <a href={`tel:${phone.replace(/\s/g, "")}`}>{phone}</a>
               </p>
@@ -79,7 +90,7 @@ export default function SectionContact({
               </p>
             </div>
           </div>
-          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} submitLabel={submitLabel} successNote={successMessage} subject={heading} nameLabel={nameLabel} emailLabel={emailLabel} phoneLabel={phoneLabel} messageLabel={messageLabel} />
+          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} submitLabel={submitLabel} successNote={successMessage} subject={emailSubject || heading} nameLabel={nameLabel} emailLabel={emailLabel} phoneLabel={phoneLabel} messageLabel={messageLabel} recipientEmail={recipientEmail} emailSubject={emailSubject} delivery={delivery} errorMessage={errorMessage} />
         </div>
       </div>
     </section>

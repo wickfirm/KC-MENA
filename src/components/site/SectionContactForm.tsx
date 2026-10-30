@@ -14,6 +14,10 @@ export default function SectionContactForm({
   emailLabel = "",
   phoneLabel = "",
   messageLabel = "",
+  recipientEmail = "",
+  emailSubject = "",
+  delivery = "both",
+  errorMessage = "",
 }: {
   subjectLabel?: string;
   subjectPlaceholder?: string;
@@ -24,6 +28,10 @@ export default function SectionContactForm({
   emailLabel?: string;
   phoneLabel?: string;
   messageLabel?: string;
+  recipientEmail?: string;
+  emailSubject?: string;
+  delivery?: "inbox" | "email" | "both";
+  errorMessage?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
@@ -42,7 +50,9 @@ export default function SectionContactForm({
         body: JSON.stringify({
           type: "enquiry",
           source: "section-contact",
-          subject,
+          subject: emailSubject || subject,
+          recipientEmail,
+          delivery,
           name: values.get("fname"),
           email: values.get("femail"),
           phone: values.get("fphone"),
@@ -53,7 +63,7 @@ export default function SectionContactForm({
       });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        setNote(data.error ?? "Could not send your enquiry. Please try again.");
+        setNote(data.error ?? (errorMessage || "Could not send your enquiry. Please try again."));
         setDone(false);
         return;
       }

@@ -3,10 +3,11 @@ import { randomUUID } from "node:crypto";
 import { query } from "@/lib/db";
 import { putObject, cvBucket } from "@/lib/r2";
 import { SUBMISSION_TYPES, cvObjectKey, cvProblem, syncSubmission, type CvMeta } from "@/lib/submissions";
+import { sendMail } from "@/lib/mail";
 
 export const dynamic = "force-dynamic";
 
-type Submission = { type?: string; name?: string; email?: string; phone?: string; subject?: string; message?: string; source?: string; jobId?: number | string };
+type Submission = { type?: string; name?: string; email?: string; phone?: string; subject?: string; message?: string; source?: string; jobId?: number | string; recipientEmail?: string; delivery?: string };
 
 /**
  * POST /api/submissions — public form endpoint. Accepts JSON, or multipart/form-data when an
@@ -35,6 +36,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Please provide a name and valid email address." }, { status: 400 });
   }
   const type = (SUBMISSION_TYPES as readonly string[]).includes(body.type ?? "") ? body.type! : "contact";
+  const delivery = body.delivery === "email" || body.delivery === "inbox" ? body.delivery : "both";
+  const recipient = body.recipientEmail?.trim() || "";
 
   if (cv) {
     const problem = cvProblem(cv);
@@ -55,6 +58,8 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  let id: number | undefined;
+  if (delivery !== "email") {
   try {
     const rows = await query<{ id: number }>(
       `INSERT INTO contact_submissions (type,name,email,phone,subject,message,meta)
@@ -64,11 +69,29 @@ export async function POST(req: NextRequest) {
         JSON.stringify({ source: body.source ?? "website", jobId: body.jobId ? Number(body.jobId) || null : null, cv: cvMeta, cvError, cvName: cv?.name ?? null }),
       ]
     );
-    const id = rows[0]?.id;
-    if (id) after(() => syncSubmission(id));
-    return NextResponse.json({ ok: true, id }, { status: 201 });
+    id = rows[0]?.id;
+    if (id) after(() => syncSubmission(id!));
   } catch (err) {
     console.error("POST /api/submissions error:", err);
-    return NextResponse.json({ error: "We could not send your enquiry. Please try again." }, { status: 500 });
+    if (delivery === "inbox") return NextResponse.json({ error: "We could not send your enquiry. Please try again." }, { status: 500 });
   }
+  }
+
+  let mailed = false;
+  if (delivery !== "inbox") {
+    if (!recipient) {
+      if (id) return NextResponse.json({ ok: true, id }, { status: 201 });
+      return NextResponse.json({ error: "This form has no recipient email address." }, { status: 400 });
+    }
+    const problem = await sendMail({
+      to: recipient,
+      subject: body.subject?.trim() || "Website enquiry",
+      text: [`Name: ${name}`, `Email: ${email}`, body.phone?.trim() ? `Phone: ${body.phone.trim()}` : "", "", body.message?.trim() || ""].filter(Boolean).join("\n"),
+    });
+    mailed = !problem;
+    if (problem && !id) return NextResponse.json({ error: problem }, { status: 502 });
+  }
+
+  if (!id && !mailed) return NextResponse.json({ error: "We could not send your enquiry. Please try again." }, { status: 500 });
+  return NextResponse.json({ ok: true, id }, { status: 201 });
 }

@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import SiteHeader from "./SiteHeader";
 import ContactDrawer from "./ContactDrawer";
 import CookieConsent from "./CookieConsent";
+import NewsletterBand from "./NewsletterBand";
 import type { SiteSettings } from "@/lib/settings";
 
 /** Client chrome shell: owns the contact-drawer open state (hover-to-open,
@@ -57,6 +58,7 @@ export default function SiteChrome({ children, footer, settings }: { children: R
     <>
       <SiteHeader nav={settings.nav} contactLabel={settings.chrome.contactLabel} logoAlt={settings.chrome.logoAlt} onContactHover={openDrawer} onContactLeave={scheduleDrawerClose} drawerOpen={drawerOpen} />
       {children}
+      {settings.newsletter && <NewsletterBand newsletter={settings.newsletter} />}
       {footer}
       <ContactDrawer settings={settings} open={drawerOpen} onClose={closeDrawer} onHoverKeep={() => { if (closeTimer.current) clearTimeout(closeTimer.current); }} onHoverLeave={scheduleDrawerClose} />
       <CookieConsent copy={settings.cookie} />

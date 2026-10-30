@@ -7,11 +7,18 @@
  * it must not expose this document as a raw JSON editor.
  */
 
+import type { TypeScale } from "@/lib/type-style";
+
 export type LinkField = {
   label: string;
   href: string;
   external?: boolean;
+  hidden?: boolean;
 };
+
+export function showLink(link?: { label?: string; href?: string; hidden?: boolean } | null): boolean {
+  return Boolean(link && !link.hidden && link.label && link.href);
+}
 
 export type ImageField = {
   src: string;
@@ -28,6 +35,8 @@ export type ContentModule =
       image?: ImageField;
       videoSrc?: string;
       scrollLabel?: string;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       id: string;
@@ -35,6 +44,8 @@ export type ContentModule =
       eyebrow?: string;
       heading?: string;
       body: string;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       id: string;
@@ -44,6 +55,8 @@ export type ContentModule =
       items: Array<{ value: string; label: string; note?: string }>;
       source?: LinkField;
       action?: LinkField;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       id: string;
@@ -58,6 +71,8 @@ export type ContentModule =
         link?: LinkField;
         tags?: string[];
       }>;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       id: string;
@@ -72,6 +87,8 @@ export type ContentModule =
         image: ImageField;
         mapLink?: LinkField;
       }>;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       /** A media-led card band, used by the Home page's News & Updates section. */
@@ -86,6 +103,8 @@ export type ContentModule =
         link?: LinkField;
         tags?: string[];
       }>;
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     }
   | {
       id: string;
@@ -105,7 +124,14 @@ export type ContentModule =
         submitLabel: string;
         consent: string;
         successMessage: string;
+        hidden?: boolean;
+        recipientEmail?: string;
+        emailSubject?: string;
+        delivery?: "inbox" | "email" | "both";
+        errorMessage?: string;
       };
+      hidden?: boolean;
+      typeStyle?: TypeScale;
     };
 
 export type ModuleType = ContentModule["type"];
@@ -114,6 +140,8 @@ export type ModuleDocument = {
   version: 1;
   template: TemplateKey;
   modules: ContentModule[];
+  /** Overrides the site-wide type for this page. Blank roles keep the site setting. */
+  type?: TypeScale;
 };
 
 export type TemplateKey =

@@ -1,4 +1,6 @@
 import { queryOne } from "@/lib/db";
+import type { TypeScale } from "@/lib/type-style";
+import { isTypeScale } from "@/lib/type-style";
 
 export type NavItem = { label: string; href: string };
 export type FooterLink = { label: string; href: string };
@@ -45,6 +47,23 @@ export type SiteSettings = {
   drawer: { locations: Array<{ title: string; lines: string[]; mapUrl: string }> };
   drawerCopy: DrawerCopy;
   cookie: CookieCopy;
+  /** Applies to every page until a page or section sets its own type. */
+  type?: TypeScale;
+  newsletter?: {
+    hidden?: boolean;
+    eyebrow: string;
+    heading: string;
+    body: string;
+    emailLabel: string;
+    placeholder: string;
+    submitLabel: string;
+    consent: string;
+    successMessage: string;
+    errorMessage: string;
+    recipientEmail: string;
+    emailSubject: string;
+    delivery: "inbox" | "email" | "both";
+  };
 };
 
 const DEFAULTS: SiteSettings = {
@@ -131,6 +150,8 @@ export type SiteSettingsInput = {
   drawer?: { locations?: Array<{ title?: string; lines?: string[]; mapUrl?: string }> };
   drawerCopy?: Partial<DrawerCopy>;
   cookie?: Partial<CookieCopy>;
+  type?: unknown;
+  newsletter?: Partial<NonNullable<SiteSettings["newsletter"]>>;
 };
 
 /** Merge partial input over defaults, keeping only well-formed values. */
@@ -205,6 +226,22 @@ export function normalizeSiteSettings(value: unknown): SiteSettings {
       successMessage: str(drawerCopy.successMessage, DEFAULTS.drawerCopy.successMessage),
       directPrompt: str(drawerCopy.directPrompt, DEFAULTS.drawerCopy.directPrompt),
     },
+    type: isTypeScale(input.type) ? input.type : undefined,
+    newsletter: input.newsletter && typeof input.newsletter.heading === "string" ? {
+      hidden: input.newsletter.hidden === true,
+      eyebrow: str(input.newsletter.eyebrow, ""),
+      heading: input.newsletter.heading,
+      body: str(input.newsletter.body, ""),
+      emailLabel: str(input.newsletter.emailLabel, "Email"),
+      placeholder: str(input.newsletter.placeholder, ""),
+      submitLabel: str(input.newsletter.submitLabel, "Subscribe"),
+      consent: str(input.newsletter.consent, ""),
+      successMessage: str(input.newsletter.successMessage, "Thank you. You are subscribed."),
+      errorMessage: str(input.newsletter.errorMessage, "Could not subscribe. Please try again."),
+      recipientEmail: str(input.newsletter.recipientEmail, ""),
+      emailSubject: str(input.newsletter.emailSubject, "Newsletter"),
+      delivery: input.newsletter.delivery === "inbox" || input.newsletter.delivery === "email" ? input.newsletter.delivery : "both",
+    } : undefined,
     cookie: {
       title: str(cookie.title, DEFAULTS.cookie.title),
       body: str(cookie.body, DEFAULTS.cookie.body),

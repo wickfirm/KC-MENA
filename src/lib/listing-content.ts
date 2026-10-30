@@ -14,7 +14,8 @@ export type ListingContent = {
   intro: string;
   emptyMessage?: string;
   /** Careers only: copy rendered in the application form band. */
-  careerForm?: { eyebrow: string; heading: string; body: string; offices: Array<{ title: string; address: string }>; consent: string; submitLabel: string };
+  type?: import("@/lib/type-style").TypeScale;
+  careerForm?: { eyebrow: string; heading: string; body: string; offices: Array<{ title: string; address: string }>; consent: string; submitLabel: string; successMessage?: string; hidden?: boolean; recipientEmail?: string; emailSubject?: string; delivery?: "inbox" | "email" | "both"; errorMessage?: string; typeStyle?: import("@/lib/type-style").TypeScale };
   /** News-index only: the featured-video band. */
   featuredVideo?: { eyebrow?: string; heading: string; body: string };
   /** News-index only: the three external insight cards under the feed. */

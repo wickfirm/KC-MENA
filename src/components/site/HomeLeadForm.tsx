@@ -2,26 +2,37 @@
 
 import { FormEvent, useState } from "react";
 
-export default function HomeLeadForm({ form }: { form?: { nameLabel: string; emailLabel: string; emailPlaceholder: string; phoneLabel: string; interestLabel: string; interests: string[]; messageLabel: string; submitLabel: string; consent: string; successMessage: string } }) {
+export default function HomeLeadForm({ form }: { form?: { nameLabel: string; emailLabel: string; emailPlaceholder: string; phoneLabel: string; interestLabel: string; interests: string[]; messageLabel: string; submitLabel: string; consent: string; successMessage: string; errorMessage?: string; recipientEmail?: string; emailSubject?: string; delivery?: "inbox" | "email" | "both" } }) {
   if (!form) return null;
   const copy = form;
   const [message, setMessage] = useState("");
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const name = String(form.get("name") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim();
+    const data = new FormData(event.currentTarget);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
     if (!name || !email) { setMessage("Please add your name and email address."); return; }
-    const lines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${String(form.get("phone") ?? "").trim()}`,
-      `Interest: ${String(form.get("interest") ?? "General enquiry")}`,
-      "",
-      String(form.get("message") ?? "").trim(),
-    ];
-    window.location.href = `mailto:info.dubai@kasumigaseki.co.jp?subject=${encodeURIComponent("Website enquiry")}&body=${encodeURIComponent(lines.join("\n"))}`;
+    const response = await fetch("/api/submissions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "enquiry",
+        source: "home",
+        name,
+        email,
+        phone: String(data.get("phone") ?? "").trim(),
+        subject: copy.emailSubject || "Website enquiry",
+        message: [`Interest: ${String(data.get("interest") ?? "")}`, String(data.get("message") ?? "").trim()].filter(Boolean).join("\n\n"),
+        recipientEmail: copy.recipientEmail,
+        delivery: copy.delivery || "both",
+      }),
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      setMessage(payload.error || copy.errorMessage || "Could not send your enquiry. Please try again.");
+      return;
+    }
     setMessage(copy.successMessage);
   }
 

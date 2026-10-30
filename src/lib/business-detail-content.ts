@@ -7,19 +7,25 @@ export const BUSINESS_DETAIL_SLUGS = [
 
 export type BusinessDetailSlug = (typeof BUSINESS_DETAIL_SLUGS)[number];
 
+import type { TypeScale } from "@/lib/type-style";
+import type { FormDelivery } from "@/lib/form-delivery";
+
 export type BusinessCallout = {
   eyebrow: string;
   heading: string;
   body: string;
   href: string;
   label: string;
+  hidden?: boolean;
+  typeStyle?: TypeScale;
   /** "map" renders the global-location strip, "ir" the two-column IR band. */
   variant?: "generic" | "map" | "ir";
 };
 
 export type BusinessDetailContent = {
   version: 1;
-  hero: { title: string; image: string };
+  type?: TypeScale;
+  hero: { title: string; image: string; hidden?: boolean; typeStyle?: TypeScale };
   overview: { eyebrow: string; heading: string; body?: string };
   /** Detailed track-record layout used by the Global Business reference page. */
   platformMetrics?: {
@@ -55,7 +61,9 @@ export type BusinessDetailContent = {
     emailLabel?: string;
     phoneLabel?: string;
     messageLabel?: string;
-  };
+    hidden?: boolean;
+    typeStyle?: TypeScale;
+  } & FormDelivery;
   projectsHeading?: string;
   projectsEyebrow?: string;
   sections: Array<{
@@ -63,7 +71,9 @@ export type BusinessDetailContent = {
     heading: string;
     body: string;
     image: string;
-    action?: { label: string; href: string; external?: boolean };
+    action?: { label: string; href: string; external?: boolean; hidden?: boolean };
+    hidden?: boolean;
+    typeStyle?: TypeScale;
   }>;
 };
 

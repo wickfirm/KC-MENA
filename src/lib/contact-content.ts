@@ -14,6 +14,13 @@ export type ContactContent = {
   phoneLabel?: string;
   subjectLabel?: string;
   messageLabel?: string;
+  hidden?: boolean;
+  type?: import("@/lib/type-style").TypeScale;
+  typeStyle?: import("@/lib/type-style").TypeScale;
+  recipientEmail?: string;
+  emailSubject?: string;
+  delivery?: "inbox" | "email" | "both";
+  errorMessage?: string;
   locations: Array<{ title: string; address: string; mapUrl?: string }>;
 };
 export const DEFAULT_CONTACT_CONTENT: ContactContent = {

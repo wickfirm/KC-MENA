@@ -10,6 +10,7 @@ const ARROW = (
 /** Business-page callout band. Three delivered variants:
  *  "map" (global-location strip), "ir" (two-column IR band), "generic". */
 export default function BusinessCalloutBand({ callout, locations }: { callout: BusinessCallout; locations?: BusinessDetailContent["locations"] }) {
+  if (callout.hidden) return null;
   if (callout.variant === "map") {
     return (
       <section className="section global-map-cta" style={{ paddingTop: 72, paddingBottom: 56 }}>

@@ -1,16 +1,21 @@
+import type { TypeScale } from "@/lib/type-style";
+
 export type AboutContent = {
   version: 1;
-  hero: { heading: string; image: { src: string; alt: string } };
+  type?: TypeScale;
+  hero: { heading: string; image: { src: string; alt: string }; hidden?: boolean; typeStyle?: TypeScale };
   overview: {
     eyebrow: string; intro: string;
+    hidden?: boolean;
+    typeStyle?: TypeScale;
     metrics: Array<{ value: string; label: string }>;
     businessLines: Array<{ title: string; description: string }>;
-    source?: { label: string; href: string };
-    action: { label: string; href: string };
+    source?: { label: string; href: string; hidden?: boolean };
+    action: { label: string; href: string; hidden?: boolean };
   };
-  chairman: { eyebrow: string; quote: string; paragraphs: string[]; name: string; title: string; image: { src: string; alt: string } };
-  visionMission: Array<{ eyebrow: string; quote: string; attribution: string }>;
-  principles: Array<{ eyebrow: string; title: string; body: string }>;
+  chairman: { eyebrow: string; quote: string; paragraphs: string[]; name: string; title: string; image: { src: string; alt: string }; hidden?: boolean; typeStyle?: TypeScale };
+  visionMission: Array<{ eyebrow: string; quote: string; attribution: string; hidden?: boolean; typeStyle?: TypeScale }>;
+  principles: Array<{ eyebrow: string; title: string; body: string; hidden?: boolean; typeStyle?: TypeScale }>;
 };
 
 export const DEFAULT_ABOUT_CONTENT: AboutContent = {

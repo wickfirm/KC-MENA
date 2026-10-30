@@ -8,7 +8,8 @@ import BusinessCalloutBand from "./BusinessCalloutBand";
 
 export default function BusinessDetailPageView({ content, projects = [], referenceOverviewWidth = false, page }: { page: ClientPage; content: BusinessDetailContent; projects?: PublicProject[]; referenceOverviewWidth?: boolean }) {
   function splitSection(section: BusinessDetailContent["sections"][number], reversed: boolean) {
-    const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
+    if (section.hidden) return null;
+    const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && !section.action.hidden && section.action.label && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
     const image = <div className="biz-photo" style={{ backgroundImage: `url('${section.image}')` }} />;
     return <section className={`biz-split${reversed ? " rev" : ""}`} key={`${section.eyebrow}-${section.heading}`}>{reversed ? <>{image}{panel}</> : <>{panel}{image}</>}</section>;
   }
@@ -22,7 +23,8 @@ export default function BusinessDetailPageView({ content, projects = [], referen
       <section className="section biz-platform">
         <div className="wrap">
           {content.platformMetrics ? <>
-            <h2 style={{ fontSize: "clamp(1.6rem,2.6vw,2.15rem)", maxWidth: "26ch" }}>{content.overview.heading}</h2>
+            {content.overview.eyebrow ? <span className="eyebrow">{content.overview.eyebrow}</span> : null}
+            <h2 style={{ fontSize: "clamp(1.6rem,2.6vw,2.15rem)", maxWidth: "26ch", marginTop: content.overview.eyebrow ? 16 : undefined }}>{content.overview.heading}</h2>
             {content.overview.body && <p className="intro-reg" style={{ marginTop: 18 }}>{content.overview.body}</p>}
             <div className="numbers-platform">
               <div className="hero-nums">{content.platformMetrics.primary.map((metric) => <div className="hero-num-block" key={metric.label}><div className="hero-num">{metric.value}</div><div className="hero-num-label">{metric.label} <sup>1</sup></div></div>)}</div>
@@ -40,9 +42,9 @@ export default function BusinessDetailPageView({ content, projects = [], referen
         <section className="biz-band" style={{ paddingTop: 36, paddingBottom: 0 }}>
           <div className="wrap">
             <div className="head">
-              <span className="eyebrow">{content.bizBand.eyebrow}</span>
+              {content.bizBand.eyebrow ? <span className="eyebrow">{content.bizBand.eyebrow}</span> : null}
               <h2>{content.bizBand.heading}</h2>
-              <p>{content.bizBand.body}</p>
+              {content.bizBand.body ? <p>{content.bizBand.body}</p> : null}
             </div>
           </div>
         </section>
@@ -50,7 +52,7 @@ export default function BusinessDetailPageView({ content, projects = [], referen
       {content.sections.map((section, index) => splitSection(section, index % 2 === 1))}
       {content.callouts?.map((callout) => <BusinessCalloutBand key={callout.heading} callout={callout} locations={content.locations} />)}
       {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
-      {content.contactSection && content.contact && (
+      {content.contactSection && content.contact && !content.contact.hidden && (
         <SectionContact
           eyebrow={content.contact.eyebrow}
           heading={content.contact.heading}
@@ -70,6 +72,11 @@ export default function BusinessDetailPageView({ content, projects = [], referen
           emailLabel={content.contact.emailLabel}
           phoneLabel={content.contact.phoneLabel}
           messageLabel={content.contact.messageLabel}
+          hidden={content.contact.hidden}
+          recipientEmail={content.contact.recipientEmail}
+          emailSubject={content.contact.emailSubject}
+          delivery={content.contact.delivery}
+          errorMessage={content.contact.errorMessage}
         />
       )}
     </main>

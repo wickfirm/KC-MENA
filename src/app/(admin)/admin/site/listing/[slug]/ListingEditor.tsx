@@ -40,9 +40,10 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
       intro: value("intro"),
       emptyMessage: value("emptyMessage"),
       careerForm: slug === "careers" ? {
+        ...content.careerForm,
         eyebrow: value("career-form-eyebrow"), heading: value("career-form-heading"), body: value("career-form-body"),
         offices: (content.careerForm?.offices ?? []).map((office, index) => ({ title: value(`career-office-${index}-title`), address: value(`career-office-${index}-address`) })),
-        consent: value("career-consent"), submitLabel: value("career-submit-label"),
+        consent: value("career-consent"), submitLabel: value("career-submit-label"), successMessage: value("career-success"),
       } : undefined,
       featuredVideo: isNews ? { eyebrow: value("videoEyebrow"), heading: value("videoHeading"), body: value("videoBody") } : undefined,
       insightCards: isNews && cards.length ? cards : undefined,
@@ -76,7 +77,7 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
       <Field label="Introduction" name="intro" defaultValue={content.intro} multiline />
       <Field label="Empty-state message" name="emptyMessage" defaultValue={content.emptyMessage ?? ""} multiline rows={3} />
     </section>
-    {slug === "careers" && content.careerForm && <section style={sectionStyle}><h2 style={sectionHeading}>Application form band</h2><Field label="Section label" name="career-form-eyebrow" defaultValue={content.careerForm.eyebrow} /><Field label="Heading" name="career-form-heading" defaultValue={content.careerForm.heading} /><Field label="Introduction" name="career-form-body" defaultValue={content.careerForm.body} multiline />{content.careerForm.offices.map((office, index) => <div key={index} style={{ borderTop: "1px solid var(--line)", paddingTop: 14, marginTop: 14 }}><Field label={`Office ${index + 1} title`} name={`career-office-${index}-title`} defaultValue={office.title} /><Field label={`Office ${index + 1} address`} name={`career-office-${index}-address`} defaultValue={office.address} multiline /></div>)}<Field label="Consent text" name="career-consent" defaultValue={content.careerForm.consent} multiline /><Field label="Submit label" name="career-submit-label" defaultValue={content.careerForm.submitLabel} /></section>}
+    {slug === "careers" && content.careerForm && <section style={sectionStyle}><h2 style={sectionHeading}>Application form band</h2><Field label="Section label" name="career-form-eyebrow" defaultValue={content.careerForm.eyebrow} /><Field label="Heading" name="career-form-heading" defaultValue={content.careerForm.heading} /><Field label="Introduction" name="career-form-body" defaultValue={content.careerForm.body} multiline />{content.careerForm.offices.map((office, index) => <div key={index} style={{ borderTop: "1px solid var(--line)", paddingTop: 14, marginTop: 14 }}><Field label={`Office ${index + 1} title`} name={`career-office-${index}-title`} defaultValue={office.title} /><Field label={`Office ${index + 1} address`} name={`career-office-${index}-address`} defaultValue={office.address} multiline /></div>)}<Field label="Consent text" name="career-consent" defaultValue={content.careerForm.consent} multiline /><Field label="Submit label" name="career-submit-label" defaultValue={content.careerForm.submitLabel} /><Field label="Success message" name="career-success" defaultValue={content.careerForm.successMessage ?? ""} multiline /></section>}
     {isNews && <section style={sectionStyle}>
       <h2 style={sectionHeading}>Featured video band</h2>
       <Field label="Label" name="videoEyebrow" defaultValue={content.featuredVideo?.eyebrow ?? "Featured Video"} />

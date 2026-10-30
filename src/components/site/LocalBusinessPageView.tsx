@@ -17,7 +17,7 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
       </section>
       <section className="section">
         <div className="wrap">
-          <div className="head local-business-overview">{content.intro.eyebrow && <span className="eyebrow">{content.intro.eyebrow}</span>}<h2>{content.intro.heading}</h2></div>
+          <div className="head local-business-overview">{content.intro.eyebrow && <span className="eyebrow">{content.intro.eyebrow}</span>}<h2>{content.intro.heading}</h2>{content.intro.body && <p className="intro-reg" style={{ marginTop: 18 }}>{content.intro.body}</p>}</div>
           <div className="stat-grid">
             {content.intro.metrics.map((x) => (
               <div className="stat-block" key={x.label}><div className="stat-num">{x.value}</div><div className="stat-label">{x.label}</div></div>
@@ -33,7 +33,7 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
               <h2>{x.heading}</h2>
               <div className="rule" />
               <p>{x.body}</p>
-              {x.linkLabel && <Link href={x.href} className="btn btn-outline-w">{x.linkLabel}</Link>}
+              {x.linkLabel && !x.linkHidden && <Link href={x.href} className="btn btn-outline-w">{x.linkLabel}</Link>}
             </div>
           </div>;
         const image = <div className="biz-photo" style={{ backgroundImage: `url('${x.image}')` }} />;
@@ -58,6 +58,11 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
         emailLabel={c.emailLabel}
         phoneLabel={c.phoneLabel}
         messageLabel={c.messageLabel}
+        hidden={c.hidden}
+        recipientEmail={c.recipientEmail}
+        emailSubject={c.emailSubject}
+        delivery={c.delivery}
+        errorMessage={c.errorMessage}
       />
       {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
     </main>

@@ -60,7 +60,7 @@ export default function OpenApplicationForm({ content }: { content?: ListingCont
     }
     event.currentTarget.reset();
     setDone(true);
-    setNote("Thank you — your application has been received. Our team will be in touch shortly.");
+    setNote(content?.successMessage || "Thank you — your application has been received. Our team will be in touch shortly.");
   }
 
   return (
