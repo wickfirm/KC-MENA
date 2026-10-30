@@ -5,19 +5,23 @@ import type { PublicProject } from "@/lib/projects";
 import ProjectsSection from "./ProjectsSection";
 import SectionContact from "./SectionContact";
 import BusinessCalloutBand from "./BusinessCalloutBand";
-import { typeVars } from "@/lib/type-style";
+import { typeRules } from "@/lib/type-style";
+import TypeScope from "@/components/site/TypeScope";
 
 export default function BusinessDetailPageView({ content, projects = [], referenceOverviewWidth = false, page }: { page: ClientPage; content: BusinessDetailContent; projects?: PublicProject[]; referenceOverviewWidth?: boolean }) {
-  function splitSection(section: BusinessDetailContent["sections"][number], reversed: boolean) {
+  function splitSection(section: BusinessDetailContent["sections"][number], index: number) {
+    const reversed = index % 2 === 1;
+    const scope = `cms-biz-${index}`;
+    const sectionCss = typeRules(section.typeStyle, `.${scope}`);
     if (section.hidden) return null;
     const panel = <div className="biz-panel"><div className="biz-panel-inner"><span className="eyebrow">{section.eyebrow}</span><h2>{section.heading}</h2><div className="rule" /><p>{section.body}</p>{section.action && !section.action.hidden && section.action.label && <a href={section.action.href} className="btn btn-outline-w" target={section.action.external ? "_blank" : undefined} rel={section.action.external ? "noreferrer" : undefined}>{section.action.label}</a>}</div></div>;
     const image = <div className="biz-photo" style={{ backgroundImage: `url('${section.image}')` }} />;
-    return <section className={`biz-split${reversed ? " rev" : ""}`} style={typeVars(section.typeStyle, "section")} key={`${section.eyebrow}-${section.heading}`}>{reversed ? <>{image}{panel}</> : <>{panel}{image}</>}</section>;
+    return <section className={`biz-split${reversed ? " rev" : ""} ${scope}`} key={`${section.eyebrow}-${section.heading}`}>{sectionCss ? <style>{sectionCss}</style> : null}{reversed ? <>{image}{panel}</> : <>{panel}{image}</>}</section>;
   }
   return (
     <>
     <ClientPageCss page={page} />
-    <main style={typeVars(content.type, "page")}>
+    <TypeScope scale={content.type} scope="cms-business"><main>
       <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
@@ -50,7 +54,7 @@ export default function BusinessDetailPageView({ content, projects = [], referen
           </div>
         </section>
       )}
-      {content.sections.map((section, index) => splitSection(section, index % 2 === 1))}
+      {content.sections.map((section, index) => splitSection(section, index))}
       {content.callouts?.map((callout) => <BusinessCalloutBand key={callout.heading} callout={callout} locations={content.locations} />)}
       {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
       {content.contactSection && content.contact && !content.contact.hidden && (
@@ -80,7 +84,7 @@ export default function BusinessDetailPageView({ content, projects = [], referen
           errorMessage={content.contact.errorMessage}
         />
       )}
-    </main>
+    </main></TypeScope>
     </>
   );
 }

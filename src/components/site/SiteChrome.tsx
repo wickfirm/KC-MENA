@@ -7,7 +7,7 @@ import ContactDrawer from "./ContactDrawer";
 import CookieConsent from "./CookieConsent";
 import NewsletterBand from "./NewsletterBand";
 import type { SiteSettings } from "@/lib/settings";
-import { typeVars } from "@/lib/type-style";
+import { typeRules } from "@/lib/type-style";
 
 /** Client chrome shell: owns the contact-drawer open state (hover-to-open,
  *  auto-close after 350ms, Escape/backdrop/button to close) and the mobile
@@ -56,7 +56,8 @@ export default function SiteChrome({ children, footer, settings }: { children: R
   }, [openDrawer]);
 
   return (
-    <div className="cms-type" style={typeVars(settings.type, "site")}>
+    <div className="cms-type">
+      {typeRules(settings.type, ".cms-type") ? <style>{typeRules(settings.type, ".cms-type")}</style> : null}
       <SiteHeader nav={settings.nav} contactLabel={settings.chrome.contactLabel} logoAlt={settings.chrome.logoAlt} onContactHover={openDrawer} onContactLeave={scheduleDrawerClose} drawerOpen={drawerOpen} />
       {children}
       {settings.newsletter && <NewsletterBand newsletter={settings.newsletter} />}

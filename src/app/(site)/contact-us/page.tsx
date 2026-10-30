@@ -8,7 +8,7 @@ import { isContactContent } from "@/lib/contact-content";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import JsonLd from "@/components/site/JsonLd";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
-import { typeVars } from "@/lib/type-style";
+import TypeScope from "@/components/site/TypeScope";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> { const page = await getPageBySlug("contact-us"); return pageMetadata(resolvePageSeo("contact-us", page?.seo)); }
@@ -17,7 +17,7 @@ export default async function ContactPage() {
   const [page, settings] = await Promise.all([getPageBySlug("contact-us"), getSiteSettings()]);
   if (!isContactContent(page?.content)) notFound();
   const content = page.content;
-  return <><ClientPageCss page="contact-us" /><main style={typeVars(content.type, "page")}>
+  return <><ClientPageCss page="contact-us" /><TypeScope scale={content.type} scope="cms-contact"><main>
     <section className="hero-band" style={clientHeroBackground("contact-us", content.heroImage)}><div className="wrap"><h1>{content.heroTitle}</h1></div></section>
     <section className="section">
       <div className="wrap">
@@ -33,5 +33,5 @@ export default async function ContactPage() {
       </div>
     </section>
     <EnquiryForm phone={settings.contact.phone} email={settings.contact.email} eyebrow={content.enquiryEyebrow} heading={content.enquiryHeading} body={content.enquiryBody} directPrompt={content.directPrompt} submitLabel={content.submitLabel} successMessage={content.successMessage} nameLabel={content.nameLabel} emailLabel={content.emailLabel} phoneLabel={content.phoneLabel} subjectLabel={content.subjectLabel} messageLabel={content.messageLabel} />
-  </main><JsonLd data={fixedPageJsonLd("contact-us", resolvePageSeo("contact-us", page?.seo), "ContactPage")} /></>;
+  </main></TypeScope><JsonLd data={fixedPageJsonLd("contact-us", resolvePageSeo("contact-us", page?.seo), "ContactPage")} /></>;
 }

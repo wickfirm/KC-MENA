@@ -57,21 +57,30 @@ export function typeStyle(site?: TypeScale, page?: TypeScale, section?: TypeScal
   return Object.keys(style).length ? style : undefined;
 }
 
-/** CSS variables for one level. Unset roles are omitted so the level above, or the original design, remains. */
-export function typeVars(scale: TypeScale | undefined, level: "site" | "page" | "section"): CSSProperties {
-  if (!scale) return {};
-  const prefix = level === "section" ? "" : `${level}-`;
-  const style: Record<string, string> = {};
+const ROLE_SELECTOR: Record<TypeRole, string> = {
+  title: "h1",
+  heading: ":is(h2, h3, h4)",
+  body: ":is(p, li, blockquote)",
+  eyebrow: ".eyebrow",
+  button: ":is(.btn, a.go, a.loc-maplink, .stat-know-more, button)",
+};
+
+/** CSS for one level. Only properties the client actually set are emitted, so the original design stays otherwise. */
+export function typeRules(scale: TypeScale | undefined, scope: string): string {
+  if (!scale) return "";
+  const blocks: string[] = [];
   for (const role of TYPE_ROLES) {
     const chosen = scale[role];
     if (!chosen) continue;
-    if (chosen.font) style[`--cms-${prefix}${role}-font`] = FONT[chosen.font];
-    if (chosen.size) style[`--cms-${prefix}${role}-size`] = SIZE[chosen.size];
-    if (chosen.weight) style[`--cms-${prefix}${role}-weight`] = String(chosen.weight);
-    if (chosen.italic === true) style[`--cms-${prefix}${role}-style`] = "italic";
-    if (chosen.italic === false) style[`--cms-${prefix}${role}-style`] = "normal";
+    const declarations: string[] = [];
+    if (chosen.font) declarations.push(`font-family:${FONT[chosen.font]} !important`);
+    if (chosen.size) declarations.push(`font-size:${SIZE[chosen.size]} !important`);
+    if (chosen.weight) declarations.push(`font-weight:${chosen.weight} !important`);
+    if (chosen.italic === true) declarations.push("font-style:italic !important");
+    if (chosen.italic === false) declarations.push("font-style:normal !important");
+    if (declarations.length) blocks.push(`${scope} ${ROLE_SELECTOR[role]}{${declarations.join(";")}}`);
   }
-  return style;
+  return blocks.join("\n");
 }
 
 export function isTypeScale(value: unknown): value is TypeScale {

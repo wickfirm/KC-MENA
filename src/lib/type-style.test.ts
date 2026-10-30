@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeType, typeStyle } from "./type-style";
+import { mergeType, typeRules, typeStyle } from "./type-style";
 
 describe("type cascade", () => {
   it("lets a page override the site and a section override the page", () => {
@@ -13,6 +13,16 @@ describe("type cascade", () => {
 
   it("leaves the design untouched when every level is blank", () => {
     expect(typeStyle({}, {}, {}, "heading")).toBeUndefined();
+  });
+
+  it("emits no CSS when nothing is set, so the original design is left alone", () => {
+    expect(typeRules({}, ".cms-type")).toBe("");
+    expect(typeRules(undefined, ".cms-type")).toBe("");
+  });
+
+  it("emits only the chosen property", () => {
+    expect(typeRules({ title: { size: "l" } }, ".cms-type")).toContain(".cms-type h1{font-size:1.35rem !important}");
+    expect(typeRules({ title: { size: "l" } }, ".cms-type")).not.toContain("font-family");
   });
 
   it("applies only the properties that were chosen", () => {

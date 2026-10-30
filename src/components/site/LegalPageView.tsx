@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import type { LegalContent, LegalRun } from "@/lib/legal-content";
-import { typeStyle, typeVars } from "@/lib/type-style";
+import { typeStyle } from "@/lib/type-style";
+import TypeScope from "@/components/site/TypeScope";
 
 function Runs({ runs }: { runs: LegalRun[] }) {
   return runs.map((run, index) =>
@@ -12,7 +13,7 @@ function Runs({ runs }: { runs: LegalRun[] }) {
 export default function LegalPageView({ content }: { content: LegalContent }) {
   const { meta } = content;
   return (
-    <div style={typeVars(content.type, "page")}>
+    <TypeScope scale={content.type} scope="cms-legal">
       <section className="legal-hero">
         <div className="wrap">
           <span className="eyebrow">{content.eyebrow}</span>
@@ -63,6 +64,6 @@ export default function LegalPageView({ content }: { content: LegalContent }) {
           </div>
         </div>
       </section>
-    </div>
+    </TypeScope>
   );
 }

@@ -5,14 +5,14 @@ import type { LocalBusinessContent } from "@/lib/local-business-content";
 import type { PublicProject } from "@/lib/projects";
 import ProjectsSection from "@/components/site/ProjectsSection";
 import SectionContact from "@/components/site/SectionContact";
-import { typeVars } from "@/lib/type-style";
+import TypeScope from "@/components/site/TypeScope";
 
 export default function LocalBusinessPageView({ content, projects = [], page = "local-business" }: { page?: ClientPage; content: LocalBusinessContent; projects?: PublicProject[] }) {
   const c = content.contact;
   return (
     <>
     <ClientPageCss page={page} />
-    <main style={typeVars(content.type, "page")}>
+    <TypeScope scale={content.type} scope="cms-local"><main>
       <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
@@ -66,7 +66,7 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
         errorMessage={c.errorMessage}
       />
       {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
-    </main>
+    </main></TypeScope>
     </>
   );
 }
