@@ -2,6 +2,7 @@ import ClientPageCss from "./ClientPageCss";
 import { clientHeroBackground, type ClientPage } from "@/lib/client-css";
 import type { ReactNode } from "react";
 import type { ListingContent } from "@/lib/listing-content";
+import { typeVars } from "@/lib/type-style";
 
 /**
  * Editable chrome shared by the Careers / FAQ / News-index pages: hero band,
@@ -15,6 +16,7 @@ export default function ListingPageShell({ content, children, page = "news" }: {
   return (
     <>
       <ClientPageCss page={page} />
+      <div style={typeVars(content.type, "page")}>
       <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>
@@ -67,6 +69,7 @@ export default function ListingPageShell({ content, children, page = "news" }: {
           </div>
         </section>
       )}
+      </div>
     </>
   );
 }

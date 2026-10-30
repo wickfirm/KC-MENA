@@ -5,13 +5,14 @@ import type { LocalBusinessContent } from "@/lib/local-business-content";
 import type { PublicProject } from "@/lib/projects";
 import ProjectsSection from "@/components/site/ProjectsSection";
 import SectionContact from "@/components/site/SectionContact";
+import { typeVars } from "@/lib/type-style";
 
 export default function LocalBusinessPageView({ content, projects = [], page = "local-business" }: { page?: ClientPage; content: LocalBusinessContent; projects?: PublicProject[] }) {
   const c = content.contact;
   return (
     <>
     <ClientPageCss page={page} />
-    <main>
+    <main style={typeVars(content.type, "page")}>
       <section className="hero-band" style={clientHeroBackground(page, content.hero.image)}>
         <div className="wrap"><h1>{content.hero.title}</h1></div>
       </section>

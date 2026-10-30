@@ -5,6 +5,7 @@ import JsonLd from "@/components/site/JsonLd";
 import { PAGE_SEO, SITE_NAME, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { getSiteSettings } from "@/lib/settings";
 import { SITE_URL } from "@/lib/site";
+import "./styles/cms-type.css";
 
 const CLIENT_FONTS_URL =
   "https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&family=Figtree:wght@300;400;500;600;700&display=swap";

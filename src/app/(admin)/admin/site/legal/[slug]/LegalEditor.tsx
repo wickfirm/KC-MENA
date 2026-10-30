@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { LegalBlock, LegalContent, LegalRun, LegalSlug } from "@/lib/legal-content";
 import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
+import TypeFields, { readTypeScale } from "@/components/admin/TypeFields";
 
 function Field({ label, value, onChange, area = false }: { label: string; value: string; onChange: (value: string) => void; area?: boolean }) {
   return (
@@ -70,7 +71,7 @@ export default function LegalEditor({ slug, content, status, seo }: { slug: Lega
       const response = await fetch(`/api/site-pages/legal/${slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: pageStatus, seo: { title: seoTitle, description: seoDescription }, content: doc }),
+        body: JSON.stringify({ status: pageStatus, seo: { title: seoTitle, description: seoDescription }, content: { ...doc, type: readTypeScale((name) => String(new FormData(event.currentTarget).get(name) ?? "").trim(), "page") } }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error ?? "Save failed");
@@ -96,6 +97,7 @@ export default function LegalEditor({ slug, content, status, seo }: { slug: Lega
         <Field label="SEO title" value={seoTitle} onChange={setSeoTitle} />
       </div>
       <Field label="SEO description" value={seoDescription} onChange={setSeoDescription} area />
+      <TypeFields prefix="page" value={doc.type} legend="This page — overrides the site-wide type" />
 
       <section style={sectionStyle}>
         <h2 style={sectionHeading}>Page heading</h2>

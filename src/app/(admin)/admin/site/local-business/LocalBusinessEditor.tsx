@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import MediaPicker from "@/components/admin/MediaPicker";
 import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
+import TypeFields, { readTypeScale } from "@/components/admin/TypeFields";
 import type { LocalBusinessContent } from "@/lib/local-business-content";
 
 type Props = { content: LocalBusinessContent; status: "draft" | "published"; seo: { title?: string; description?: string } };
@@ -21,7 +22,7 @@ export default function LocalBusinessEditor({ content, status, seo }: Props) {
     const next: LocalBusinessContent = {
       version: 1,
       hero: { title: value("heroTitle"), image: value("heroImage") },
-      type: content.type,
+      type: readTypeScale(value, "page"),
       intro: {
         ...content.intro,
         eyebrow: value("introEyebrow"),
@@ -50,6 +51,7 @@ export default function LocalBusinessEditor({ content, status, seo }: Props) {
   }
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
     <div style={{ width: 160 }}><label htmlFor="status" style={labelStyle}>Status</label><select id="status" name="status" defaultValue={status}><option value="draft">Draft</option><option value="published">Published</option></select></div>
+    <TypeFields prefix="page" value={content.type} legend="This page — overrides the site-wide type" />
     <section style={sectionStyle}><h2 style={sectionHeading}>Hero and introduction</h2><Field label="Page title" name="heroTitle" defaultValue={content.hero.title} /><MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} /><Field label="Introduction label" name="introEyebrow" defaultValue={content.intro.eyebrow ?? ""} /><Field label="Introduction heading" name="introHeading" defaultValue={content.intro.heading} multiline /><Field label="Introduction body" name="introBody" defaultValue={content.intro.body ?? ""} multiline /><Field label="Projects label" name="projectsEyebrow" defaultValue={content.projectsEyebrow ?? ""} /><Field label="Projects heading" name="projectsHeading" defaultValue={content.projectsHeading ?? ""} /></section>
     <section style={sectionStyle}><h2 style={sectionHeading}>Key metrics</h2>{content.intro.metrics.map((metric, index) => <div key={index} style={{ display: "grid", gridTemplateColumns: "minmax(120px, .35fr) 1fr", gap: 12 }}><Field label="Value" name={`metric-${index}-value`} defaultValue={metric.value} /><Field label="Label" name={`metric-${index}-label`} defaultValue={metric.label} /></div>)}<Field label="Source label" name="footnote-label" defaultValue={content.intro.footnote?.label ?? ""} /><Field label="Source URL" name="footnote-href" defaultValue={content.intro.footnote?.href ?? ""} /></section>
     {content.panels.map((panel, index) => <section key={index} style={sectionStyle}><h2 style={sectionHeading}>Business line {index + 1}</h2><Field label="Label" name={`panel-${index}-eyebrow`} defaultValue={panel.eyebrow} /><Field label="Heading" name={`panel-${index}-heading`} defaultValue={panel.heading} multiline /><Field label="Body" name={`panel-${index}-body`} defaultValue={panel.body} multiline /><Field label="Button label" name={`panel-${index}-link-label`} defaultValue={panel.linkLabel ?? "Know More"} /><Field label="Destination URL" name={`panel-${index}-href`} defaultValue={panel.href} /><MediaPicker name={`panel-${index}-image`} label="Image" initialUrl={panel.image} /></section>)}

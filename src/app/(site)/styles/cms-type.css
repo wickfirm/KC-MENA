@@ -1,0 +1,31 @@
+/* Site, page, then section. A missing variable is ignored, so the delivered CSS stays until a control is set. */
+.cms-type h1 {
+  font-family: var(--cms-title-font, var(--cms-page-title-font, var(--cms-site-title-font))) !important;
+  font-size: var(--cms-title-size, var(--cms-page-title-size, var(--cms-site-title-size))) !important;
+  font-weight: var(--cms-title-weight, var(--cms-page-title-weight, var(--cms-site-title-weight))) !important;
+  font-style: var(--cms-title-style, var(--cms-page-title-style, var(--cms-site-title-style))) !important;
+}
+.cms-type :is(h2, h3, h4) {
+  font-family: var(--cms-heading-font, var(--cms-page-heading-font, var(--cms-site-heading-font))) !important;
+  font-size: var(--cms-heading-size, var(--cms-page-heading-size, var(--cms-site-heading-size))) !important;
+  font-weight: var(--cms-heading-weight, var(--cms-page-heading-weight, var(--cms-site-heading-weight))) !important;
+  font-style: var(--cms-heading-style, var(--cms-page-heading-style, var(--cms-site-heading-style))) !important;
+}
+.cms-type :is(p, li, blockquote) {
+  font-family: var(--cms-body-font, var(--cms-page-body-font, var(--cms-site-body-font))) !important;
+  font-size: var(--cms-body-size, var(--cms-page-body-size, var(--cms-site-body-size))) !important;
+  font-weight: var(--cms-body-weight, var(--cms-page-body-weight, var(--cms-site-body-weight))) !important;
+  font-style: var(--cms-body-style, var(--cms-page-body-style, var(--cms-site-body-style))) !important;
+}
+.cms-type .eyebrow {
+  font-family: var(--cms-eyebrow-font, var(--cms-page-eyebrow-font, var(--cms-site-eyebrow-font))) !important;
+  font-size: var(--cms-eyebrow-size, var(--cms-page-eyebrow-size, var(--cms-site-eyebrow-size))) !important;
+  font-weight: var(--cms-eyebrow-weight, var(--cms-page-eyebrow-weight, var(--cms-site-eyebrow-weight))) !important;
+  font-style: var(--cms-eyebrow-style, var(--cms-page-eyebrow-style, var(--cms-site-eyebrow-style))) !important;
+}
+.cms-type :is(.btn, a.go, a.loc-maplink, .stat-know-more, button) {
+  font-family: var(--cms-button-font, var(--cms-page-button-font, var(--cms-site-button-font))) !important;
+  font-size: var(--cms-button-size, var(--cms-page-button-size, var(--cms-site-button-size))) !important;
+  font-weight: var(--cms-button-weight, var(--cms-page-button-weight, var(--cms-site-button-weight))) !important;
+  font-style: var(--cms-button-style, var(--cms-page-button-style, var(--cms-site-button-style))) !important;
+}

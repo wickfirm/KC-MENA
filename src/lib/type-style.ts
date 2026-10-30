@@ -57,6 +57,23 @@ export function typeStyle(site?: TypeScale, page?: TypeScale, section?: TypeScal
   return Object.keys(style).length ? style : undefined;
 }
 
+/** CSS variables for one level. Unset roles are omitted so the level above, or the original design, remains. */
+export function typeVars(scale: TypeScale | undefined, level: "site" | "page" | "section"): CSSProperties {
+  if (!scale) return {};
+  const prefix = level === "section" ? "" : `${level}-`;
+  const style: Record<string, string> = {};
+  for (const role of TYPE_ROLES) {
+    const chosen = scale[role];
+    if (!chosen) continue;
+    if (chosen.font) style[`--cms-${prefix}${role}-font`] = FONT[chosen.font];
+    if (chosen.size) style[`--cms-${prefix}${role}-size`] = SIZE[chosen.size];
+    if (chosen.weight) style[`--cms-${prefix}${role}-weight`] = String(chosen.weight);
+    if (chosen.italic === true) style[`--cms-${prefix}${role}-style`] = "italic";
+    if (chosen.italic === false) style[`--cms-${prefix}${role}-style`] = "normal";
+  }
+  return style;
+}
+
 export function isTypeScale(value: unknown): value is TypeScale {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   return TYPE_ROLES.every((role) => {

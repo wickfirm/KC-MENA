@@ -1,3 +1,5 @@
+import type { TypeScale } from "@/lib/type-style";
+
 export const LEGAL_SLUGS = ["privacy-policy", "terms-and-conditions", "cookie-policy", "legal-notice"] as const;
 
 export type LegalSlug = (typeof LEGAL_SLUGS)[number];
@@ -9,10 +11,11 @@ export type LegalBlock =
   | { type: "list"; items: Array<{ lead: string; text: string }> }
   | { type: "button"; label: string };
 
-export type LegalSection = { heading: string; blocks: LegalBlock[] };
+export type LegalSection = { heading: string; blocks: LegalBlock[]; hidden?: boolean; typeStyle?: TypeScale };
 
 export type LegalContent = {
   version: 1;
+  type?: TypeScale;
   title: string;
   eyebrow: string;
   meta: { updatedLabel: string; updated: string; company: string; location: string };

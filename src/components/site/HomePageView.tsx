@@ -4,7 +4,7 @@ import type { ContentModule, ModuleDocument } from "@/lib/content-modules";
 import { showLink } from "@/lib/content-modules";
 import HomeLeadForm from "@/components/site/HomeLeadForm";
 import HomeVideoCard from "@/components/site/HomeVideoCard";
-import { typeStyle, type TypeRole, type TypeScale } from "@/lib/type-style";
+import { typeStyle, typeVars, type TypeRole, type TypeScale } from "@/lib/type-style";
 
 type ModuleOf<T extends ContentModule["type"]> = Extract<ContentModule, { type: T }>;
 
@@ -35,7 +35,7 @@ export default function HomePageView({ document, siteType }: { document: ModuleD
   const contact = findModule(document, "contact", "call-to-action");
   const look = (section: TypeScale | undefined, role: TypeRole) => typeStyle(siteType, document.type, section, role);
 
-  return <main className="page-home">
+  return <main className="page-home" style={typeVars(document.type, "page")}>
     {hero && !hero.hidden && <section className="hero">
       {hero.videoSrc && <video className="hero-video" autoPlay muted loop playsInline preload="metadata" poster={hero.image?.src} aria-hidden="true"><source src={hero.videoSrc} type="video/mp4" /></video>}
       <div className="hero-content"><h1 style={look(hero.typeStyle, "title")}>{hero.heading}</h1>{hero.body && <p className="hero-sub" style={look(hero.typeStyle, "body")}>{hero.body}</p>}</div>{hero.scrollLabel && <div className="scroll-hint">{hero.scrollLabel}</div>}

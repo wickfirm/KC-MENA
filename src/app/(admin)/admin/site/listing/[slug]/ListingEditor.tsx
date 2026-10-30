@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import MediaPicker from "@/components/admin/MediaPicker";
 import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
+import TypeFields, { readTypeScale } from "@/components/admin/TypeFields";
 import type { InsightCard, ListingContent, ListingSlug } from "@/lib/listing-content";
 
 type Props = {
@@ -34,6 +35,7 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
     })).filter((card) => card.tag && card.href);
     const next: ListingContent = {
       version: 1,
+      type: readTypeScale(value, "page"),
       hero: { title: value("heroTitle"), image: value("heroImage") },
       eyebrow: value("eyebrow") || undefined,
       heading: value("heading"),
@@ -69,6 +71,7 @@ export default function ListingEditor({ slug, content, status, seo }: Props) {
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
     <div style={{ width: 160 }}><label htmlFor="status" style={labelStyle}>Status</label><select id="status" name="status" defaultValue={status}><option value="draft">Draft</option><option value="published">Published</option></select></div>
     <section style={sectionStyle}>
+      <TypeFields prefix="page" value={content.type} legend="This page — overrides the site-wide type" />
       <h2 style={sectionHeading}>Hero and introduction</h2>
       <Field label="Page title" name="heroTitle" defaultValue={content.hero.title} />
       <MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} />

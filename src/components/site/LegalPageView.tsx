@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import type { LegalContent, LegalRun } from "@/lib/legal-content";
+import { typeStyle, typeVars } from "@/lib/type-style";
 
 function Runs({ runs }: { runs: LegalRun[] }) {
   return runs.map((run, index) =>
@@ -11,7 +12,7 @@ function Runs({ runs }: { runs: LegalRun[] }) {
 export default function LegalPageView({ content }: { content: LegalContent }) {
   const { meta } = content;
   return (
-    <>
+    <div style={typeVars(content.type, "page")}>
       <section className="legal-hero">
         <div className="wrap">
           <span className="eyebrow">{content.eyebrow}</span>
@@ -31,9 +32,9 @@ export default function LegalPageView({ content }: { content: LegalContent }) {
             {meta.location}
           </aside>
           <div className="legal-body">
-            {content.sections.map((section) => (
+            {content.sections.map((section) => section.hidden ? null : (
               <Fragment key={section.heading}>
-                <h2>{section.heading}</h2>
+                <h2 style={typeStyle(undefined, undefined, section.typeStyle, "heading")}>{section.heading}</h2>
                 {section.blocks.map((block, index) => {
                   if (block.type === "button") {
                     return (
@@ -55,13 +56,13 @@ export default function LegalPageView({ content }: { content: LegalContent }) {
                       </ul>
                     );
                   }
-                  return <p key={index}><Runs runs={block.runs} /></p>;
+                  return <p key={index} style={typeStyle(undefined, undefined, section.typeStyle, "body")}><Runs runs={block.runs} /></p>;
                 })}
               </Fragment>
             ))}
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

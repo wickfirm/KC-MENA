@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import MediaPicker from "@/components/admin/MediaPicker";
 import { labelStyle, sectionHeading, sectionStyle, subHeading } from "@/components/admin/editor-styles";
+import TypeFields, { readTypeScale } from "@/components/admin/TypeFields";
 import type { BusinessDetailContent, BusinessDetailSlug } from "@/lib/business-detail-content";
 
 type Props = {
@@ -27,6 +28,7 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
     const value = (name: string) => String(form.get(name) ?? "").trim();
     const next: BusinessDetailContent = {
       version: 1,
+      type: readTypeScale(value, "page"),
       hero: { title: value("heroTitle"), image: value("heroImage") },
       overview: { eyebrow: value("overviewEyebrow"), heading: value("overviewHeading"), body: value("overviewBody") || undefined },
       platformMetrics: content.platformMetrics ? {
@@ -51,6 +53,7 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
         image: value(`section-${index}-image`) || section.image,
         action: section.action ? { label: value(`section-${index}-action-label`), href: value(`section-${index}-action-href`), external: section.action.external, hidden: form.get(`section-${index}-action-hidden`) === "on" } : undefined,
         hidden: form.get(`section-${index}-hidden`) === "on",
+        typeStyle: readTypeScale(value, `section-${index}`),
       })),
     };
     const response = await fetch(`/api/site-pages/business/${slug}`, {
@@ -71,6 +74,7 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
   return <form onSubmit={save} className="card" style={{ maxWidth: 900 }}>
     <div style={{ width: 160 }}><label htmlFor="status" style={labelStyle}>Status</label><select id="status" name="status" defaultValue={status}><option value="draft">Draft</option><option value="published">Published</option></select></div>
     <section style={sectionStyle}>
+      <TypeFields prefix="page" value={content.type} legend="This page — overrides the site-wide type" />
       <h2 style={sectionHeading}>Hero and introduction</h2>
       <Field label="Page title" name="heroTitle" defaultValue={content.hero.title} />
       <MediaPicker name="heroImage" label="Hero image" initialUrl={content.hero.image} />
@@ -106,7 +110,7 @@ export default function BusinessDetailEditor({ slug, content, status, seo }: Pro
       <Field label="Heading" name={`section-${index}-heading`} defaultValue={section.heading} multiline />
       <Field label="Body" name={`section-${index}-body`} defaultValue={section.body} multiline />
       <MediaPicker name={`section-${index}-image`} label="Image" initialUrl={section.image} />
-      <label style={labelStyle}><input type="checkbox" name={`section-${index}-hidden`} defaultChecked={section.hidden === true} /> Hide section</label>{section.action && <><Field label="CTA label" name={`section-${index}-action-label`} defaultValue={section.action.label} /><Field label="CTA URL" name={`section-${index}-action-href`} defaultValue={section.action.href} /><label style={labelStyle}><input type="checkbox" name={`section-${index}-action-hidden`} defaultChecked={section.action.hidden === true} /> Hide button</label></>}
+      <label style={labelStyle}><input type="checkbox" name={`section-${index}-hidden`} defaultChecked={section.hidden === true} /> Hide section</label><TypeFields prefix={`section-${index}`} value={section.typeStyle} legend="This section — overrides the page" />{section.action && <><Field label="CTA label" name={`section-${index}-action-label`} defaultValue={section.action.label} /><Field label="CTA URL" name={`section-${index}-action-href`} defaultValue={section.action.href} /><label style={labelStyle}><input type="checkbox" name={`section-${index}-action-hidden`} defaultChecked={section.action.hidden === true} /> Hide button</label></>}
     </section>)}
     <section style={sectionStyle}>
       <h2 style={sectionHeading}>Search appearance</h2>
