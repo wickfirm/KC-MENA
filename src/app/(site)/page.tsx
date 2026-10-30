@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ClientPageCss from "@/components/site/ClientPageCss";
 import HomePageView from "@/components/site/HomePageView";
 import JsonLd from "@/components/site/JsonLd";
-import { normalizeHomeContent } from "@/lib/home-content";
+import { readHomeContent } from "@/lib/home-content";
 import { getPageBySlug } from "@/lib/pages";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 
@@ -15,7 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const page = await getPageBySlug("home");
-  const document = normalizeHomeContent(page?.content);
+  const document = readHomeContent(page?.content);
+  if (!document) notFound();
   return (
     <><ClientPageCss page="home" />
       <HomePageView document={document} />

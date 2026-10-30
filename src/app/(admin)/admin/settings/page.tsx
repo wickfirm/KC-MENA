@@ -1,7 +1,8 @@
 import VersionHistory from "@/components/admin/VersionHistory";
 import { requireAdminPage } from "@/lib/auth";
 import { queryOne } from "@/lib/db";
-import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
+import MissingCmsContent from "@/components/admin/MissingCmsContent";
+import { SETTINGS_KEY, readStoredSiteSettings } from "@/lib/settings";
 import SettingsEditor from "./SettingsEditor";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +13,7 @@ export default async function SettingsAdminPage() {
   let dbError: string | null = null;
   try {
     const row = await queryOne<{ value: unknown }>("SELECT value FROM settings WHERE key = $1", [SETTINGS_KEY]);
-    settings = normalizeSiteSettings(row?.value);
+    settings = readStoredSiteSettings(row?.value);
   } catch (err) {
     dbError = err instanceof Error ? err.message : "Database unavailable";
     settings = undefined;
@@ -26,12 +27,11 @@ export default async function SettingsAdminPage() {
         contact-drawer locations.
       </p>
       {dbError ? (
-        <div className="card">
-          Database not connected — showing the built-in defaults. Set <code>DATABASE_URL</code> and apply{" "}
-          <code>db/schema.sql</code> to save changes.
-        </div>
+        <div className="card">Database not connected. Set <code>DATABASE_URL</code> and apply <code>db/schema.sql</code>.</div>
+      ) : settings ? (
+        <SettingsEditor settings={settings} />
       ) : (
-        <SettingsEditor settings={settings!} />
+        <MissingCmsContent name="site settings" />
       )}
     {!dbError ? <VersionHistory entity="settings" entityId={SETTINGS_KEY} /> : null}
     </>

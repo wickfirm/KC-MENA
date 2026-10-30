@@ -55,11 +55,11 @@ export default function SiteChrome({ children, footer, settings }: { children: R
 
   return (
     <>
-      <SiteHeader onContactHover={openDrawer} onContactLeave={scheduleDrawerClose} drawerOpen={drawerOpen} />
+      <SiteHeader nav={settings.nav} contactLabel={settings.chrome.contactLabel} logoAlt={settings.chrome.logoAlt} onContactHover={openDrawer} onContactLeave={scheduleDrawerClose} drawerOpen={drawerOpen} />
       {children}
       {footer}
       <ContactDrawer settings={settings} open={drawerOpen} onClose={closeDrawer} onHoverKeep={() => { if (closeTimer.current) clearTimeout(closeTimer.current); }} onHoverLeave={scheduleDrawerClose} />
-      <CookieConsent />
+      <CookieConsent copy={settings.cookie} />
     </>
   );
 }

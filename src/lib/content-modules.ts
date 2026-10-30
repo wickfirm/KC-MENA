@@ -27,6 +27,7 @@ export type ContentModule =
       body?: string;
       image?: ImageField;
       videoSrc?: string;
+      scrollLabel?: string;
     }
   | {
       id: string;
@@ -41,6 +42,8 @@ export type ContentModule =
       eyebrow?: string;
       heading?: string;
       items: Array<{ value: string; label: string; note?: string }>;
+      source?: LinkField;
+      action?: LinkField;
     }
   | {
       id: string;
@@ -91,6 +94,18 @@ export type ContentModule =
       heading: string;
       body?: string;
       action: LinkField;
+      form?: {
+        nameLabel: string;
+        emailLabel: string;
+        emailPlaceholder: string;
+        phoneLabel: string;
+        interestLabel: string;
+        interests: string[];
+        messageLabel: string;
+        submitLabel: string;
+        consent: string;
+        successMessage: string;
+      };
     };
 
 export type ModuleType = ContentModule["type"];

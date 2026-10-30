@@ -7,15 +7,31 @@ import { FormEvent, useState } from "react";
 export default function EnquiryForm({
   phone,
   email,
-  eyebrow = "Enquiry Form",
-  heading = "Tell us what you need.",
-  body = "Complete the form and a member of our team will respond using the details you provide.",
+  eyebrow = "",
+  heading = "",
+  body = "",
+  directPrompt = "",
+  submitLabel = "",
+  successMessage = "",
+  nameLabel = "",
+  emailLabel = "",
+  phoneLabel = "",
+  subjectLabel = "",
+  messageLabel = "",
 }: {
   phone: string;
   email: string;
   eyebrow?: string;
   heading?: string;
   body?: string;
+  directPrompt?: string;
+  submitLabel?: string;
+  successMessage?: string;
+  nameLabel?: string;
+  emailLabel?: string;
+  phoneLabel?: string;
+  subjectLabel?: string;
+  messageLabel?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
@@ -48,7 +64,7 @@ export default function EnquiryForm({
     }
     event.currentTarget.reset();
     setDone(true);
-    setNote("Thank you — your enquiry has been received. Our team will be in touch shortly.");
+    setNote(successMessage);
   }
 
   return (
@@ -60,7 +76,7 @@ export default function EnquiryForm({
             <h2 style={{ marginTop: 14, fontSize: "clamp(1.4rem,2.2vw,1.8rem)" }}>{heading}</h2>
             <p>{body}</p>
             <div className="direct">
-              Prefer to reach us directly?
+              {directPrompt}
               <a href={`tel:${phone.replace(/\s/g, "")}`}>{phone}</a>
               <a href={`mailto:${email}`}>{email}</a>
             </div>
@@ -68,30 +84,30 @@ export default function EnquiryForm({
           <form className="gen-form" onSubmit={submit}>
             <div className="form-row">
               <div className="form-field">
-                <label htmlFor="cname">Full Name</label>
+                <label htmlFor="cname">{nameLabel}</label>
                 <input type="text" id="cname" name="cname" required />
               </div>
               <div className="form-field">
-                <label htmlFor="cemail">Email</label>
+                <label htmlFor="cemail">{emailLabel}</label>
                 <input type="email" id="cemail" name="cemail" required />
               </div>
             </div>
             <div className="form-row">
               <div className="form-field">
-                <label htmlFor="cphone">Phone Number</label>
+                <label htmlFor="cphone">{phoneLabel}</label>
                 <input type="tel" id="cphone" name="cphone" />
               </div>
               <div className="form-field">
-                <label htmlFor="csubject">Subject</label>
+                <label htmlFor="csubject">{subjectLabel}</label>
                 <input type="text" id="csubject" name="csubject" />
               </div>
             </div>
             <div className="form-field">
-              <label htmlFor="cmessage">Message</label>
+              <label htmlFor="cmessage">{messageLabel}</label>
               <textarea id="cmessage" name="cmessage" required />
             </div>
             <div style={{ marginTop: 16 }}>
-              <button type="submit" className="btn btn-solid" disabled={busy}>{busy ? "Sending…" : "Send Enquiry"}</button>
+              <button type="submit" className="btn btn-solid" disabled={busy}>{busy ? "Sending…" : submitLabel}</button>
             </div>
             <div className={`form-note${done ? " show" : ""}`} id="contactNote" aria-live="polite">
               {note || "Thank you — your enquiry has been noted. Our team will be in touch shortly."}

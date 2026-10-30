@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import type { NavItem, SiteSettings } from "@/lib/settings";
+import type { FooterLink, NavItem, SiteSettings } from "@/lib/settings";
 import { labelStyle, sectionHeading, sectionStyle } from "@/components/admin/editor-styles";
 
 function Field({ label, name, defaultValue, multiline = false }: { label: string; name: string; defaultValue: string; multiline?: boolean }) {
@@ -29,12 +29,31 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
     const value = (name: string) => String(form.get(name) ?? "").trim();
     const splitLines = (name: string) => String(form.get(name) ?? "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     const nav: NavItem[] = settings.nav.map((item, index) => ({ label: value(`nav-${index}-label`), href: value(`nav-${index}-href`) })).filter((item) => item.label && item.href);
+    const parseLinks = (name: string): FooterLink[] => String(form.get(name) ?? "").split(/\r?\n/).map((line) => {
+      const [label, ...rest] = line.split("|");
+      return { label: (label ?? "").trim(), href: rest.join("|").trim() };
+    }).filter((item) => item.label && item.href);
     const next = {
       contact: { phone: value("contactPhone"), email: value("contactEmail") },
       address: { lines: splitLines("addressLines") },
       brand: { footerCopy: value("footerCopy") },
       links: { linkedin: value("linkedinUrl"), corporate: value("corporateUrl") },
       nav,
+      chrome: { contactLabel: value("contactLabel"), logoAlt: value("logoAlt") },
+      footerColumns: settings.footerColumns.map((column, index) => ({ heading: value(`column-${index}-heading`), links: parseLinks(`column-${index}-links`) })),
+      copyright: value("copyright"),
+      bottomLinks: parseLinks("bottomLinks"),
+      drawerCopy: {
+        eyebrow: value("drawerEyebrow"), heading: value("drawerHeading"), body: value("drawerBody"), directionsLabel: value("drawerDirections"),
+        nameLabel: value("drawerName"), emailLabel: value("drawerEmail"), messageLabel: value("drawerMessage"), submitLabel: value("drawerSubmit"),
+        successMessage: value("drawerSuccess"), directPrompt: value("drawerDirect"),
+      },
+      cookie: {
+        title: value("cookieTitle"), body: value("cookieBody"), policyLabel: value("cookiePolicyLabel"), policyHref: value("cookiePolicyHref"),
+        manageLabel: value("cookieManage"), necessaryLabel: value("cookieNecessary"), acceptLabel: value("cookieAccept"), saveLabel: value("cookieSave"),
+        essentialTitle: value("cookieEssentialTitle"), essentialBody: value("cookieEssentialBody"), analyticsTitle: value("cookieAnalyticsTitle"), analyticsBody: value("cookieAnalyticsBody"),
+        mediaTitle: value("cookieMediaTitle"), mediaBody: value("cookieMediaBody"),
+      },
       drawer: {
         locations: settings.drawer.locations.map((loc, index) => ({
           title: value(`loc-${index}-title`),
@@ -64,6 +83,14 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
       </section>
 
       <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Header</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <Field label="Contact button label" name="contactLabel" defaultValue={settings.chrome.contactLabel} />
+          <Field label="Logo alt text" name="logoAlt" defaultValue={settings.chrome.logoAlt} />
+        </div>
+      </section>
+
+      <section style={sectionStyle}>
         <h2 style={sectionHeading}>Header navigation</h2>
         {settings.nav.map((item, index) => (
           <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -82,6 +109,52 @@ export default function SettingsEditor({ settings }: { settings: SiteSettings })
           <Field label="LinkedIn URL" name="linkedinUrl" defaultValue={settings.links.linkedin} />
           <Field label="Corporate website URL" name="corporateUrl" defaultValue={settings.links.corporate} />
         </div>
+        {settings.footerColumns.map((column, index) => (
+          <div key={index} style={{ borderTop: "1px solid var(--line)", paddingTop: 14, marginTop: 14 }}>
+            <Field label={`Column ${index + 1} heading`} name={`column-${index}-heading`} defaultValue={column.heading} />
+            <Field label="Links (Label | URL, one per line)" name={`column-${index}-links`} defaultValue={column.links.map((link) => `${link.label} | ${link.href}`).join("\n")} multiline />
+          </div>
+        ))}
+        <Field label="Copyright line ({year} is replaced)" name="copyright" defaultValue={settings.copyright} />
+        <Field label="Bottom links (Label | URL, one per line)" name="bottomLinks" defaultValue={settings.bottomLinks.map((link) => `${link.label} | ${link.href}`).join("\n")} multiline />
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Contact drawer copy</h2>
+        <Field label="Label" name="drawerEyebrow" defaultValue={settings.drawerCopy.eyebrow} />
+        <Field label="Heading" name="drawerHeading" defaultValue={settings.drawerCopy.heading} />
+        <Field label="Introduction" name="drawerBody" defaultValue={settings.drawerCopy.body} multiline />
+        <Field label="Directions label" name="drawerDirections" defaultValue={settings.drawerCopy.directionsLabel} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+          <Field label="Name label" name="drawerName" defaultValue={settings.drawerCopy.nameLabel} />
+          <Field label="Email label" name="drawerEmail" defaultValue={settings.drawerCopy.emailLabel} />
+          <Field label="Message label" name="drawerMessage" defaultValue={settings.drawerCopy.messageLabel} />
+        </div>
+        <Field label="Submit label" name="drawerSubmit" defaultValue={settings.drawerCopy.submitLabel} />
+        <Field label="Success message" name="drawerSuccess" defaultValue={settings.drawerCopy.successMessage} />
+        <Field label="Direct contact prompt" name="drawerDirect" defaultValue={settings.drawerCopy.directPrompt} />
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={sectionHeading}>Cookie banner</h2>
+        <Field label="Title" name="cookieTitle" defaultValue={settings.cookie.title} />
+        <Field label="Introduction" name="cookieBody" defaultValue={settings.cookie.body} multiline />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <Field label="Policy link label" name="cookiePolicyLabel" defaultValue={settings.cookie.policyLabel} />
+          <Field label="Policy link URL" name="cookiePolicyHref" defaultValue={settings.cookie.policyHref} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <Field label="Manage label" name="cookieManage" defaultValue={settings.cookie.manageLabel} />
+          <Field label="Necessary label" name="cookieNecessary" defaultValue={settings.cookie.necessaryLabel} />
+          <Field label="Accept label" name="cookieAccept" defaultValue={settings.cookie.acceptLabel} />
+          <Field label="Save label" name="cookieSave" defaultValue={settings.cookie.saveLabel} />
+        </div>
+        <Field label="Essential title" name="cookieEssentialTitle" defaultValue={settings.cookie.essentialTitle} />
+        <Field label="Essential description" name="cookieEssentialBody" defaultValue={settings.cookie.essentialBody} multiline />
+        <Field label="Analytics title" name="cookieAnalyticsTitle" defaultValue={settings.cookie.analyticsTitle} />
+        <Field label="Analytics description" name="cookieAnalyticsBody" defaultValue={settings.cookie.analyticsBody} multiline />
+        <Field label="Media title" name="cookieMediaTitle" defaultValue={settings.cookie.mediaTitle} />
+        <Field label="Media description" name="cookieMediaBody" defaultValue={settings.cookie.mediaBody} multiline />
       </section>
 
       <section style={sectionStyle}>

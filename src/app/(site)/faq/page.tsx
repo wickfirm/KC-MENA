@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import JsonLd from "@/components/site/JsonLd";
 import { getPageBySlug } from "@/lib/pages";
 import { faqPageJsonLd, fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
@@ -18,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function FaqPage() {
   const [content, page] = await Promise.all([getListingContent("faq"), getPageBySlug("faq")]);
+  if (!content) notFound();
   let faqs: FaqRow[] = [];
   try {
     faqs = await query<FaqRow>(

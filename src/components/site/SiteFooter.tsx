@@ -2,14 +2,14 @@ import type { SiteSettings } from "@/lib/settings";
 
 /** Same markup as the delivered static footer, with content from site settings. */
 export default function SiteFooter({ settings }: { settings: SiteSettings }) {
-  const { contact, address, brand, links } = settings;
+  const { contact, address, brand, links, footerColumns, copyright, bottomLinks, chrome } = settings;
   return (
     <footer id="contact">
       <div className="wrap">
         <div className="foot-grid foot-grid-enhanced">
           <div className="foot-brand">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="footer-logo" src="/images/logo kme red.png" alt="Kasumigaseki Capital" />
+            <img className="footer-logo" src="/images/logo kme red.png" alt={chrome.logoAlt} />
             <p className="foot-brand-copy">{brand.footerCopy}</p>
             <div className="foot-address">
               {address.lines.map((line, index) => (
@@ -32,61 +32,25 @@ export default function SiteFooter({ settings }: { settings: SiteSettings }) {
               )}
             </div>
           </div>
-          <div>
-            <h4>Company</h4>
-            <ul>
-              <li><a href="/about-us/">About Us</a></li>
-              <li><a href="/careers/">Careers</a></li>
-              <li><a href="/news/">News</a></li>
-              <li><a href="/contact-us/">Contact Us</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Local Business</h4>
-            <ul>
-              <li><a href="/local-business/">Overview</a></li>
-              <li><a href="/real-estate-development/">Development</a></li>
-              <li><a href="/real-estate/">Investment &amp; Asset Management</a></li>
-              <li><a href="/f-and-b/">Food &amp; Beverage</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Global Business</h4>
-            <ul>
-              <li><a href="/global-businesses/">Overview</a></li>
-              <li><a href="https://map.kasumigaseki.ae/" target="_blank" rel="noopener">Global Map</a></li>
-              <li><a href="https://logiflag.com/" target="_blank" rel="noopener">Logistics</a></li>
-              <li><a href="https://favhospitalitygroup.com/" target="_blank" rel="noopener">Hotel Business</a></li>
-              <li><a href="https://kc-welfare.co.jp/" target="_blank" rel="noopener">Healthcare</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Media &amp; Resources</h4>
-            <ul>
-              <li><a href="https://kasumigaseki.co.jp/en/ir/" target="_blank" rel="noopener">Parent Investor Relations</a></li>
-              <li><a href="https://kasumigaseki.co.jp/en/news/" target="_blank" rel="noopener">Kasumigaseki Capital News</a></li>
-              <li><a href="https://kasumigaseki.co.jp/en/" target="_blank" rel="noopener">Global Site</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Legal &amp; Contact</h4>
-            <ul>
-              <li><a href="/terms-and-conditions/">Terms &amp; Conditions</a></li>
-              <li><a href="/privacy-policy/">Privacy Policy</a></li>
-              <li><a href="/cookie-policy/">Cookie Policy</a></li>
-              <li><a href="/legal-notice/">Legal Notice</a></li>
-              {contact.phone && <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a></li>}
-              {contact.email && <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
-            </ul>
-          </div>
+          {footerColumns.map((column) => (
+            <div key={column.heading}>
+              <h4>{column.heading}</h4>
+              <ul>
+                {column.links.map((link) => (
+                  <li key={`${column.heading}-${link.href}-${link.label}`}>
+                    <a href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener" : undefined}>{link.label}</a>
+                  </li>
+                ))}
+                {column.heading === "Legal & Contact" && contact.phone && <li><a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a></li>}
+                {column.heading === "Legal & Contact" && contact.email && <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
+              </ul>
+            </div>
+          ))}
         </div>
         <div className="foot-bottom">
-          <span>&copy; {new Date().getFullYear()} Kasumigaseki Capital MENA. All rights reserved.</span>
+          <span>{copyright.replace("{year}", String(new Date().getFullYear()))}</span>
           <div className="foot-bottom-links">
-            <a href="/terms-and-conditions/">Terms</a>
-            <a href="/privacy-policy/">Privacy</a>
-            <a href="/cookie-policy/">Cookies</a>
-            <a href="/legal-notice/">Legal Notice</a>
+            {bottomLinks.map((link) => <a key={link.href + link.label} href={link.href}>{link.label}</a>)}
           </div>
         </div>
       </div>

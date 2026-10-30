@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { query } from "@/lib/db";
+import { isLegalSlug } from "@/lib/legal-content";
 
 export const dynamic = "force-dynamic";
 
@@ -38,8 +39,7 @@ export default async function PagesAdminPage() {
         <Link href="/admin/pages/new" className="btn btn-dark">+ New Page</Link>
       </div>
       <p style={{ color: "var(--grey-5)", marginBottom: 18 }}>
-        Every save creates a revision snapshot. Legal page content was seeded from the delivered site and is
-        ready for the final text from the client&rsquo;s legal counsel.
+        Every save creates a revision snapshot. Legal pages are edited as fields under Site pages.
       </p>
 
       {dbError && (
@@ -81,7 +81,7 @@ export default async function PagesAdminPage() {
                     {new Date(r.updated_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}
                   </td>
                   <td style={{ padding: "12px 16px" }}>
-                    <Link href={`/admin/pages/${r.id}`} style={{ fontWeight: 700, textDecoration: "underline" }}>Edit</Link>
+                    <Link href={isLegalSlug(r.slug) ? `/admin/site/legal/${r.slug}` : `/admin/pages/${r.id}`} style={{ fontWeight: 700, textDecoration: "underline" }}>Edit</Link>
                   </td>
                 </tr>
               ))}

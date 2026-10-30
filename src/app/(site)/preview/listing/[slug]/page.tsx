@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { getPageBySlug } from "@/lib/pages";
 import { loadDraft } from "@/lib/preview-drafts";
-import { DEFAULT_LISTING_CONTENT, isListingContent, isListingSlug } from "@/lib/listing-content";
+import { isListingContent, isListingSlug } from "@/lib/listing-content";
 import ListingPageShell from "@/components/site/ListingPageShell";
 import PreviewBanner from "@/components/site/PreviewBanner";
 
@@ -15,5 +15,6 @@ export default async function ListingDraftPreview({ params, searchParams }: { pa
   if (!isListingSlug(slug)) notFound();
   const draft = (await searchParams).draft ? ((await loadDraft(`page:listing/${slug}`)) as { content?: unknown } | null) : null;
   const source = draft ? draft.content : (await getPageBySlug(slug, false))?.content;
-  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/listing/${slug}`} /><ListingPageShell page={slug === "careers" ? "careers" : "news"} content={isListingContent(source) ? source : DEFAULT_LISTING_CONTENT[slug]} /></>;
+  if (!isListingContent(source)) notFound();
+  return <><PreviewBanner unsaved={Boolean(draft)} editHref={`/admin/site/listing/${slug}`} /><ListingPageShell page={slug === "careers" ? "careers" : "news"} content={source} /></>;
 }

@@ -2,7 +2,9 @@
 
 import { FormEvent, useState } from "react";
 
-export default function HomeLeadForm() {
+export default function HomeLeadForm({ form }: { form?: { nameLabel: string; emailLabel: string; emailPlaceholder: string; phoneLabel: string; interestLabel: string; interests: string[]; messageLabel: string; submitLabel: string; consent: string; successMessage: string } }) {
+  if (!form) return null;
+  const copy = form;
   const [message, setMessage] = useState("");
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -20,15 +22,15 @@ export default function HomeLeadForm() {
       String(form.get("message") ?? "").trim(),
     ];
     window.location.href = `mailto:info.dubai@kasumigaseki.co.jp?subject=${encodeURIComponent("Website enquiry")}&body=${encodeURIComponent(lines.join("\n"))}`;
-    setMessage("Your email client is opening with your enquiry.");
+    setMessage(copy.successMessage);
   }
 
   return <form className="lead-form" onSubmit={submit} noValidate>
-    <div className="lead-field"><label htmlFor="lead-name">Full name</label><input id="lead-name" name="name" type="text" autoComplete="name" required /></div>
-    <div className="lead-field"><label htmlFor="lead-email">Email</label><input id="lead-email" name="email" type="email" autoComplete="email" placeholder="name@company.com" required /></div>
-    <div className="lead-field"><label htmlFor="lead-phone">Phone</label><input id="lead-phone" name="phone" type="tel" autoComplete="tel" /></div>
-    <div className="lead-field"><label htmlFor="lead-interest">I&apos;m interested in</label><select id="lead-interest" name="interest"><option>Development</option><option>Investment &amp; Asset Management</option><option>Food &amp; Beverage</option><option>Careers</option><option>General enquiry</option></select></div>
-    <div className="lead-field full"><label htmlFor="lead-message">Message</label><textarea id="lead-message" name="message" /></div>
-    <div className="full"><button type="submit" className="btn btn-solid">Send enquiry</button><p className="lead-note"><em>By submitting your message, you agree to be contacted about your enquiry. We do not share your details outside the purposes described in our privacy policy.</em></p>{message && <p className="lead-ok" role="status" style={{ display: "block" }}>{message}</p>}</div>
+    <div className="lead-field"><label htmlFor="lead-name">{copy.nameLabel}</label><input id="lead-name" name="name" type="text" autoComplete="name" required /></div>
+    <div className="lead-field"><label htmlFor="lead-email">{copy.emailLabel}</label><input id="lead-email" name="email" type="email" autoComplete="email" placeholder={copy.emailPlaceholder} required /></div>
+    <div className="lead-field"><label htmlFor="lead-phone">{copy.phoneLabel}</label><input id="lead-phone" name="phone" type="tel" autoComplete="tel" /></div>
+    <div className="lead-field"><label htmlFor="lead-interest">{copy.interestLabel}</label><select id="lead-interest" name="interest">{copy.interests.map((interest) => <option key={interest}>{interest}</option>)}</select></div>
+    <div className="lead-field full"><label htmlFor="lead-message">{copy.messageLabel}</label><textarea id="lead-message" name="message" /></div>
+    <div className="full"><button type="submit" className="btn btn-solid">{copy.submitLabel}</button><p className="lead-note"><em>{copy.consent}</em></p>{message && <p className="lead-ok" role="status" style={{ display: "block" }}>{message}</p>}</div>
   </form>;
 }

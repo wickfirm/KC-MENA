@@ -10,7 +10,7 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [busy, setBusy] = useState(false);
-  const { contact, drawer } = settings;
+  const { contact, drawer, drawerCopy } = settings;
 
   async function submitEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -39,7 +39,7 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
       }
       form.reset();
       setIsSuccess(true);
-      setStatus("Thank you — your enquiry has been received.");
+      setStatus(drawerCopy.successMessage);
     } catch {
       setStatus("Could not send your enquiry. Please try again.");
     } finally {
@@ -53,10 +53,10 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
       <aside className={"contact-drawer" + (open ? " open" : "")} id="contactDrawer" aria-label="Contact Kasumigaseki Capital" onMouseEnter={onHoverKeep} onMouseLeave={onHoverLeave}>
         <button className="drawer-close" id="drawerClose" aria-label="Close" onClick={onClose}>&times;</button>
         <div className="drawer-inner">
-          <span className="eyebrow">Get in Touch</span>
-          <h2 style={{ marginTop: 12, fontSize: "clamp(1.3rem,2vw,1.6rem)" }}>Contact Us</h2>
+          <span className="eyebrow">{drawerCopy.eyebrow}</span>
+          <h2 style={{ marginTop: 12, fontSize: "clamp(1.3rem,2vw,1.6rem)" }}>{drawerCopy.heading}</h2>
           <p style={{ marginTop: 12, color: "var(--grey-6)", fontSize: "0.92rem" }}>
-            For corporate, investment, development and partnership enquiries, contact our Dubai team or visit one of our locations.
+            {drawerCopy.body}
           </p>
 
           <div className="drawer-locs">
@@ -71,34 +71,34 @@ export default function ContactDrawer({ settings, open, onClose, onHoverKeep, on
                     </span>
                   ))}
                 </p>
-                <a href={location.mapUrl} className="maplink" target="_blank" rel="noreferrer">Get Directions &#8599;</a>
+                <a href={location.mapUrl} className="maplink" target="_blank" rel="noreferrer">{drawerCopy.directionsLabel}</a>
               </div>
             ))}
           </div>
 
           <form className="drawer-form" onSubmit={submitEnquiry}>
             <div className="form-field">
-              <label htmlFor="dname">Full Name</label>
+              <label htmlFor="dname">{drawerCopy.nameLabel}</label>
               <input type="text" id="dname" name="name" required />
             </div>
             <div className="form-field">
-              <label htmlFor="demail">Email</label>
+              <label htmlFor="demail">{drawerCopy.emailLabel}</label>
               <input type="email" id="demail" name="email" required />
             </div>
             <div className="form-field">
-              <label htmlFor="dmessage">Message</label>
+              <label htmlFor="dmessage">{drawerCopy.messageLabel}</label>
               <textarea id="dmessage" name="message" required></textarea>
             </div>
             <div className={`form-note${status ? " show" : ""}${status && !isSuccess ? " error-msg" : ""}`} id="drawerNote" role={isSuccess ? "status" : "alert"} aria-live="polite">
               {status}
             </div>
             <button type="submit" className="btn btn-solid" style={{ width: "100%", justifyContent: "center" }} disabled={busy}>
-              {busy ? "Sending…" : "Send Enquiry"}
+              {busy ? "Sending…" : drawerCopy.submitLabel}
             </button>
           </form>
 
           <div className="drawer-direct">
-            Prefer to reach us directly?
+            {drawerCopy.directPrompt}
             {contact.phone && <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>}
             {contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}
           </div>

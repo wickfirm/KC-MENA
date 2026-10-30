@@ -5,17 +5,25 @@ import { FormEvent, useState } from "react";
 /** Contact form used inside the shared SectionContact band. Markup mirrors the
  *  delivered .contact-form; submissions persist to /api/submissions. */
 export default function SectionContactForm({
-  subjectLabel = "Enquiry Type",
-  subjectPlaceholder = "Development, Investment, F&B...",
-  submitLabel = "Send Enquiry",
-  successNote = "Thank you — your enquiry has been received. Our team will be in touch shortly.",
+  subjectLabel = "",
+  subjectPlaceholder = "",
+  submitLabel = "",
+  successNote = "",
   subject = "Website enquiry",
+  nameLabel = "",
+  emailLabel = "",
+  phoneLabel = "",
+  messageLabel = "",
 }: {
   subjectLabel?: string;
   subjectPlaceholder?: string;
   submitLabel?: string;
   successNote?: string;
   subject?: string;
+  nameLabel?: string;
+  emailLabel?: string;
+  phoneLabel?: string;
+  messageLabel?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
@@ -64,17 +72,17 @@ export default function SectionContactForm({
     <form className="contact-form" onSubmit={submit}>
       <div className="form-row">
         <div className="form-field">
-          <label htmlFor="fname">Full Name</label>
+          <label htmlFor="fname">{nameLabel}</label>
           <input type="text" id="fname" name="fname" required />
         </div>
         <div className="form-field">
-          <label htmlFor="femail">Email</label>
+          <label htmlFor="femail">{emailLabel}</label>
           <input type="email" id="femail" name="femail" required />
         </div>
       </div>
       <div className="form-row">
         <div className="form-field">
-          <label htmlFor="fphone">Phone</label>
+          <label htmlFor="fphone">{phoneLabel}</label>
           <input type="tel" id="fphone" name="fphone" />
         </div>
         <div className="form-field">
@@ -84,7 +92,7 @@ export default function SectionContactForm({
       </div>
       <div className="form-row">
         <div className="form-field full">
-          <label htmlFor="fmessage">Message</label>
+          <label htmlFor="fmessage">{messageLabel}</label>
           <textarea id="fmessage" name="fmessage" required />
         </div>
       </div>

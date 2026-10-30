@@ -1,29 +1,65 @@
-/**
- * Shared renderer for legal pages (Privacy Policy, Terms & Conditions,
- * Cookie Policy, Legal Notice). Mirrors the delivered static markup so the
- * shared design system in (site)/styles/base.css applies unchanged.
- */
-export default function LegalPageView({
-  title,
-  meta,
-  body,
-}: {
-  title: string;
-  meta?: string;
-  body?: string;
-}) {
+import { Fragment } from "react";
+import type { LegalContent, LegalRun } from "@/lib/legal-content";
+
+function Runs({ runs }: { runs: LegalRun[] }) {
+  return runs.map((run, index) =>
+    run.href ? <a key={index} href={run.href}>{run.text}</a> : <span key={index}>{run.text}</span>
+  );
+}
+
+/** Legal pages, rendered from structured fields in the same markup the client delivered. */
+export default function LegalPageView({ content }: { content: LegalContent }) {
+  const { meta } = content;
   return (
     <>
       <section className="legal-hero">
         <div className="wrap">
-          <span className="eyebrow">Legal</span>
-          <h1>{title}</h1>
+          <span className="eyebrow">{content.eyebrow}</span>
+          <h1>{content.title}</h1>
         </div>
       </section>
       <section className="section legal-content">
         <div className="wrap legal-wrap">
-          <aside className="legal-meta" dangerouslySetInnerHTML={{ __html: meta ?? "" }} />
-          <div className="legal-body" dangerouslySetInnerHTML={{ __html: body ?? "" }} />
+          <aside className="legal-meta">
+            <strong>{meta.updatedLabel}</strong>
+            <br />
+            {meta.updated}
+            <br />
+            <br />
+            {meta.company}
+            <br />
+            {meta.location}
+          </aside>
+          <div className="legal-body">
+            {content.sections.map((section) => (
+              <Fragment key={section.heading}>
+                <h2>{section.heading}</h2>
+                {section.blocks.map((block, index) => {
+                  if (block.type === "button") {
+                    return (
+                      <p key={index}>
+                        <button className="legal-consent-button" type="button" data-cookie-settings>{block.label}</button>
+                      </p>
+                    );
+                  }
+                  if (block.type === "list") {
+                    return (
+                      <ul key={index}>
+                        {block.items.map((item, itemIndex) => (
+                          <li key={itemIndex}>
+                            {item.lead ? <strong>{item.lead}</strong> : null}
+                            {item.lead ? " " : ""}
+                            {item.text}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  return <p key={index}><Runs runs={block.runs} /></p>;
+                })}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </section>
     </>

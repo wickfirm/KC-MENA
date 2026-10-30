@@ -1,27 +1,11 @@
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
-import ClientPageCss from "@/components/site/ClientPageCss";
-import LegalPageView from "@/components/site/LegalPageView";
-import JsonLd from "@/components/site/JsonLd";
-import { getPageBySlug } from "@/lib/pages";
-import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
+import LegalDocument, { legalMetadata } from "@/components/site/LegalDocument";
 
 export const dynamic = "force-dynamic";
 
-const SLUG = "legal-notice" as const;
-
-export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPageBySlug(SLUG);
-  return pageMetadata(resolvePageSeo(SLUG, page?.seo));
+export function generateMetadata() {
+  return legalMetadata("legal-notice");
 }
 
-export default async function LegalNoticePage() {
-  const page = await getPageBySlug(SLUG);
-  if (!page) notFound();
-  return (
-    <><ClientPageCss page="legal-notice" />
-      <LegalPageView title={page.title} meta={page.content?.meta} body={page.content?.body} />
-      <JsonLd data={fixedPageJsonLd(SLUG, resolvePageSeo(SLUG, page.seo))} />
-    </>
-  );
+export default function LegalNoticePage() {
+  return <LegalDocument slug="legal-notice" />;
 }

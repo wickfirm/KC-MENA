@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import JsonLd from "@/components/site/JsonLd";
 import { getPageBySlug } from "@/lib/pages";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
@@ -27,6 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function NewsPage() {
   const [content, page] = await Promise.all([getListingContent("news"), getPageBySlug("news")]);
+  if (!content) notFound();
   let posts: NewsRow[] = [];
   try {
     posts = await query<NewsRow>(

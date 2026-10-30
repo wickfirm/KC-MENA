@@ -15,17 +15,21 @@ export type SectionContactProps = {
   subjectPlaceholder?: string;
   submitLabel?: string;
   successMessage?: string;
+  nameLabel?: string;
+  emailLabel?: string;
+  phoneLabel?: string;
+  messageLabel?: string;
 };
 
 /** "Contact us" band shared by Local Business and the four business pages —
  *  markup mirrors the delivered static contact sections (.head + .contact-grid). */
 export default function SectionContact({
-  eyebrow = "Contact Us",
+  eyebrow = "",
   heading,
   officeTitle,
   officeLines,
   mapUrl,
-  mapLabel = "Open in Maps ↗",
+  mapLabel = "",
   contactTitle,
   contactBody,
   phone,
@@ -34,6 +38,10 @@ export default function SectionContact({
   subjectPlaceholder,
   submitLabel,
   successMessage,
+  nameLabel,
+  emailLabel,
+  phoneLabel,
+  messageLabel,
 }: SectionContactProps) {
   return (
     <section className="section" id="contact">
@@ -71,7 +79,7 @@ export default function SectionContact({
               </p>
             </div>
           </div>
-          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} submitLabel={submitLabel} successNote={successMessage} subject={heading} />
+          <SectionContactForm subjectLabel={subjectLabel} subjectPlaceholder={subjectPlaceholder} submitLabel={submitLabel} successNote={successMessage} subject={heading} nameLabel={nameLabel} emailLabel={emailLabel} phoneLabel={phoneLabel} messageLabel={messageLabel} />
         </div>
       </div>
     </section>

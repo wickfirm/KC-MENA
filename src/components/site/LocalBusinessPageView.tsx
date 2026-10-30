@@ -17,7 +17,7 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
       </section>
       <section className="section">
         <div className="wrap">
-          <div className="head local-business-overview"><span className="eyebrow">By The Numbers</span><h2>{content.intro.heading}</h2></div>
+          <div className="head local-business-overview">{content.intro.eyebrow && <span className="eyebrow">{content.intro.eyebrow}</span>}<h2>{content.intro.heading}</h2></div>
           <div className="stat-grid">
             {content.intro.metrics.map((x) => (
               <div className="stat-block" key={x.label}><div className="stat-num">{x.value}</div><div className="stat-label">{x.label}</div></div>
@@ -33,7 +33,7 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
               <h2>{x.heading}</h2>
               <div className="rule" />
               <p>{x.body}</p>
-              <Link href={x.href} className="btn btn-outline-w">Know More</Link>
+              {x.linkLabel && <Link href={x.href} className="btn btn-outline-w">{x.linkLabel}</Link>}
             </div>
           </div>;
         const image = <div className="biz-photo" style={{ backgroundImage: `url('${x.image}')` }} />;
@@ -50,10 +50,16 @@ export default function LocalBusinessPageView({ content, projects = [], page = "
         contactBody={c.body}
         phone={c.phone}
         email={c.email}
-        subjectLabel="Enquiry Type"
-        subjectPlaceholder="Development, Investment, F&B..."
+        subjectLabel={c.subjectLabel}
+        subjectPlaceholder={c.subjectPlaceholder}
+        submitLabel={c.submitLabel}
+        successMessage={c.successMessage}
+        nameLabel={c.nameLabel}
+        emailLabel={c.emailLabel}
+        phoneLabel={c.phoneLabel}
+        messageLabel={c.messageLabel}
       />
-      <ProjectsSection projects={projects} heading="Projects in the UAE" />
+      {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
     </main>
     </>
   );

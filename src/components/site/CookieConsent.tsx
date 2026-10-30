@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { CookieCopy } from "@/lib/settings";
 
 type Consent = { status: string; essential: boolean; analytics: boolean; media: boolean; updatedAt: string };
 
@@ -26,7 +27,7 @@ function writeConsent(status: string, analytics: boolean, media: boolean): Conse
 
 /** Cookie & usage consent banner — React port of the delivered consent logic
  *  (same markup classes, same localStorage key kmeCookieConsentV1). */
-export default function CookieConsent() {
+export default function CookieConsent({ copy }: { copy: CookieCopy }) {
   const [visible, setVisible] = useState(false);
   const [manage, setManage] = useState(false);
   const [analytics, setAnalytics] = useState(false);
@@ -66,52 +67,51 @@ export default function CookieConsent() {
     <aside className={`cookie-consent${manage ? " open manage" : " open"}`} role="dialog" aria-modal="false" aria-labelledby="cookieConsentTitle" aria-describedby="cookieConsentText">
       <div className="cookie-consent-panel">
         <div>
-          <h2 id="cookieConsentTitle">Cookie and usage consent</h2>
+          <h2 id="cookieConsentTitle">{copy.title}</h2>
           <p id="cookieConsentText">
-            We use essential technologies to run this site. With your consent, we may also use usage analytics and
-            functional media services to improve the website and support embedded content. Read our{" "}
-            <a href="/cookie-policy/">Cookie Policy</a>.
+            {copy.body}{" "}
+            <a href={copy.policyHref}>{copy.policyLabel}</a>.
           </p>
         </div>
         <div className="cookie-consent-actions">
           <button type="button" className="cookie-manage" onClick={() => setManage(true)}>
-            Manage choices
+            {copy.manageLabel}
           </button>
           <button type="button" className="cookie-necessary" onClick={() => save("necessary", false, false)}>
-            Necessary only
+            {copy.necessaryLabel}
           </button>
           <button type="button" className="cookie-primary cookie-accept" onClick={() => save("accepted", true, true)}>
-            Accept all
+            {copy.acceptLabel}
           </button>
         </div>
         <div className="cookie-consent-preferences" aria-label="Cookie preferences">
           <label className="cookie-choice">
             <span>
-              <strong>Essential</strong>
-              <span>Required for navigation, security, consent storage, and core website functionality.</span>
+              <strong>{copy.essentialTitle}</strong>
+              <span>{copy.essentialBody}</span>
             </span>
             <input type="checkbox" checked disabled />
           </label>
           <label className="cookie-choice">
             <span>
-              <strong>Usage analytics</strong>
-              <span>Helps us understand site usage and improve performance and content.</span>
+              <strong>{copy.analyticsTitle}</strong>
+              <span>{copy.analyticsBody}</span>
             </span>
             <input type="checkbox" checked={analytics} onChange={(event) => setAnalytics(event.target.checked)} />
           </label>
           <label className="cookie-choice">
             <span>
-              <strong>Functional media</strong>
-              <span>Supports embedded video, map, social, and external content features.</span>
+              <strong>{copy.mediaTitle}</strong>
+              <span>{copy.mediaBody}</span>
             </span>
             <input type="checkbox" checked={media} onChange={(event) => setMedia(event.target.checked)} />
           </label>
           <div className="cookie-consent-actions">
             <button type="button" className="cookie-necessary" onClick={() => save("necessary", false, false)}>
-              Necessary only
+              {copy.necessaryLabel}
             </button>
             <button type="button" className="cookie-primary cookie-save" onClick={() => save("custom", analytics, media)}>
-              Save choices
+              {copy.saveLabel}
             </button>
           </div>
         </div>

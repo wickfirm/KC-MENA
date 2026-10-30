@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ClientPageCss from "@/components/site/ClientPageCss";
 import AboutPageView from "@/components/site/AboutPageView";
 import JsonLd from "@/components/site/JsonLd";
-import { DEFAULT_ABOUT_CONTENT, isAboutContent } from "@/lib/about-content";
+import { isAboutContent } from "@/lib/about-content";
 import { getPageBySlug } from "@/lib/pages";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 
@@ -15,9 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const page = await getPageBySlug("about-us");
+  if (!isAboutContent(page?.content)) notFound();
   return (
     <><ClientPageCss page="about-us" />
-      <AboutPageView content={isAboutContent(page?.content) ? page.content : DEFAULT_ABOUT_CONTENT} />
+      <AboutPageView content={page.content} />
       <JsonLd data={fixedPageJsonLd("about-us", resolvePageSeo("about-us", page?.seo), "AboutPage")} />
     </>
   );

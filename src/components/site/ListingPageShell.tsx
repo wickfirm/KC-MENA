@@ -37,7 +37,7 @@ export default function ListingPageShell({ content, children, page = "news" }: {
                 <div className="video-play"></div>
               </div>
               <div className="featured-video-copy">
-                <span className="eyebrow">Featured Video</span>
+                {content.featuredVideo.eyebrow && <span className="eyebrow">{content.featuredVideo.eyebrow}</span>}
                 <h3 style={{ marginTop: 12 }}>{content.featuredVideo.heading}</h3>
                 <p>{content.featuredVideo.body}</p>
               </div>
@@ -62,7 +62,7 @@ export default function ListingPageShell({ content, children, page = "news" }: {
       {content.disclaimer && (
         <section className="section disclaimer">
           <div className="wrap">
-            <h3>Disclaimer</h3>
+            {content.disclaimerHeading && <h3>{content.disclaimerHeading}</h3>}
             <p>{content.disclaimer}</p>
           </div>
         </section>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import JsonLd from "@/components/site/JsonLd";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
 import { getPageBySlug } from "@/lib/pages";
-import { DEFAULT_BUSINESS_DETAILS, isBusinessDetailContent, withBusinessDefaults } from "@/lib/business-detail-content";
+import { isBusinessDetailContent } from "@/lib/business-detail-content";
 import { getPublishedProjectsBySector } from "@/lib/projects";
 import BusinessDetailPageView from "@/components/site/BusinessDetailPageView";
 
@@ -11,9 +12,10 @@ export async function generateMetadata(): Promise<Metadata> { const page = await
 
 export default async function Page() {
   const [page, projects] = await Promise.all([getPageBySlug("real-estate"), getPublishedProjectsBySector("real-estate")]);
+  if (!isBusinessDetailContent(page?.content)) notFound();
   return (
     <>
-      <BusinessDetailPageView page="real-estate" content={withBusinessDefaults("real-estate", isBusinessDetailContent(page?.content) ? page.content : DEFAULT_BUSINESS_DETAILS["real-estate"])} projects={projects} referenceOverviewWidth />
+      <BusinessDetailPageView page="real-estate" content={page.content} projects={projects} referenceOverviewWidth />
       <JsonLd data={fixedPageJsonLd("real-estate", resolvePageSeo("real-estate", page?.seo))} />
     </>
   );

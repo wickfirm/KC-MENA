@@ -15,6 +15,8 @@ const FALLBACK_NAV: NavItem[] = [
 
 type Props = {
   nav?: NavItem[];
+  contactLabel?: string;
+  logoAlt?: string;
   onContactHover?: () => void;
   onContactLeave?: () => void;
   drawerOpen?: boolean;
@@ -22,7 +24,7 @@ type Props = {
 
 /** Same markup/behaviour as the delivered header. The mobile nav toggle and
  *  contact-drawer triggers are handled here (no external JS). */
-export default function SiteHeader({ nav = FALLBACK_NAV, onContactHover, onContactLeave, drawerOpen = false }: Props) {
+export default function SiteHeader({ nav = FALLBACK_NAV, contactLabel = "Contact Us", logoAlt = "Kasumigaseki Capital", onContactHover, onContactLeave, drawerOpen = false }: Props) {
   const pathname = usePathname();
   const items = nav.length ? nav : FALLBACK_NAV;
   const [navOpen, setNavOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function SiteHeader({ nav = FALLBACK_NAV, onContactHover, onConta
       <div className="header-in">
         <Link href="/" className="logo-lockup" aria-label="Kasumigaseki Capital home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="site-logo" src="/images/logo kme dark.png" alt="Kasumigaseki Capital" />
+          <img className="site-logo" src="/images/logo kme dark.png" alt={logoAlt} />
         </Link>
         <nav id="mainnav" aria-label="Primary">
           <ul>
@@ -72,7 +74,7 @@ export default function SiteHeader({ nav = FALLBACK_NAV, onContactHover, onConta
               setNavOpen(false);
             }}
           >
-            Contact Us{" "}
+            {contactLabel}{" "}
             <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M2 10L10 2M10 2H3M10 2V9" stroke="currentColor" strokeWidth="1.5" />
             </svg>

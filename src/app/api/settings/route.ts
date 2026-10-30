@@ -3,7 +3,7 @@ import { getSession, denyUnlessCan } from "@/lib/auth";
 import { logActivity } from "@/lib/activity";
 import { recordVersion } from "@/lib/versions";
 import { query, queryOne } from "@/lib/db";
-import { SETTINGS_KEY, normalizeSiteSettings } from "@/lib/settings";
+import { SETTINGS_KEY, normalizeSiteSettings, readStoredSiteSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,9 @@ export async function GET() {
   if (denied || !session) return denied!;
   try {
     const row = await queryOne<{ value: unknown }>("SELECT value FROM settings WHERE key = $1", [SETTINGS_KEY]);
-    return NextResponse.json({ settings: normalizeSiteSettings(row?.value) });
+    const settings = readStoredSiteSettings(row?.value);
+    if (!settings) return NextResponse.json({ error: "Site settings are not in the CMS" }, { status: 404 });
+    return NextResponse.json({ settings });
   } catch (error) {
     console.error("GET /api/settings error:", error);
     return NextResponse.json({ error: "Could not load settings" }, { status: 500 });

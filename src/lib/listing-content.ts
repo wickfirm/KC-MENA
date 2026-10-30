@@ -16,11 +16,12 @@ export type ListingContent = {
   /** Careers only: copy rendered in the application form band. */
   careerForm?: { eyebrow: string; heading: string; body: string; offices: Array<{ title: string; address: string }>; consent: string; submitLabel: string };
   /** News-index only: the featured-video band. */
-  featuredVideo?: { heading: string; body: string };
+  featuredVideo?: { eyebrow?: string; heading: string; body: string };
   /** News-index only: the three external insight cards under the feed. */
   insightCards?: InsightCard[];
   /** News-index only: the disclaimer band copy. */
   disclaimer?: string;
+  disclaimerHeading?: string;
 };
 
 const defaults: Record<ListingSlug, ListingContent> = {
@@ -53,9 +54,11 @@ const defaults: Record<ListingSlug, ListingContent> = {
     heading: "Latest News",
     intro: "Local and international news of Kasumigaseki, including external coverage and official updates from Kasumigaseki Capital.",
     featuredVideo: {
+      eyebrow: "Featured Video",
       heading: "Coming Soon",
       body: "A dedicated space for future video announcements, leadership interviews, and project updates from Kasumigaseki MENA.",
     },
+    disclaimerHeading: "Disclaimer",
     insightCards: [
       { tag: "Kasumigaseki Capital News", href: "https://kasumigaseki.co.jp/en/news/", image: "/images/city_tokyo.webp" },
       { tag: "Investor Relations Updates", href: "https://kasumigaseki.co.jp/en/ir/", image: "/images/Reception kpd.webp" },
@@ -102,22 +105,19 @@ export function isListingContent(value: unknown): value is ListingContent {
       typeof content.intro === "string" &&
       (content.emptyMessage === undefined || typeof content.emptyMessage === "string") &&
       (content.careerForm === undefined || (typeof content.careerForm?.eyebrow === "string" && typeof content.careerForm?.heading === "string" && typeof content.careerForm?.body === "string" && typeof content.careerForm?.consent === "string" && typeof content.careerForm?.submitLabel === "string" && Array.isArray(content.careerForm.offices) && content.careerForm.offices.every((office) => typeof office?.title === "string" && typeof office?.address === "string"))) &&
-      (content.featuredVideo === undefined || (typeof content.featuredVideo?.heading === "string" && typeof content.featuredVideo?.body === "string")) &&
+      (content.featuredVideo === undefined || (typeof content.featuredVideo?.heading === "string" && typeof content.featuredVideo?.body === "string" && (content.featuredVideo?.eyebrow === undefined || typeof content.featuredVideo.eyebrow === "string"))) &&
       (content.insightCards === undefined || (Array.isArray(content.insightCards) && content.insightCards.every(cardOk))) &&
-      (content.disclaimer === undefined || typeof content.disclaimer === "string")
+      (content.disclaimer === undefined || typeof content.disclaimer === "string") &&
+      (content.disclaimerHeading === undefined || typeof content.disclaimerHeading === "string")
   );
 }
 
-/**
- * Listing-page content for careers / faq / news index. Falls back to the
- * in-code defaults when the row is missing or the database is unavailable.
- */
-export async function getListingContent(slug: ListingSlug): Promise<ListingContent> {
+/** Listing-page content stored in the CMS. Returns null when the row is missing. */
+export async function getListingContent(slug: ListingSlug): Promise<ListingContent | null> {
   try {
     const page = await getPageBySlug(slug);
-    if (!isListingContent(page?.content)) return defaults[slug];
-    return withListingDefaults(slug, page.content);
+    return isListingContent(page?.content) ? page.content : null;
   } catch {
-    return defaults[slug];
+    return null;
   }
 }

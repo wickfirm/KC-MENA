@@ -1,6 +1,8 @@
+import { redirect } from "next/navigation";
 import VersionHistory from "@/components/admin/VersionHistory";
 import PageEditor from "./PageEditor";
 import { queryOne } from "@/lib/db";
+import { isLegalSlug } from "@/lib/legal-content";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +30,7 @@ export default async function PageEditRoute({ params }: { params: Promise<{ id: 
   const { id } = await params;
   const isNew = id === "new";
   const page = isNew ? null : await getPage(id);
+  if (page && isLegalSlug(page.slug)) redirect(`/admin/site/legal/${page.slug}`);
 
   return (
     <>

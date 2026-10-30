@@ -12,6 +12,7 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
       body: "A regional development, investment, and operating platform across the GCC and beyond.",
       image: { src: "/images/quality2.webp", alt: "Kasumigaseki MENA" },
       videoSrc: "/media/Website-Video-Hero.mp4",
+      scrollLabel: "Scroll",
     },
     {
       id: "about",
@@ -29,6 +30,8 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
         { value: "$2.30B", label: "Hotels" },
         { value: "$280M", label: "Healthcare" },
       ],
+      source: { label: "\"As of February 28, 2026\"", href: "https://kasumigaseki.co.jp/en/ir/" },
+      action: { label: "Know More", href: "https://kasumigaseki.co.jp/en/", external: true },
     },
     {
       id: "local-businesses",
@@ -83,6 +86,18 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
       heading: "Tell us what you're looking for.",
       body: "Share a few details and the right person from our team will be in touch — typically within one business day.",
       action: { label: "Contact us", href: "/contact-us/" },
+      form: {
+        nameLabel: "Full name",
+        emailLabel: "Email",
+        emailPlaceholder: "name@company.com",
+        phoneLabel: "Phone",
+        interestLabel: "I'm interested in",
+        interests: ["Development", "Investment & Asset Management", "Food & Beverage", "Careers", "General enquiry"],
+        messageLabel: "Message",
+        submitLabel: "Send enquiry",
+        consent: "By submitting, you agree to be contacted about your enquiry. We never share your details.",
+        successMessage: "Thank you — your enquiry has been received. Our team will be in touch shortly.",
+      },
     },
   ],
 };
@@ -93,6 +108,13 @@ export const DEFAULT_HOME_CONTENT: ModuleDocument = {
  * edits. The retired second-card asset is similarly upgraded only when it is
  * still the old default value.
  */
+/** The saved Home document, with no in-code copy substituted. */
+export function readHomeContent(value: unknown): ModuleDocument | null {
+  if (typeof value === "string") { try { value = JSON.parse(value); } catch { return null; } }
+  if (!value || validateModuleDocument(value).length > 0 || (value as ModuleDocument).template !== "home") return null;
+  return value as ModuleDocument;
+}
+
 export function normalizeHomeContent(value: unknown): ModuleDocument {
   if (typeof value === "string") { try { value = JSON.parse(value); } catch { return DEFAULT_HOME_CONTENT; } }
   if (validateModuleDocument(value).length > 0 || (value as ModuleDocument).template !== "home") return DEFAULT_HOME_CONTENT;

@@ -49,7 +49,7 @@ export default function BusinessDetailPageView({ content, projects = [], referen
       )}
       {content.sections.map((section, index) => splitSection(section, index % 2 === 1))}
       {content.callouts?.map((callout) => <BusinessCalloutBand key={callout.heading} callout={callout} locations={content.locations} />)}
-      <ProjectsSection projects={projects} heading={content.projectsHeading || "Selected projects"} />
+      {content.projectsHeading && <ProjectsSection projects={projects} eyebrow={content.projectsEyebrow} heading={content.projectsHeading} />}
       {content.contactSection && content.contact && (
         <SectionContact
           eyebrow={content.contact.eyebrow}
@@ -66,6 +66,10 @@ export default function BusinessDetailPageView({ content, projects = [], referen
           subjectPlaceholder={content.contact.subjectPlaceholder}
           submitLabel={content.contact.submitLabel}
           successMessage={content.contact.successMessage}
+          nameLabel={content.contact.nameLabel}
+          emailLabel={content.contact.emailLabel}
+          phoneLabel={content.contact.phoneLabel}
+          messageLabel={content.contact.messageLabel}
         />
       )}
     </main>

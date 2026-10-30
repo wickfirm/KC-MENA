@@ -32,7 +32,7 @@ export type BusinessDetailContent = {
   /** "Three businesses, one platform." band (global-businesses only). */
   bizBand?: { eyebrow: string; heading: string; body: string };
   /** Location cards inside the "map" callout (global-businesses only). */
-  locations?: Array<{ country: string; city: string; line: string; image: string; mapUrl: string }>;
+  locations?: Array<{ country: string; city: string; line: string; image: string; mapUrl: string; mapLabel?: string }>;
   callouts?: BusinessCallout[];
   /** Trailing contact band. */
   contactSection?: boolean;
@@ -51,8 +51,13 @@ export type BusinessDetailContent = {
     subjectPlaceholder: string;
     submitLabel: string;
     successMessage: string;
+    nameLabel?: string;
+    emailLabel?: string;
+    phoneLabel?: string;
+    messageLabel?: string;
   };
   projectsHeading?: string;
+  projectsEyebrow?: string;
   sections: Array<{
     eyebrow: string;
     heading: string;
@@ -142,10 +147,10 @@ const details: Record<BusinessDetailSlug, BusinessDetailContent> = {
       body: "Beyond the region, Kasumigaseki Capital operates established, branded businesses across the following sectors.",
     },
     locations: [
-      { country: "Japan", city: "Tokyo", line: "Tokyo, Japan", image: "/images/location-tokyo.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Tokyo+Japan" },
-      { country: "United Arab Emirates", city: "Dubai", line: "Dubai, United Arab Emirates", image: "/images/location-dubai.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Dubai+United+Arab+Emirates" },
-      { country: "Malaysia", city: "Kuala Lumpur", line: "Kuala Lumpur, Malaysia", image: "/images/location-kuala-lumpur.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Kuala+Lumpur+Malaysia" },
-      { country: "United States", city: "Miami", line: "Miami, Florida, USA", image: "/images/location-miami.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Miami+Florida" },
+      { country: "Japan", city: "Tokyo", line: "Tokyo, Japan", image: "/images/location-tokyo.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Tokyo+Japan", mapLabel: "View on map ↗" },
+      { country: "United Arab Emirates", city: "Dubai", line: "Dubai, United Arab Emirates", image: "/images/location-dubai.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Dubai+United+Arab+Emirates", mapLabel: "View on map ↗" },
+      { country: "Malaysia", city: "Kuala Lumpur", line: "Kuala Lumpur, Malaysia", image: "/images/location-kuala-lumpur.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Kuala+Lumpur+Malaysia", mapLabel: "View on map ↗" },
+      { country: "United States", city: "Miami", line: "Miami, Florida, USA", image: "/images/location-miami.webp", mapUrl: "https://www.google.com/maps/search/?api=1&query=Miami+Florida", mapLabel: "View on map ↗" },
     ],
     callouts: [
       { eyebrow: "Where We Operate", heading: "Explore our global business map.", body: "View Kasumigaseki Capital's business locations and project network through the interactive map.", href: "https://map.kasumigaseki.ae/", label: "Explore Our Global Businesses", variant: "map" },
@@ -177,11 +182,12 @@ export function isBusinessDetailContent(value: unknown): value is BusinessDetail
       (content.metrics === undefined || (Array.isArray(content.metrics) && content.metrics.every((metric) => typeof metric?.value === "string" && typeof metric?.label === "string"))) &&
       (content.metricsSource === undefined || (typeof content.metricsSource.label === "string" && typeof content.metricsSource.href === "string")) &&
       (content.bizBand === undefined || (typeof content.bizBand?.eyebrow === "string" && typeof content.bizBand?.heading === "string" && typeof content.bizBand?.body === "string")) &&
-      (content.locations === undefined || (Array.isArray(content.locations) && content.locations.every((location) => typeof location?.country === "string" && typeof location?.city === "string" && typeof location?.line === "string" && typeof location?.image === "string" && typeof location?.mapUrl === "string"))) &&
+      (content.locations === undefined || (Array.isArray(content.locations) && content.locations.every((location) => typeof location?.country === "string" && typeof location?.city === "string" && typeof location?.line === "string" && typeof location?.image === "string" && typeof location?.mapUrl === "string" && (location?.mapLabel === undefined || typeof location.mapLabel === "string")))) &&
       (content.callouts === undefined || (Array.isArray(content.callouts) && content.callouts.every((callout) => typeof callout?.eyebrow === "string" && typeof callout?.heading === "string" && typeof callout?.body === "string" && typeof callout?.href === "string" && typeof callout?.label === "string" && (callout?.variant === undefined || callout.variant === "generic" || callout.variant === "map" || callout.variant === "ir")))) &&
       (content.contactSection === undefined || typeof content.contactSection === "boolean") &&
       (content.contact === undefined || (typeof content.contact?.eyebrow === "string" && typeof content.contact?.heading === "string" && typeof content.contact?.officeLabel === "string" && Array.isArray(content.contact?.officeLines) && content.contact.officeLines.every((line) => typeof line === "string") && typeof content.contact?.mapUrl === "string" && typeof content.contact?.mapLabel === "string" && typeof content.contact?.contactLabel === "string" && typeof content.contact?.body === "string" && typeof content.contact?.phone === "string" && typeof content.contact?.email === "string" && typeof content.contact?.subjectLabel === "string" && typeof content.contact?.subjectPlaceholder === "string" && typeof content.contact?.submitLabel === "string" && typeof content.contact?.successMessage === "string")) &&
       (content.projectsHeading === undefined || typeof content.projectsHeading === "string") &&
+      (content.projectsEyebrow === undefined || typeof content.projectsEyebrow === "string") &&
       Array.isArray(content.sections) &&
       content.sections.length > 0 &&
       content.sections.every((section) =>
@@ -205,6 +211,8 @@ export function withBusinessDefaults(slug: BusinessDetailSlug, content: Business
     overview: { ...defaults.overview, ...content.overview },
     platformMetrics: content.platformMetrics ?? defaults.platformMetrics,
     contact: content.contact ?? defaults.contact,
+    projectsHeading: content.projectsHeading || defaults.projectsHeading || "Selected projects",
+    projectsEyebrow: content.projectsEyebrow || defaults.projectsEyebrow || "Our Projects",
     // Saved business pages predate some added metrics. Keep their edited values,
     // while appending any new default metrics so public and CMS views stay aligned.
     metrics: content.metrics ? [...content.metrics, ...(defaults.metrics?.slice(content.metrics.length) ?? [])] : defaults.metrics,

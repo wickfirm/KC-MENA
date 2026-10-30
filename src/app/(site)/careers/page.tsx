@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import JsonLd from "@/components/site/JsonLd";
 import { getPageBySlug } from "@/lib/pages";
 import { fixedPageJsonLd, pageMetadata, resolvePageSeo } from "@/lib/seo";
@@ -19,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CareersPage() {
   const [content, page] = await Promise.all([getListingContent("careers"), getPageBySlug("careers")]);
+  if (!content) notFound();
   let jobs: Job[] = [];
   try { jobs = await query("SELECT id, title, department, location, employment, description FROM job_openings WHERE status = 'open' AND (closing_date IS NULL OR closing_date >= current_date) ORDER BY created_at DESC"); } catch { /* The template remains useful before the CMS database is connected. */ }
   return <><main>

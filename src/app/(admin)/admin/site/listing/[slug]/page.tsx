@@ -1,7 +1,8 @@
 import VersionHistory from "@/components/admin/VersionHistory";
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/lib/pages";
-import { DEFAULT_LISTING_CONTENT, isListingContent, isListingSlug, LISTING_SLUGS, withListingDefaults } from "@/lib/listing-content";
+import MissingCmsContent from "@/components/admin/MissingCmsContent";
+import { isListingContent, isListingSlug, LISTING_SLUGS } from "@/lib/listing-content";
 import ListingEditor from "./ListingEditor";
 
 export const dynamic = "force-dynamic";
@@ -21,18 +22,18 @@ export default async function ListingAdminPage({ params }: { params: Promise<{ s
   if (!isListingSlug(slug)) notFound();
 
   const page = await getPageBySlug(slug);
-  const content = withListingDefaults(slug, isListingContent(page?.content) ? page.content : DEFAULT_LISTING_CONTENT[slug]);
+  const content = isListingContent(page?.content) ? page.content : null;
 
   return (
     <>
-      <h1 style={{ fontSize: "1.6rem", marginBottom: 6 }}>Edit page: {content.hero.title}</h1>
+      <h1 style={{ fontSize: "1.6rem", marginBottom: 6 }}>Edit page: {content?.hero.title ?? slug}</h1>
       <p style={{ color: "var(--grey-5)", marginBottom: 20 }}>{DESCRIPTIONS[slug]}</p>
-      <ListingEditor
+      {content ? <ListingEditor
         slug={slug}
         content={content}
         status={page?.status === "draft" ? "draft" : "published"}
         seo={{ title: page?.seo?.title, description: page?.seo?.description }}
-      />
+      /> : <MissingCmsContent name={slug} />}
     <VersionHistory entity="page" entityId={slug} />
     </>
   );

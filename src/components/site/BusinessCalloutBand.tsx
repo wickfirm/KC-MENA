@@ -29,7 +29,7 @@ export default function BusinessCalloutBand({ callout, locations }: { callout: B
                     <span>{location.country}</span>
                     <strong>{location.city}</strong>
                     <p>{location.line}</p>
-                    <a href={location.mapUrl} target="_blank" rel="noopener">View on map &#8599;</a>
+                    {location.mapLabel && <a href={location.mapUrl} target="_blank" rel="noopener">{location.mapLabel}</a>}
                   </div>
                 ))}
               </div>

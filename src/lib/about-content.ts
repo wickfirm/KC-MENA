@@ -5,6 +5,7 @@ export type AboutContent = {
     eyebrow: string; intro: string;
     metrics: Array<{ value: string; label: string }>;
     businessLines: Array<{ title: string; description: string }>;
+    source?: { label: string; href: string };
     action: { label: string; href: string };
   };
   chairman: { eyebrow: string; quote: string; paragraphs: string[]; name: string; title: string; image: { src: string; alt: string } };
@@ -19,6 +20,7 @@ export const DEFAULT_ABOUT_CONTENT: AboutContent = {
     eyebrow: "Company Overview",
     intro: "Kasumigaseki MENA is the regional subsidiary of Kasumigaseki Capital, headquartered in Tokyo, focused on Development, Investment & Asset Management, and Food & Beverage opportunities currently operating within the GCC.",
     metrics: [{ value: "3 Sectors", label: "Business Sector" }, { value: "3+", label: "Projects" }, { value: "60", label: "Assets / Units" }, { value: "90", label: "Number of Employees" }],
+    source: { label: "As of February 28, 2026", href: "https://kasumigaseki.co.jp/en/ir/" },
     businessLines: [
       { title: "Development", description: "Development work that connects land strategy, product creation, project execution, and go-to-market planning." },
       { title: "Investment & Asset Management", description: "Investment sourcing, underwriting, acquisition support, fund strategy, and asset management for regional opportunities." },
